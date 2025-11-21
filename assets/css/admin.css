@@ -1,0 +1,12 @@
+#we-test-api-result {
+    font-weight: bold;
+}
+
+#we-test-api-result.success {
+    color: #00a32a;
+}
+
+#we-test-api-result.error {
+    color: #d63638;
+}
+

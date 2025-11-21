@@ -1,0 +1,68 @@
+/**
+ * Frontend styles for WE Spamfighter.
+ *
+ * @package WeSpamfighter
+ */
+
+/* Disabled form container */
+.wpcf7.we-disabled {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+/* Disabled form fields - clear visual distinction */
+.wpcf7.we-disabled input:not([type="hidden"]):read-only,
+.wpcf7.we-disabled input:not([type="hidden"])[readonly],
+.wpcf7.we-disabled input:not([type="hidden"]):disabled,
+.wpcf7.we-disabled textarea:read-only,
+.wpcf7.we-disabled textarea[readonly],
+.wpcf7.we-disabled textarea:disabled,
+.wpcf7.we-disabled select:disabled,
+.wpcf7.we-disabled select[disabled] {
+    background-color: #f5f5f5;
+    color: #666;
+    cursor: not-allowed;
+    opacity: 0.6;
+    pointer-events: none;
+    user-select: none;
+}
+
+/* Prevent focus states on disabled fields */
+.wpcf7.we-disabled input:not([type="hidden"]):read-only:focus,
+.wpcf7.we-disabled input:not([type="hidden"])[readonly]:focus,
+.wpcf7.we-disabled input:not([type="hidden"]):disabled:focus,
+.wpcf7.we-disabled textarea:read-only:focus,
+.wpcf7.we-disabled textarea[readonly]:focus,
+.wpcf7.we-disabled textarea:disabled:focus,
+.wpcf7.we-disabled select:disabled:focus,
+.wpcf7.we-disabled select[disabled]:focus {
+    outline: none;
+    box-shadow: none;
+    border-color: #ddd;
+}
+
+/* Prevent hover states on disabled fields */
+.wpcf7.we-disabled input:not([type="hidden"]):read-only:hover,
+.wpcf7.we-disabled input:not([type="hidden"])[readonly]:hover,
+.wpcf7.we-disabled input:not([type="hidden"]):disabled:hover,
+.wpcf7.we-disabled textarea:read-only:hover,
+.wpcf7.we-disabled textarea[readonly]:hover,
+.wpcf7.we-disabled textarea:disabled:hover,
+.wpcf7.we-disabled select:disabled:hover,
+.wpcf7.we-disabled select[disabled]:hover {
+    border-color: #ddd;
+}
+
+/* Disabled labels */
+.wpcf7.we-disabled label {
+    color: #999;
+    cursor: not-allowed;
+}
+
+/* Active form fields - normal appearance */
+.wpcf7:not(.we-disabled) input:not([type="hidden"]):not(:read-only):not([readonly]):not(:disabled),
+.wpcf7:not(.we-disabled) textarea:not(:read-only):not([readonly]):not(:disabled),
+.wpcf7:not(.we-disabled) select:not(:disabled):not([disabled]) {
+    /* Normal active field styles */
+}
+

@@ -1,0 +1,29 @@
+{
+  "name": "we-spamfighter",
+  "version": "1.0.0",
+  "description": "Advanced spam protection for WordPress using AI-powered detection",
+  "author": {
+    "name": "webentwicklerin, Gabriele Laesser",
+    "url": "https://webentwicklerin.at"
+  },
+  "license": "GPL-2.0-or-later",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gbyat/we-spamfighter"
+  },
+  "scripts": {
+    "pot": "node scripts/update-pot.js",
+    "release:patch": "node scripts/release.js patch",
+    "release:minor": "node scripts/release.js minor",
+    "release:major": "node scripts/release.js major",
+    "sync-version": "node scripts/sync-version.js",
+    "install-hook": "node scripts/install-git-hook.js"
+  },
+  "devDependencies": {
+    "wp-pot": "^1.10.0"
+  },
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=6.0.0"
+  }
+}

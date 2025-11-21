@@ -1,0 +1,143 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*" # Trigger on version tags (e.g., v1.0.0)
+
+jobs:
+  validate:
+    name: Validate Code
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.0"
+          tools: composer
+
+      - name: Install PHP dependencies
+        run: |
+          if [ -f composer.json ]; then
+            composer install --no-interaction --prefer-dist
+          fi
+
+      - name: Run PHP Linter (phpcs)
+        continue-on-error: true
+        run: |
+          # Check if phpcs is available
+          if command -v phpcs &> /dev/null || [ -f vendor/bin/phpcs ]; then
+            if [ -f vendor/bin/phpcs ]; then
+              vendor/bin/phpcs --standard=WordPress --extensions=php includes/
+            else
+              phpcs --standard=WordPress --extensions=php includes/
+            fi
+          else
+            echo "phpcs not found, skipping lint check"
+          fi
+
+      - name: Validate Plugin Header
+        run: |
+          php -r "
+          \$header = file_get_contents('we-spamfighter.php');
+          if (!preg_match('/Version:\s*[\d.]+/', \$header)) {
+            echo 'ERROR: Version not found in plugin header\n';
+            exit(1);
+          }
+          echo '✓ Plugin header valid\n';
+          "
+
+      - name: Validate CHANGELOG
+        run: |
+          if [ ! -f CHANGELOG.md ]; then
+            echo "ERROR: CHANGELOG.md not found"
+            exit 1
+          fi
+
+          # Extract version from tag
+          VERSION=${GITHUB_REF#refs/tags/v}
+
+          if ! grep -q "## \[${VERSION}\]" CHANGELOG.md; then
+            echo "ERROR: Version ${VERSION} not found in CHANGELOG.md"
+            exit 1
+          fi
+
+          echo "✓ CHANGELOG.md contains version ${VERSION}"
+
+  build:
+    name: Build Release
+    needs: validate
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Extract version from tag
+        id: version
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/v}
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "Version: ${VERSION}"
+
+      - name: Create plugin ZIP
+        run: |
+          PLUGIN_NAME="we-spamfighter"
+          ZIP_NAME="${PLUGIN_NAME}.zip"
+
+          # Create temporary directory
+          mkdir -p release-temp/${PLUGIN_NAME}
+
+          # Copy plugin files (exclude unnecessary files)
+          rsync -av \
+            --exclude='.git' \
+            --exclude='.github' \
+            --exclude='node_modules' \
+            --exclude='.gitignore' \
+            --exclude='.editorconfig' \
+            --exclude='.phpcs.xml' \
+            --exclude='composer.json' \
+            --exclude='composer.lock' \
+            --exclude='package.json' \
+            --exclude='package-lock.json' \
+            --exclude='scripts' \
+            --exclude='bin' \
+            --exclude='tests' \
+            --exclude='vendor' \
+            --exclude='*.md' \
+            --exclude='.DS_Store' \
+            --exclude='Thumbs.db' \
+            ./ release-temp/${PLUGIN_NAME}/
+
+          # But keep README.md and LICENSE
+          cp README.md release-temp/${PLUGIN_NAME}/ 2>/dev/null || true
+          cp LICENSE release-temp/${PLUGIN_NAME}/ 2>/dev/null || true
+
+          # Create ZIP file
+          cd release-temp
+          zip -r ../${ZIP_NAME} ${PLUGIN_NAME}/
+          cd ..
+
+          echo "✓ Created ${ZIP_NAME}"
+          ls -lh ${ZIP_NAME}
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: we-spamfighter.zip
+          generate_release_notes: true
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload Release Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: plugin-zip
+          path: we-spamfighter.zip
+          retention-days: 90

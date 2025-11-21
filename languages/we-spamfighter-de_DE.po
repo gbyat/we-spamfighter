@@ -1,0 +1,394 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: WE Spamfighter\n"
+"Report-Msgid-Bugs-To: https://github.com/gbyat/we-spamfighter/issues\n"
+"POT-Creation-Date: 2025-11-21 09:28+0000\n"
+"PO-Revision-Date: 2025-11-21 10:29+0100\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: de_DE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.8\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-Flags-xgettext: --add-comments=translators:\n"
+"X-Poedit-WPHeader: we-spamfighter.php\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: "
+"__;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: *.min.js\n"
+
+#: includes/admin/class-dashboard.php:56
+msgid "WE Spamfighter"
+msgstr "WR Spamfighter"
+
+#: includes/admin/class-dashboard.php:57
+msgid "Spamfighter"
+msgstr "Spamfighter"
+
+#: includes/admin/class-dashboard.php:99
+msgid "Moving..."
+msgstr "Übertragung..."
+
+#: includes/admin/class-dashboard.php:100,
+#: includes/admin/class-dashboard.php:209
+msgid "Move to Normal"
+msgstr "kein Spam"
+
+#: includes/admin/class-dashboard.php:101
+msgid "Loading..."
+msgstr "Lade..."
+
+#: includes/admin/class-dashboard.php:102,
+#: includes/admin/class-dashboard.php:221
+msgid "View Details"
+msgstr "Details ansehen"
+
+#: includes/admin/class-dashboard.php:103
+msgid "Are you sure you want to move this submission to normal mails?"
+msgstr ""
+"Sicher, dass du die Nachricht in den normalen E-Mail-Verkehr verschieben "
+"möchten?"
+
+#: includes/admin/class-dashboard.php:104
+msgid "An error occurred. Please try again."
+msgstr "Ein Fehler ist aufgetreten. Bitte versuche es erneut."
+
+#: includes/admin/class-dashboard.php:105
+msgid "Error"
+msgstr "Fehler"
+
+#: includes/admin/class-dashboard.php:145
+msgid "WE Spamfighter Dashboard"
+msgstr "WE Spamfighter-Dashboard"
+
+#: includes/admin/class-dashboard.php:150
+msgid "Total Submissions"
+msgstr "Gesamte Einreichungen"
+
+#: includes/admin/class-dashboard.php:154,
+#: includes/admin/class-dashboard.php:164
+msgid "Normal Mails"
+msgstr "Normale Mails"
+
+#: includes/admin/class-dashboard.php:158,
+#: includes/admin/class-dashboard.php:167
+msgid "Spam"
+msgstr "Spam"
+
+#: includes/admin/class-dashboard.php:174
+msgid "Date"
+msgstr "Datum"
+
+#: includes/admin/class-dashboard.php:175
+msgid "Type"
+msgstr "Typ"
+
+#: includes/admin/class-dashboard.php:176
+msgid "Form/Post ID"
+msgstr "Formular-/Beitrags-ID"
+
+#: includes/admin/class-dashboard.php:181,
+#: includes/admin/class-dashboard.php:178
+msgid "Spam Score"
+msgstr "Spam-Bewertung"
+
+#: includes/admin/class-dashboard.php:179
+msgid "Action"
+msgstr "Aktion"
+
+#: includes/admin/class-dashboard.php:183
+msgid "Details"
+msgstr "Details"
+
+#: includes/admin/class-dashboard.php:190
+msgid "No submissions found."
+msgstr "Keine Einreichungen gefunden."
+
+#: includes/admin/class-dashboard.php:239
+msgid "Previous"
+msgstr "zurück"
+
+#: includes/admin/class-dashboard.php:245
+msgid "Next"
+msgstr "vorwärts"
+
+#: includes/admin/class-dashboard.php:285
+msgid "Failed to move submission."
+msgstr "Das Verschieben der Übermittlung ist fehlgeschlagen."
+
+#: includes/admin/class-dashboard.php:283
+msgid "Submission moved to normal mails."
+msgstr "Einreichung in normale E-Mails verschoben."
+
+#: includes/admin/class-settings.php:62, includes/admin/class-settings.php:63
+msgid "Settings"
+msgstr "Einstellungen"
+
+#: includes/admin/class-settings.php:121
+msgid "General Settings"
+msgstr "Allgemeine Einstellungen"
+
+#: includes/admin/class-settings.php:128
+msgid "Enable Contact Form 7 Protection"
+msgstr "Contact Form 7-Schutz aktivieren"
+
+#: includes/admin/class-settings.php:134
+msgid "Enable spam protection for Contact Form 7 submissions"
+msgstr "Spam-Schutz für Contact Form 7-Übermittlungen aktivieren"
+
+#: includes/admin/class-settings.php:140
+msgid "Enable Comments Protection"
+msgstr "Kommentare schützen"
+
+#: includes/admin/class-settings.php:146
+msgid "Enable spam protection for comments"
+msgstr "Spamschutz für Kommentare aktivieren"
+
+#: includes/admin/class-settings.php:153
+msgid "OpenAI Integration"
+msgstr "OpenAI-Integration"
+
+#: includes/admin/class-settings.php:160
+msgid "Enable OpenAI Detection"
+msgstr "OpenAI-Erkennung aktivieren"
+
+#: includes/admin/class-settings.php:166
+msgid "Use OpenAI to detect spam"
+msgstr "Verwenden Sie OpenAI, um Spam zu erkennen."
+
+#: includes/admin/class-settings.php:172
+msgid "OpenAI API Key"
+msgstr "OpenAI API-Schlüssel"
+
+#. translators: %s: OpenAI API URL
+#: includes/admin/class-settings.php:181
+msgid ""
+"Get your API key from <a href=\"%s\" target=\"_blank\">OpenAI Platform</a>"
+msgstr ""
+"API-Schlüssel von <a href=\"%s\" target=\"_blank\">der OpenAI-Plattform</a> "
+"holen."
+
+#: includes/admin/class-settings.php:189
+msgid "OpenAI Model"
+msgstr "OpenAI-Modell"
+
+#: includes/admin/class-settings.php:203
+msgid "Which AI model to use for spam detection"
+msgstr "Welches KI-Modell soll für die Spam-Erkennung verwendet werden?"
+
+#: includes/admin/class-settings.php:209
+msgid "AI Spam Threshold"
+msgstr "KI-Spam-Schwellenwert"
+
+#: includes/admin/class-settings.php:218
+msgid ""
+"Spam score threshold (0.0 - 1.0). Higher values mean fewer submissions are "
+"flagged as spam (less strict). Lower values mean more submissions are "
+"flagged as spam (more strict). Default: 0.7"
+msgstr ""
+"Spam-Score-Schwellenwert (0,0 – 1,0). Höhere Werte bedeuten, dass weniger "
+"Beiträge als Spam markiert werden (weniger streng). Niedrigere Werte "
+"bedeuten, dass mehr Beiträge als Spam markiert werden (strenger). "
+"Standardwert: 0,7"
+
+#: includes/admin/class-settings.php:225
+msgid "Email Notifications"
+msgstr "E-Mail Benachrichtigungen"
+
+#: includes/admin/class-settings.php:232
+msgid "Notification Email"
+msgstr "Benachrichtigungsemail"
+
+#: includes/admin/class-settings.php:239
+msgid ""
+"Email address to receive spam notifications. If empty, admin email will be "
+"used."
+msgstr ""
+"E-Mail-Adresse für den Empfang von Spam-Benachrichtigungen. Wenn dieses Feld "
+"leer ist, wird die E-Mail-Adresse des Administrators verwendet."
+
+#: includes/admin/class-settings.php:245
+msgid "Notification Type"
+msgstr "Benachrichtigungsart"
+
+#: includes/admin/class-settings.php:252
+msgid "No notifications"
+msgstr "Keine Benachrichtigungen"
+
+#: includes/admin/class-settings.php:253
+msgid "Immediate (on each spam detection)"
+msgstr "Sofort (bei jeder Spam-Erkennung)"
+
+#: includes/admin/class-settings.php:254
+msgid "Daily summary"
+msgstr "Tägliche Zusammenfassung"
+
+#: includes/admin/class-settings.php:255
+msgid "Weekly summary"
+msgstr "Wöchentliche Zusammenfassung"
+
+#: includes/admin/class-settings.php:257
+msgid "How often to receive spam notifications."
+msgstr "Wie oft Spam-Benachrichtigungen empfangen werden sollen."
+
+#: includes/admin/class-settings.php:264
+msgid "Maintenance"
+msgstr "Wartung"
+
+#: includes/admin/class-settings.php:271
+msgid "Log Retention"
+msgstr "Dauer der Protokollspeicherung"
+
+#: includes/admin/class-settings.php:280
+msgid "Days to keep logs (default: 30)"
+msgstr "Tage, an denen Protokolle aufbewahrt werden (Standard: 30)"
+
+#: includes/admin/class-settings.php:286
+msgid "Keep Data on Uninstall"
+msgstr "Daten bei Deinstallation behalten"
+
+#: includes/admin/class-settings.php:292
+msgid ""
+"If enabled, all plugin data (options, submissions, statistics) will be kept "
+"when the plugin is deleted. If disabled, all data will be permanently "
+"deleted."
+msgstr ""
+"Wenn diese Option aktiviert ist, bleiben alle Plugin-Daten (Optionen, "
+"Übermittlungen, Statistiken) beim Löschen des Plugins erhalten. Wenn diese "
+"Option deaktiviert ist, werden alle Daten dauerhaft gelöscht."
+
+#: includes/admin/class-settings.php:302
+msgid "Configure general spam protection settings."
+msgstr "Konfiguriere allgemeine Spam-Schutzeinstellungen."
+
+#: includes/admin/class-settings.php:310
+msgid "Configure OpenAI integration for spam detection."
+msgstr "OpenAI-Integration für die Spam-Erkennung."
+
+#: includes/admin/class-settings.php:318
+msgid "Configure email notifications for spam detections."
+msgstr "E-Mail-Benachrichtigungen für Spam-Erkennungen."
+
+#: includes/admin/class-settings.php:326
+msgid "Configure maintenance and cleanup settings."
+msgstr "Einstellungen für Wartung und Bereinigung."
+
+#: includes/admin/class-settings.php:440
+msgid "WE Spamfighter Settings"
+msgstr "WE Spamfighter-Einstellungen"
+
+#: includes/admin/class-settings.php:454
+msgid "Test OpenAI Connection"
+msgstr "OpenAI-Verbindung testen"
+
+#: includes/admin/class-settings.php:457
+msgid "Test your OpenAI API connection and configuration."
+msgstr "Testen Sie Ihre OpenAI-API-Verbindung und -Konfiguration."
+
+#: includes/admin/class-settings.php:460
+msgid "Test Connection"
+msgstr "Verbindung testen"
+
+#. translators: %s: Site name
+#: includes/core/class-notifications.php:86
+msgid "[%s] Spam Detected"
+msgstr "[%s] Spam erkannt"
+
+#. translators: %s: Site name
+#: includes/core/class-notifications.php:132
+msgid "[%s] Daily Spam Summary"
+msgstr "[%s] Tägliche Spam-Zusammenfassung"
+
+#. translators: %s: Site name
+#: includes/core/class-notifications.php:178
+msgid "[%s] Weekly Spam Summary"
+msgstr "[%s] Wöchentliche Spam-Zusammenfassung"
+
+#. translators: %s: Site name
+#: includes/core/class-notifications.php:200
+msgid "A spam submission was detected on %s."
+msgstr "Auf %s wurde eine Spam-Einreichung entdeckt."
+
+#: includes/core/class-notifications.php:204
+msgid "Submission Details:"
+msgstr "Einreichungsdetails:"
+
+#: includes/core/class-notifications.php:205
+msgid "ID:"
+msgstr "ID:"
+
+#: includes/core/class-notifications.php:206
+msgid "Type:"
+msgstr "Typ:"
+
+#: includes/core/class-notifications.php:207
+msgid "Form/Post ID:"
+msgstr "Formular-/Beitrags-ID:"
+
+#: includes/core/class-notifications.php:208
+msgid "Spam Score:"
+msgstr "Spam-Bewertung"
+
+#: includes/core/class-notifications.php:209
+msgid "Date:"
+msgstr "Datum:"
+
+#: includes/core/class-notifications.php:212
+msgid "Submission Data:"
+msgstr "Einreichungsdaten:"
+
+#: includes/core/class-notifications.php:226
+msgid "Detection Details:"
+msgstr "Details zur Spam-Erkennung:"
+
+#: includes/core/class-notifications.php:234
+msgid "View in Dashboard:"
+msgstr "Im Dashboard anzeigen:"
+
+#: includes/core/class-notifications.php:249
+msgid "last week"
+msgstr "Letzte Woche"
+
+#: includes/core/class-notifications.php:249
+msgid "yesterday"
+msgstr "gestern"
+
+#. translators: %1$d: Count, %2$s: Period, %3$s: Site name
+#: includes/core/class-notifications.php:254
+msgid "%1$d spam submission(s) were detected on %3$s %2$s."
+msgstr "%1$d Spam-Beiträge wurden auf %3$s %2$s entdeckt."
+
+#: includes/core/class-notifications.php:260
+msgid "Summary:"
+msgstr "Zusammenfassung:"
+
+#: includes/core/class-notifications.php:261
+msgid "Total Spam:"
+msgstr "Gesamt-Spam:"
+
+#: includes/core/class-notifications.php:280
+msgid "By Form/Type:"
+msgstr "Nach Formular/Typ"
+
+#: includes/core/class-notifications.php:290
+msgid "Top Spam Submissions:"
+msgstr "Top-Spam-Einsendungen:"
+
+#: includes/core/class-notifications.php:319
+msgid "View All in Dashboard:"
+msgstr "Alle im Dashboard anzeigen:"
+
+#: includes/integration/class-contact-form-7.php:413
+msgid "Thank you for your message."
+msgstr "Vielen Dank für Ihre Nachricht."
+
+#, fuzzy
+#~ msgid "Spam score threshold (0.0 - 1.0). Higher = stricter. Default: 0.7"
+#~ msgstr ""
+#~ "Spam-Score-Schwellenwert (0,0 – 1,0). Höher = strenger. Standardwert: 0,7"
+
+#~ msgid "https://webentwicklerin.at"
+#~ msgstr "https://webentwicklerin.at"
