@@ -56,9 +56,6 @@ try {
     console.log('🏷️  Creating tag...');
     execSync(`git tag -a "v${newVersion}" -m "Release v${newVersion}"`, { stdio: 'inherit' });
 
-    // Push to GitHub
-    console.log('⬆️  Pushing to GitHub...');
-
     // Detect current branch
     let branch = 'main';
     try {
@@ -66,6 +63,35 @@ try {
     } catch (e) {
         // Fallback to main
     }
+
+    // Check if remote repository exists
+    console.log('🔍 Checking if GitHub repository exists...');
+    try {
+        execSync('git ls-remote origin', { stdio: 'pipe' });
+        console.log('✅ Repository is accessible');
+    } catch (e) {
+        console.error('');
+        console.error('❌ ==========================================');
+        console.error('❌ ERROR: GitHub repository not found!');
+        console.error('❌ ==========================================');
+        console.error('');
+        console.error('The remote repository does not exist or is not accessible.');
+        console.error('');
+        console.error('Please check:');
+        console.error('  1. Does the repository exist on GitHub?');
+        console.error('  2. Is the remote URL correct? (Check with: git remote -v)');
+        console.error('  3. Do you have access to the repository?');
+        console.error('');
+        console.error('To remove the remote, use: git remote remove origin');
+        console.error('To add a new remote, use: git remote add origin <url>');
+        console.error('');
+        process.exit(1);
+    }
+
+    // Push to GitHub
+    console.log('⬆️  Pushing to GitHub...');
+    console.log(`   Pushing branch: ${branch}`);
+    console.log(`   Pushing tag: v${newVersion}`);
 
     execSync(`git push origin ${branch}`, { stdio: 'inherit' });
     execSync(`git push origin v${newVersion}`, { stdio: 'inherit' });
