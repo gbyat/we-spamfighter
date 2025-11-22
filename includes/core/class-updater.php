@@ -156,10 +156,13 @@ class Updater
         }
 
         $plugin_data = array(
-            'slug'        => $this->basename,
+            'slug'         => $this->basename,
             'new_version' => $new_version,
-            'url'         => $this->plugin['PluginURI'],
+            'url'          => $this->plugin['PluginURI'],
             'package'     => $download_url,
+            'tested'      => $this->plugin['Tested up to'] ?? '6.8.3',
+            'requires'    => $this->plugin['Requires at least'] ?? '6.0',
+            'requires_php' => $this->plugin['Requires PHP'] ?? '8.0',
         );
 
         $transient->response[$this->basename] = (object) $plugin_data;
