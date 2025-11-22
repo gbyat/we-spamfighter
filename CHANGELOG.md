@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.6] - 2025-11-22
+
+- Extract WordPress compatibility data from release ZIP file to display correct compatibility information in update checks
+
+
 ## [1.0.5] - 2025-11-22
 
 - Add compatibility fields (tested, requires, requires_php) to update transient for proper WordPress compatibility display
@@ -100,3 +105,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [1.0.3]: https://github.com/gbyat/we-spamfighter/releases/tag/v1.0.3
 [1.0.4]: https://github.com/gbyat/we-spamfighter/releases/tag/v1.0.4
 [1.0.5]: https://github.com/gbyat/we-spamfighter/releases/tag/v1.0.5
+[1.0.6]: https://github.com/gbyat/we-spamfighter/releases/tag/v1.0.6
