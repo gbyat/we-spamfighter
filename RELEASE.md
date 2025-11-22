@@ -49,13 +49,36 @@ Two GitHub Actions workflows:
 
 **Release Workflow** (`.github/workflows/release.yml`):
 
-- Runs only when a version tag is pushed (e.g., `v1.0.1`)
+- **Important:** Runs only when a version tag is pushed (e.g., `v1.0.1`)
+- Does **not** run on regular code pushes
 - Creates release ZIP file
 - Publishes GitHub Release
 
+**Note:** If you push code without a tag, no release will be created. You must push a version tag to trigger the release workflow.
+
 ## Usage
 
-### Creating a Release
+### Creating Your First Release (v1.0.0)
+
+**Important:** GitHub Releases are only created when a version tag (e.g., `v1.0.0`) is pushed to GitHub. Simply pushing code without a tag will **not** create a release.
+
+For the first release, use:
+
+```bash
+npm run release:initial
+```
+
+This will:
+1. Use the current version from `package.json` (should be `1.0.0` for first release)
+2. Sync version to `we-spamfighter.php`
+3. Check if version exists in `CHANGELOG.md`
+4. Commit any pending changes
+5. Create and push a Git tag (`v1.0.0`)
+6. Trigger GitHub Actions to create the release
+
+**After pushing your code to GitHub for the first time, run this command to create the initial release.**
+
+### Creating Subsequent Releases
 
 #### Option 1: Using npm scripts (Recommended)
 
@@ -133,7 +156,29 @@ This will automatically:
 
 ## Release Process
 
-### Step-by-Step Guide
+### First Release (v1.0.0)
+
+1. **Push your code to GitHub**:
+
+   ```bash
+   git remote add origin https://github.com/gbyat/we-spamfighter.git
+   git push -u origin main
+   ```
+
+2. **Create the initial release**:
+
+   ```bash
+   npm run release:initial
+   ```
+
+3. **GitHub Actions** will automatically:
+
+   - Validate code
+   - Create ZIP file
+   - Create GitHub Release v1.0.0
+   - Attach ZIP file
+
+### Subsequent Releases
 
 1. **Make your changes** and commit them:
 
