@@ -23,14 +23,18 @@ Advanced spam protection for WordPress using AI-powered detection. Protects Cont
 ### 📋 Form Integration
 
 - **Contact Form 7**: Full integration with Contact Form 7 plugin
+  - **Submission Logging**: Unlike CF7 (which doesn't store submissions by default), this plugin logs all CF7 form submissions for review and analysis
+  - **Spam Protection**: Blocks spam submissions before they reach your inbox
 - **WordPress Comments**: Native WordPress comment spam protection
 - **Automatic Blocking**: Blocks spam submissions before they reach your inbox
 - **Custom Messages**: Configurable "Thank you" message for blocked spam submissions
 
 ### 📊 Dashboard & Analytics
 
-- **Submission Log**: View all form submissions and comments
-- **Spam Analytics**: Track spam detection statistics
+- **Submission Log**: View all Contact Form 7 submissions (comments are managed by WordPress)
+  - **Unique Feature**: CF7 doesn't store submissions by default - this plugin adds submission logging as a bonus feature
+- **Spam Analytics**: Track spam detection statistics for CF7 forms
+- **Comment Spam Stats**: View spam comment count from WordPress (with link to comment management)
 - **Filtering**: Filter submissions by spam status, form ID, date range
 - **Export**: Export submission data for analysis
 - **Submission Details**: View full submission data, spam scores, and detection reasoning
@@ -125,6 +129,8 @@ The plugin automatically integrates with Contact Form 7 when:
 
 No additional configuration is required for basic functionality.
 
+**Important Note**: Contact Form 7 does **not** store form submissions by default. This plugin adds this functionality as a bonus feature - all CF7 form submissions (spam and legitimate) are logged in the plugin's database for review, analysis, and spam detection tracking.
+
 ### 4. Comments Integration
 
 WordPress comment spam protection is enabled automatically when:
@@ -132,25 +138,42 @@ WordPress comment spam protection is enabled automatically when:
 - Comments protection is enabled in settings
 - OpenAI detection is enabled
 
+**Important**: Comments are NOT saved in the plugin's database. They are handled by WordPress's native comment system:
+
+- Spam comments are marked as spam and stored in WordPress
+- You can manage spam comments in **Comments → Spam** in WordPress admin
+- The plugin dashboard shows the spam comment count with a link to WordPress comment management
+- Only Contact Form 7 submissions are stored in the plugin's database
+
 ## Usage
 
 ### Viewing Submissions
 
 1. Go to **WE Spamfighter → Dashboard**
-2. View all submissions in the main table
+2. View all Contact Form 7 submissions in the main table (comments are managed by WordPress)
+   - **Note**: CF7 doesn't store submissions by default - this plugin logs them for you
 3. Use filters to find specific submissions:
    - Filter by spam status
    - Filter by form ID
    - Search by content
    - Filter by date range
 4. Click on a submission to view detailed information
+5. View spam comment count in statistics (with link to WordPress comment management)
 
 ### Managing Spam
 
-- **Mark as Spam**: Manually mark a submission as spam
+#### Contact Form 7 Submissions
+
+- **Mark as Spam**: Manually mark a CF7 submission as spam
 - **Mark as Not Spam**: Mark a false positive as legitimate
 - **Delete Submissions**: Remove unwanted submissions from the database
 - **Export Data**: Export submissions for external analysis
+
+#### WordPress Comments
+
+- **Manage in WordPress**: Spam comments are managed in **Comments → Spam** in WordPress admin
+- **Spam Count**: View spam comment count in the plugin dashboard statistics
+- **Direct Link**: Click on spam comment count to go to WordPress comment management
 
 ### Custom Messages
 
@@ -229,10 +252,12 @@ All plugin code uses the `WeSpamfighter` namespace following WordPress coding st
 
 The plugin creates a custom table `wp_we_spamfighter_submissions`:
 
+**Note**: Only Contact Form 7 submissions are stored in this table. Comments are handled by WordPress's native comment system and stored in WordPress tables.
+
 ```sql
 - id (bigint) - Primary key
-- submission_type (varchar) - 'cf7' or 'comment'
-- form_id (bigint) - Form/comment ID
+- submission_type (varchar) - 'cf7' (comments are not stored here)
+- form_id (bigint) - Form ID
 - submission_data (longtext) - JSON submission data
 - is_spam (tinyint) - Spam flag (0/1)
 - spam_score (float) - Spam score (0.0-1.0)
@@ -286,10 +311,11 @@ The plugin creates a custom table `wp_we_spamfighter_submissions`:
 
 ### Submissions Not Logged
 
-**Problem**: Submissions not appearing in dashboard
+**Problem**: CF7 submissions not appearing in dashboard
 
 - **Solution**: Check that "Store All Submissions" is enabled in settings
 - **Check**: Verify database table exists (plugin activation creates it)
+- **Note**: Comments are not stored in the plugin database - they are managed by WordPress. Check **Comments → Spam** in WordPress admin for spam comments.
 
 ### CSS Not Loading
 

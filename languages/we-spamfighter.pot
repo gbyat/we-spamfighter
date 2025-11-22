@@ -8,7 +8,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Language-Team: webentwicklerin, Gabriele Laesser\n"
 "Last-Translator: webentwicklerin, Gabriele Laesser <info@webentwicklerin.at>\n"
-"POT-Creation-Date: 2025-11-21 09:28+0000\n"
+"POT-Creation-Date: 2025-11-21 20:24+0000\n"
 "Report-Msgid-Bugs-To: https://github.com/gbyat/we-spamfighter/issues\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: __;_e;_ex:1,2c;_n:1,2;_n_noop:1,2;_nx:1,2,4c;_nx_noop:1,2,3c;_x:1,2c;esc_attr__;esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c\n"
@@ -17,100 +17,194 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: includes/admin/class-dashboard.php:56
+#: includes/admin/class-dashboard.php:59
 msgid "WE Spamfighter"
 msgstr ""
 
-#: includes/admin/class-dashboard.php:57
+#: includes/admin/class-dashboard.php:60
 msgid "Spamfighter"
 msgstr ""
 
-#: includes/admin/class-dashboard.php:99
+#: includes/admin/class-dashboard.php:102
 msgid "Moving..."
 msgstr ""
 
-#: includes/admin/class-dashboard.php:100, includes/admin/class-dashboard.php:209
+#: includes/admin/class-dashboard.php:103
+msgid "Deleting..."
+msgstr ""
+
+#: includes/admin/class-dashboard.php:104, includes/admin/class-dashboard.php:264
 msgid "Move to Normal"
 msgstr ""
 
-#: includes/admin/class-dashboard.php:101
+#: includes/admin/class-dashboard.php:105, includes/admin/class-dashboard.php:278
+msgid "Move to Spam"
+msgstr ""
+
+#: includes/admin/class-dashboard.php:106, includes/admin/class-dashboard.php:211, includes/admin/class-dashboard.php:281, includes/admin/class-dashboard.php:267
+msgid "Delete"
+msgstr ""
+
+#: includes/admin/class-dashboard.php:107
 msgid "Loading..."
 msgstr ""
 
-#: includes/admin/class-dashboard.php:102, includes/admin/class-dashboard.php:221
+#: includes/admin/class-dashboard.php:108, includes/admin/class-dashboard.php:287
 msgid "View Details"
 msgstr ""
 
-#: includes/admin/class-dashboard.php:103
+#: includes/admin/class-dashboard.php:109
 msgid "Are you sure you want to move this submission to normal mails?"
 msgstr ""
 
-#: includes/admin/class-dashboard.php:104
+#: includes/admin/class-dashboard.php:110
+msgid "Are you sure you want to move this submission to spam?"
+msgstr ""
+
+#: includes/admin/class-dashboard.php:111
+msgid "Are you sure you want to delete this submission? This action cannot be undone."
+msgstr ""
+
+#: includes/admin/class-dashboard.php:112
+msgid "Are you sure you want to delete the selected submissions? This action cannot be undone."
+msgstr ""
+
+#: includes/admin/class-dashboard.php:113
+msgid "Please select at least one item to delete."
+msgstr ""
+
+#: includes/admin/class-dashboard.php:114
 msgid "An error occurred. Please try again."
 msgstr ""
 
-#: includes/admin/class-dashboard.php:105
+#: includes/admin/class-dashboard.php:115
 msgid "Error"
 msgstr ""
 
-#: includes/admin/class-dashboard.php:145
+#: includes/admin/class-dashboard.php:116
+msgid "Select All"
+msgstr ""
+
+#: includes/admin/class-dashboard.php:117
+msgid "Select None"
+msgstr ""
+
+#: includes/admin/class-dashboard.php:118
+msgid "selected"
+msgstr ""
+
+#: includes/admin/class-dashboard.php:119, includes/admin/class-dashboard.php:210
+msgid "Bulk Actions"
+msgstr ""
+
+#: includes/admin/class-dashboard.php:120, includes/admin/class-dashboard.php:214
+msgid "Apply"
+msgstr ""
+
+#: includes/admin/class-dashboard.php:167
 msgid "WE Spamfighter Dashboard"
 msgstr ""
 
-#: includes/admin/class-dashboard.php:150
-msgid "Total Submissions"
+#: includes/admin/class-dashboard.php:172
+msgid "CF7 Submissions"
 msgstr ""
 
-#: includes/admin/class-dashboard.php:154, includes/admin/class-dashboard.php:164
+#: includes/admin/class-dashboard.php:176, includes/admin/class-dashboard.php:200
 msgid "Normal Mails"
 msgstr ""
 
-#: includes/admin/class-dashboard.php:158, includes/admin/class-dashboard.php:167
+#: includes/admin/class-dashboard.php:180
+msgid "Spam (CF7)"
+msgstr ""
+
+#: includes/admin/class-dashboard.php:191
+msgid "Spam Comments"
+msgstr ""
+
+#: includes/admin/class-dashboard.php:203
 msgid "Spam"
 msgstr ""
 
-#: includes/admin/class-dashboard.php:174
+#: includes/admin/class-dashboard.php:225
 msgid "Date"
 msgstr ""
 
-#: includes/admin/class-dashboard.php:175
+#: includes/admin/class-dashboard.php:226
 msgid "Type"
 msgstr ""
 
-#: includes/admin/class-dashboard.php:176
+#: includes/admin/class-dashboard.php:227
 msgid "Form/Post ID"
 msgstr ""
 
-#: includes/admin/class-dashboard.php:181, includes/admin/class-dashboard.php:178
+#: includes/admin/class-dashboard.php:232, includes/admin/class-dashboard.php:229
 msgid "Spam Score"
 msgstr ""
 
-#: includes/admin/class-dashboard.php:179
+#: includes/admin/class-dashboard.php:233, includes/admin/class-dashboard.php:230
 msgid "Action"
 msgstr ""
 
-#: includes/admin/class-dashboard.php:183
+#: includes/admin/class-dashboard.php:235
 msgid "Details"
 msgstr ""
 
-#: includes/admin/class-dashboard.php:190
+#: includes/admin/class-dashboard.php:242
 msgid "No submissions found."
 msgstr ""
 
-#: includes/admin/class-dashboard.php:239
+#: includes/admin/class-dashboard.php:305
 msgid "Previous"
 msgstr ""
 
-#: includes/admin/class-dashboard.php:245
+#: includes/admin/class-dashboard.php:311
 msgid "Next"
 msgstr ""
 
-#: includes/admin/class-dashboard.php:285
+#: includes/admin/class-dashboard.php:336, includes/admin/class-dashboard.php:363, includes/admin/class-dashboard.php:390, includes/admin/class-dashboard.php:417, includes/admin/class-dashboard.php:453
+msgid "Unauthorized"
+msgstr ""
+
+#: includes/admin/class-dashboard.php:342, includes/admin/class-dashboard.php:369, includes/admin/class-dashboard.php:396, includes/admin/class-dashboard.php:459
+msgid "Invalid submission ID"
+msgstr ""
+
+#: includes/admin/class-dashboard.php:351, includes/admin/class-dashboard.php:378
 msgid "Failed to move submission."
 msgstr ""
 
-#: includes/admin/class-dashboard.php:283
+#: includes/admin/class-dashboard.php:349
 msgid "Submission moved to normal mails."
+msgstr ""
+
+#: includes/admin/class-dashboard.php:376
+msgid "Submission moved to spam."
+msgstr ""
+
+#: includes/admin/class-dashboard.php:405
+msgid "Failed to delete submission."
+msgstr ""
+
+#: includes/admin/class-dashboard.php:403
+msgid "Submission deleted successfully."
+msgstr ""
+
+#: includes/admin/class-dashboard.php:423
+msgid "No submissions selected."
+msgstr ""
+
+#: includes/admin/class-dashboard.php:441
+msgid "Failed to delete submissions."
+msgstr ""
+
+#: includes/admin/class-dashboard.php:434
+msgid "%d submission deleted."
+msgid_plural "%d submissions deleted."
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/admin/class-dashboard.php:466
+msgid "Submission not found"
 msgstr ""
 
 #: includes/admin/class-settings.php:62, includes/admin/class-settings.php:63
@@ -298,7 +392,7 @@ msgstr ""
 msgid "Form/Post ID:"
 msgstr ""
 
-#: includes/core/class-notifications.php:208
+#: includes/core/class-notifications.php:208, includes/integration/class-comments.php:224
 msgid "Spam Score:"
 msgstr ""
 
@@ -310,7 +404,7 @@ msgstr ""
 msgid "Submission Data:"
 msgstr ""
 
-#: includes/core/class-notifications.php:226
+#: includes/core/class-notifications.php:226, includes/integration/class-comments.php:227
 msgid "Detection Details:"
 msgstr ""
 
@@ -349,6 +443,63 @@ msgstr ""
 
 #: includes/core/class-notifications.php:319
 msgid "View All in Dashboard:"
+msgstr ""
+
+#: includes/core/class-updater.php:203
+msgid "No changelog available."
+msgstr ""
+
+#: includes/core/class-updater.php:314
+msgid "Installation"
+msgstr ""
+
+#: includes/core/class-updater.php:316
+msgid "Download the latest release ZIP file"
+msgstr ""
+
+#: includes/core/class-updater.php:317
+msgid "Go to WordPress Admin → Plugins → Add New → Upload Plugin"
+msgstr ""
+
+#: includes/core/class-updater.php:318
+msgid "Upload the ZIP file and click Install Now"
+msgstr ""
+
+#: includes/core/class-updater.php:319
+msgid "Activate the plugin"
+msgstr ""
+
+#: includes/core/class-updater.php:320
+msgid "Configure settings under WE Spamfighter → Settings"
+msgstr ""
+
+#. translators: %s: Site name
+#: includes/integration/class-comments.php:198
+msgid "[%s] Spam Comment Detected"
+msgstr ""
+
+#: includes/integration/class-comments.php:220
+msgid "A spam comment has been detected by %s and moved to the spam folder."
+msgstr ""
+
+#: includes/integration/class-comments.php:221
+msgid "Author:"
+msgstr ""
+
+#: includes/integration/class-comments.php:222
+msgid "Email:"
+msgstr ""
+
+#: includes/integration/class-comments.php:223
+msgid "Post ID:"
+msgstr ""
+
+#: includes/integration/class-comments.php:225
+msgid "Comment Content:"
+msgstr ""
+
+#: includes/integration/class-comments.php:229
+msgid "View Spam Comments"
 msgstr ""
 
 #: includes/integration/class-contact-form-7.php:413

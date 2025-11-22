@@ -92,3 +92,30 @@
     margin-top: 20px;
 }
 
+/* Bulk Actions */
+.we-bulk-actions {
+    padding: 10px;
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+.we-bulk-action-select {
+    margin-right: 10px;
+}
+
+.we-selected-count {
+    color: #646970;
+    font-size: 14px;
+}
+
+/* Checkbox column */
+.check-column {
+    width: 30px;
+}
+
+.check-column input[type="checkbox"] {
+    margin: 0;
+}
+

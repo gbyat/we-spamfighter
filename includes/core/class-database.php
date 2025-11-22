@@ -347,6 +347,109 @@ class Database
     }
 
     /**
+     * Move submission from normal to spam.
+     *
+     * @param int $id Submission ID.
+     * @return bool
+     */
+    public function move_to_spam($id)
+    {
+        return $this->update_submission(
+            $id,
+            array(
+                'is_spam' => 1,
+            )
+        );
+    }
+
+    /**
+     * Delete a single submission.
+     *
+     * @param int $id Submission ID.
+     * @return bool
+     */
+    public function delete_submission($id)
+    {
+        global $wpdb;
+
+        $id = absint($id);
+        if (! $id) {
+            return false;
+        }
+
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Delete operation.
+        $result = (bool) $wpdb->delete(
+            $this->table_name,
+            array('id' => $id),
+            array('%d')
+        );
+
+        // Clear cache after delete.
+        if ($result) {
+            // Clear single submission cache.
+            $cache_key = 'we_spamfighter_submission_' . $id;
+            wp_cache_delete($cache_key, 'we_spamfighter');
+
+            // Clear count cache.
+            wp_cache_delete('we_spamfighter_count_all', 'we_spamfighter');
+            wp_cache_delete('we_spamfighter_count_normal', 'we_spamfighter');
+            wp_cache_delete('we_spamfighter_count_spam', 'we_spamfighter');
+
+            // Clear submissions list cache (all possible keys).
+            wp_cache_flush_group('we_spamfighter');
+        }
+
+        return $result;
+    }
+
+    /**
+     * Bulk delete submissions.
+     *
+     * @param array $ids Array of submission IDs.
+     * @return int Number of deleted rows.
+     */
+    public function bulk_delete_submissions($ids)
+    {
+        global $wpdb;
+
+        if (empty($ids) || ! is_array($ids)) {
+            return 0;
+        }
+
+        // Sanitize IDs.
+        $ids = array_map('absint', $ids);
+        $ids = array_filter($ids);
+
+        if (empty($ids)) {
+            return 0;
+        }
+
+        // Build placeholders for IN clause.
+        $placeholders = implode(',', array_fill(0, count($ids), '%d'));
+
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Bulk delete operation.
+        $result = $wpdb->query(
+            $wpdb->prepare(
+                "DELETE FROM {$this->table_name} WHERE id IN ({$placeholders})", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Placeholders are prepared.
+                ...$ids
+            )
+        );
+
+        // Clear cache after bulk delete.
+        if ($result) {
+            // Clear count cache.
+            wp_cache_delete('we_spamfighter_count_all', 'we_spamfighter');
+            wp_cache_delete('we_spamfighter_count_normal', 'we_spamfighter');
+            wp_cache_delete('we_spamfighter_count_spam', 'we_spamfighter');
+
+            // Clear submissions list cache (all possible keys).
+            wp_cache_flush_group('we_spamfighter');
+        }
+
+        return (int) $result;
+    }
+
+    /**
      * Mark email as sent.
      *
      * @param int $id Submission ID.
@@ -385,36 +488,39 @@ class Database
         }
         // If days is null or 0, show all-time statistics (no date filter).
 
-        // Total submissions.
+        // Only count CF7 submissions (comments are handled by WordPress).
+        $cf7_where_clause = $where_clause . " AND submission_type = 'cf7'";
+
+        // Total submissions (CF7 only).
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Statistics query. where_clause is prepared with wpdb->prepare() or safe literal.
         $stats['total'] = (int) $wpdb->get_var(
-            "SELECT COUNT(*) FROM {$this->table_name} WHERE {$where_clause}" // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- where_clause is already prepared or safe.
+            "SELECT COUNT(*) FROM {$this->table_name} WHERE {$cf7_where_clause}" // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- where_clause is already prepared or safe.
         );
 
-        // Normal submissions.
+        // Normal submissions (CF7 only).
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Statistics query. where_clause is prepared with wpdb->prepare() or safe literal.
         $stats['normal'] = (int) $wpdb->get_var(
-            "SELECT COUNT(*) FROM {$this->table_name} WHERE {$where_clause} AND is_spam = 0" // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- where_clause is already prepared or safe.
+            "SELECT COUNT(*) FROM {$this->table_name} WHERE {$cf7_where_clause} AND is_spam = 0" // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- where_clause is already prepared or safe.
         );
 
-        // Spam submissions.
+        // Spam submissions (CF7 only).
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Statistics query. where_clause is prepared with wpdb->prepare() or safe literal.
         $stats['spam'] = (int) $wpdb->get_var(
-            "SELECT COUNT(*) FROM {$this->table_name} WHERE {$where_clause} AND is_spam = 1" // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- where_clause is already prepared or safe.
+            "SELECT COUNT(*) FROM {$this->table_name} WHERE {$cf7_where_clause} AND is_spam = 1" // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- where_clause is already prepared or safe.
         );
 
-        // By submission type.
+        // By submission type (CF7 only, since comments are handled by WordPress).
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter, WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound -- Statistics query. where_clause is prepared with wpdb->prepare() or safe literal. ARRAY_A is WordPress core constant.
         $stats['by_type'] = $wpdb->get_results(
             "SELECT submission_type, COUNT(*) as count 
 			 FROM {$this->table_name} 
-			 WHERE {$where_clause} 
+			 WHERE {$cf7_where_clause} 
 			 GROUP BY submission_type 
 			 ORDER BY count DESC", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- where_clause is already prepared or safe.
             \ARRAY_A
         );
 
-        // Daily trend.
+        // Daily trend (CF7 only).
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter, WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound -- Statistics query. where_clause is prepared with wpdb->prepare() or safe literal. ARRAY_A is WordPress core constant.
         $stats['daily_trend'] = $wpdb->get_results(
             "SELECT DATE(created_at) as date, 
@@ -422,7 +528,7 @@ class Database
 			 SUM(CASE WHEN is_spam = 0 THEN 1 ELSE 0 END) as normal,
 			 SUM(CASE WHEN is_spam = 1 THEN 1 ELSE 0 END) as spam
 			 FROM {$this->table_name} 
-			 WHERE {$where_clause} 
+			 WHERE {$cf7_where_clause} 
 			 GROUP BY DATE(created_at) 
 			 ORDER BY date ASC", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- where_clause is already prepared or safe.
             \ARRAY_A
@@ -452,6 +558,9 @@ class Database
 
         $query = "SELECT COUNT(*) FROM {$this->table_name}";
         $where = array();
+
+        // Only count CF7 submissions (comments are handled by WordPress).
+        $where[] = "submission_type = 'cf7'";
 
         if (null !== $is_spam) {
             $where[] = $wpdb->prepare('is_spam = %d', $is_spam);

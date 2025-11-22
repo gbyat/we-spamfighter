@@ -59,6 +59,9 @@ class Comments
     /**
      * Check comment before approval.
      *
+     * Comments are NOT saved to our database. They are handled by WordPress.
+     * We only check for spam and mark them accordingly.
+     *
      * @param int|string $approved Approval status.
      * @param array      $commentdata Comment data.
      * @return int|string
@@ -66,8 +69,6 @@ class Comments
     public function check_comment($approved, $commentdata)
     {
         if (! $this->is_enabled() || ! $this->is_openai_enabled()) {
-            // Still save submission even if checks are disabled.
-            $this->save_submission($commentdata, false, 0, '');
             return $approved;
         }
 
@@ -84,26 +85,13 @@ class Comments
             $is_spam = true;
         }
 
-        // Store result for later use in save_comment_submission.
-        $commentdata['we_spamfighter_is_spam'] = $is_spam;
-        $commentdata['we_spamfighter_score'] = $score;
-        $commentdata['we_spamfighter_result'] = $openai_result;
-
-        // If spam, mark as spam.
+        // If spam, mark as spam (WordPress will handle it).
         if ($is_spam) {
             $approved = 'spam';
-        }
 
-        // Save submission to database.
-        $detection_method = $is_spam ? 'openai' : '';
-        $detection_details = $is_spam ? array('openai' => $openai_result) : array();
-        $submission_id = $this->save_submission($commentdata, $is_spam, $score, $detection_method, $detection_details);
-
-        // Send immediate notification if spam detected.
-        if ($is_spam && $submission_id) {
-            $submission_data = Database::get_instance()->get_submission($submission_id);
-            if ($submission_data) {
-                \WeSpamfighter\Core\Notifications::get_instance()->send_immediate_notification($submission_id, $submission_data);
+            // Send immediate notification if spam detected.
+            if (! empty($this->settings['notification_type']) && 'immediate' === $this->settings['notification_type']) {
+                $this->send_comment_spam_notification($commentdata, $score, $openai_result);
             }
         }
 
@@ -112,6 +100,9 @@ class Comments
 
     /**
      * Save comment submission after comment is posted.
+     * 
+     * This hook is no longer used since we don't save comments anymore.
+     * Kept for backward compatibility.
      *
      * @param int        $comment_id Comment ID.
      * @param int|string $approved Approval status.
@@ -120,7 +111,8 @@ class Comments
      */
     public function save_comment_submission($comment_id, $approved, $commentdata)
     {
-        // This is handled in check_comment, but we keep this hook for consistency.
+        // Comments are no longer saved to our database.
+        // They are handled by WordPress comments system.
     }
 
     /**
@@ -180,29 +172,63 @@ class Comments
     }
 
     /**
-     * Save submission to database.
+     * Send notification for spam comment.
      *
-     * @param array  $commentdata Comment data.
-     * @param bool   $is_spam Whether it's spam.
-     * @param float  $spam_score Spam score.
-     * @param string $detection_method Detection method.
-     * @param array  $detection_details Detection details.
-     * @return int|false
+     * @param array $commentdata Comment data.
+     * @param float $spam_score Spam score.
+     * @param array $detection_details Detection details.
+     * @return void
      */
-    private function save_submission($commentdata, $is_spam, $spam_score, $detection_method = '', $detection_details = array())
+    private function send_comment_spam_notification($commentdata, $spam_score, $detection_details)
     {
-        $db = Database::get_instance();
+        $settings = $this->settings;
+        $notification_type = $settings['notification_type'] ?? 'none';
 
-        return $db->save_submission(array(
-            'submission_type'  => 'comment',
-            'form_id'          => isset($commentdata['comment_post_ID']) ? (int) $commentdata['comment_post_ID'] : 0,
-            'submission_data'  => $commentdata,
-            'is_spam'          => $is_spam ? 1 : 0,
-            'spam_score'       => $spam_score,
-            'detection_method' => $detection_method,
-            'detection_details' => $detection_details,
-            'email_sent'       => 0, // Comments don't send emails through this system.
-        ));
+        if ('immediate' !== $notification_type) {
+            return;
+        }
+
+        $to = $settings['notification_email'] ?? get_option('admin_email');
+        if (empty($to)) {
+            return;
+        }
+
+        $subject = sprintf(
+            /* translators: %s: Site name */
+            __('[%s] Spam Comment Detected', 'we-spamfighter'),
+            get_bloginfo('name')
+        );
+
+        $body = $this->build_comment_spam_email_body($commentdata, $spam_score, $detection_details);
+        $headers = array('Content-Type: text/html; charset=UTF-8');
+
+        wp_mail($to, $subject, $body, $headers);
+    }
+
+    /**
+     * Build email body for spam comment notification.
+     *
+     * @param array $commentdata Comment data.
+     * @param float $spam_score Spam score.
+     * @param array $detection_details Detection details.
+     * @return string
+     */
+    private function build_comment_spam_email_body($commentdata, $spam_score, $detection_details)
+    {
+        ob_start();
+?>
+        <p><?php printf(esc_html__('A spam comment has been detected by %s and moved to the spam folder.', 'we-spamfighter'), 'WE Spamfighter'); ?></p>
+        <p><strong><?php esc_html_e('Author:', 'we-spamfighter'); ?></strong> <?php echo esc_html($commentdata['comment_author'] ?? '-'); ?></p>
+        <p><strong><?php esc_html_e('Email:', 'we-spamfighter'); ?></strong> <?php echo esc_html($commentdata['comment_author_email'] ?? '-'); ?></p>
+        <p><strong><?php esc_html_e('Post ID:', 'we-spamfighter'); ?></strong> <?php echo esc_html($commentdata['comment_post_ID'] ?? '-'); ?></p>
+        <p><strong><?php esc_html_e('Spam Score:', 'we-spamfighter'); ?></strong> <?php echo esc_html(number_format($spam_score, 2)); ?></p>
+        <p><strong><?php esc_html_e('Comment Content:', 'we-spamfighter'); ?></strong></p>
+        <pre><?php echo esc_html($commentdata['comment_content'] ?? ''); ?></pre>
+        <p><strong><?php esc_html_e('Detection Details:', 'we-spamfighter'); ?></strong></p>
+        <pre><?php echo esc_html(wp_json_encode($detection_details, JSON_PRETTY_PRINT)); ?></pre>
+        <p><a href="<?php echo esc_url(admin_url('edit-comments.php?comment_status=spam')); ?>"><?php esc_html_e('View Spam Comments', 'we-spamfighter'); ?></a></p>
+<?php
+        return ob_get_clean();
     }
 
     /**

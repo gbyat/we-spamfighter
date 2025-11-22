@@ -44,6 +44,9 @@ class Dashboard
         add_action('admin_menu', array($this, 'add_menu'));
         add_action('admin_enqueue_scripts', array($this, 'enqueue_scripts'));
         add_action('wp_ajax_we_spamfighter_move_to_normal', array($this, 'ajax_move_to_normal'));
+        add_action('wp_ajax_we_spamfighter_move_to_spam', array($this, 'ajax_move_to_spam'));
+        add_action('wp_ajax_we_spamfighter_delete_submission', array($this, 'ajax_delete_submission'));
+        add_action('wp_ajax_we_spamfighter_bulk_delete_submissions', array($this, 'ajax_bulk_delete_submissions'));
         add_action('wp_ajax_we_spamfighter_get_submission_details', array($this, 'ajax_get_submission_details'));
     }
 
@@ -96,13 +99,25 @@ class Dashboard
                 'ajax_url' => admin_url('admin-ajax.php'),
                 'nonce'    => wp_create_nonce('we_spamfighter_nonce'),
                 'strings'  => array(
-                    'moving'             => __('Moving...', 'we-spamfighter'),
-                    'moveToNormal'       => __('Move to Normal', 'we-spamfighter'),
-                    'loading'            => __('Loading...', 'we-spamfighter'),
-                    'viewDetails'        => __('View Details', 'we-spamfighter'),
-                    'confirmMove'        => __('Are you sure you want to move this submission to normal mails?', 'we-spamfighter'),
-                    'errorOccurred'      => __('An error occurred. Please try again.', 'we-spamfighter'),
-                    'error'              => __('Error', 'we-spamfighter'),
+                    'moving'                 => __('Moving...', 'we-spamfighter'),
+                    'deleting'               => __('Deleting...', 'we-spamfighter'),
+                    'moveToNormal'           => __('Move to Normal', 'we-spamfighter'),
+                    'moveToSpam'             => __('Move to Spam', 'we-spamfighter'),
+                    'delete'                 => __('Delete', 'we-spamfighter'),
+                    'loading'                => __('Loading...', 'we-spamfighter'),
+                    'viewDetails'            => __('View Details', 'we-spamfighter'),
+                    'confirmMove'            => __('Are you sure you want to move this submission to normal mails?', 'we-spamfighter'),
+                    'confirmMoveToSpam'      => __('Are you sure you want to move this submission to spam?', 'we-spamfighter'),
+                    'confirmDelete'          => __('Are you sure you want to delete this submission? This action cannot be undone.', 'we-spamfighter'),
+                    'confirmBulkDelete'      => __('Are you sure you want to delete the selected submissions? This action cannot be undone.', 'we-spamfighter'),
+                    'selectItems'            => __('Please select at least one item to delete.', 'we-spamfighter'),
+                    'errorOccurred'          => __('An error occurred. Please try again.', 'we-spamfighter'),
+                    'error'                  => __('Error', 'we-spamfighter'),
+                    'selectAll'              => __('Select All', 'we-spamfighter'),
+                    'selectNone'             => __('Select None', 'we-spamfighter'),
+                    'selectedCount'          => __('selected', 'we-spamfighter'),
+                    'bulkActions'            => __('Bulk Actions', 'we-spamfighter'),
+                    'apply'                  => __('Apply', 'we-spamfighter'),
                 ),
             )
         );
@@ -119,25 +134,32 @@ class Dashboard
 
         $db = Database::get_instance();
         // Get all-time statistics (since plugin activation).
+        // Note: Statistics only include CF7 submissions, not comments (which are handled by WordPress).
         $stats = $db->get_statistics(null);
+
+        // Get WordPress spam comments count (comments are NOT saved in our database).
+        $wp_spam_comments_count = wp_count_comments();
+        $spam_comments_count = isset($wp_spam_comments_count->spam) ? (int) $wp_spam_comments_count->spam : 0;
 
         // Get current tab.
         $tab = isset($_GET['tab']) ? sanitize_text_field($_GET['tab']) : 'normal';
 
-        // Get total counts for tabs (all time).
+        // Get total counts for tabs (all time) - only CF7 submissions.
         $total_normal_count = $db->get_total_count(0);
         $total_spam_count = $db->get_total_count(1);
 
-        // Get submissions for current tab.
+        // Get submissions for current tab - only CF7 (exclude comments).
         $is_spam = ('spam' === $tab) ? 1 : 0;
         $page = isset($_GET['paged']) ? max(1, intval($_GET['paged'])) : 1;
         $per_page = 20;
         $offset = ($page - 1) * $per_page;
 
+        // Only get CF7 submissions (comments are handled by WordPress).
         $submissions = $db->get_submissions(array(
-            'is_spam' => $is_spam,
-            'limit'   => $per_page,
-            'offset'  => $offset,
+            'submission_type' => 'cf7', // Only CF7, exclude comments.
+            'is_spam'         => $is_spam,
+            'limit'           => $per_page,
+            'offset'          => $offset,
         ));
 
 ?>
@@ -147,7 +169,7 @@ class Dashboard
             <div class="we-spamfighter-stats">
                 <div class="we-stat-box">
                     <div class="we-stat-value"><?php echo esc_html(number_format_i18n($stats['total'])); ?></div>
-                    <div class="we-stat-label"><?php esc_html_e('Total Submissions', 'we-spamfighter'); ?></div>
+                    <div class="we-stat-label"><?php esc_html_e('CF7 Submissions', 'we-spamfighter'); ?></div>
                 </div>
                 <div class="we-stat-box">
                     <div class="we-stat-value"><?php echo esc_html(number_format_i18n($stats['normal'])); ?></div>
@@ -155,8 +177,22 @@ class Dashboard
                 </div>
                 <div class="we-stat-box">
                     <div class="we-stat-value"><?php echo esc_html(number_format_i18n($stats['spam'])); ?></div>
-                    <div class="we-stat-label"><?php esc_html_e('Spam', 'we-spamfighter'); ?></div>
+                    <div class="we-stat-label"><?php esc_html_e('Spam (CF7)', 'we-spamfighter'); ?></div>
                 </div>
+                <?php if ($spam_comments_count > 0) : ?>
+                    <div class="we-stat-box">
+                        <div class="we-stat-value">
+                            <a href="<?php echo esc_url(admin_url('edit-comments.php?comment_status=spam')); ?>" style="text-decoration: none; color: inherit;">
+                                <?php echo esc_html(number_format_i18n($spam_comments_count)); ?>
+                            </a>
+                        </div>
+                        <div class="we-stat-label">
+                            <a href="<?php echo esc_url(admin_url('edit-comments.php?comment_status=spam')); ?>" style="text-decoration: none; color: inherit;">
+                                <?php esc_html_e('Spam Comments', 'we-spamfighter'); ?>
+                            </a>
+                        </div>
+                    </div>
+                <?php endif; ?>
             </div>
 
             <h2 class="nav-tab-wrapper">
@@ -168,9 +204,24 @@ class Dashboard
                 </a>
             </h2>
 
+            <!-- Bulk Actions -->
+            <div class="we-bulk-actions" style="margin: 10px 0; display: none;">
+                <select id="we-bulk-action-select" class="we-bulk-action-select">
+                    <option value=""><?php esc_html_e('Bulk Actions', 'we-spamfighter'); ?></option>
+                    <option value="delete"><?php esc_html_e('Delete', 'we-spamfighter'); ?></option>
+                </select>
+                <button type="button" class="button we-bulk-action-apply">
+                    <?php esc_html_e('Apply', 'we-spamfighter'); ?>
+                </button>
+                <span class="we-selected-count" style="margin-left: 10px;"></span>
+            </div>
+
             <table class="wp-list-table widefat fixed striped">
                 <thead>
                     <tr>
+                        <td class="check-column">
+                            <input type="checkbox" id="we-select-all" class="we-select-all">
+                        </td>
                         <th><?php esc_html_e('Date', 'we-spamfighter'); ?></th>
                         <th><?php esc_html_e('Type', 'we-spamfighter'); ?></th>
                         <th><?php esc_html_e('Form/Post ID', 'we-spamfighter'); ?></th>
@@ -179,6 +230,7 @@ class Dashboard
                             <th><?php esc_html_e('Action', 'we-spamfighter'); ?></th>
                         <?php else : ?>
                             <th><?php esc_html_e('Spam Score', 'we-spamfighter'); ?></th>
+                            <th><?php esc_html_e('Action', 'we-spamfighter'); ?></th>
                         <?php endif; ?>
                         <th><?php esc_html_e('Details', 'we-spamfighter'); ?></th>
                     </tr>
@@ -186,7 +238,7 @@ class Dashboard
                 <tbody>
                     <?php if (empty($submissions)) : ?>
                         <tr>
-                            <td colspan="<?php echo ('spam' === $tab) ? '6' : '5'; ?>">
+                            <td colspan="<?php echo ('spam' === $tab) ? '7' : '7'; ?>">
                                 <?php esc_html_e('No submissions found.', 'we-spamfighter'); ?>
                             </td>
                         </tr>
@@ -198,7 +250,10 @@ class Dashboard
                                 $submission_data = array();
                             }
                             ?>
-                            <tr>
+                            <tr data-submission-id="<?php echo esc_attr($submission['id']); ?>">
+                                <th class="check-column">
+                                    <input type="checkbox" class="we-submission-checkbox" value="<?php echo esc_attr($submission['id']); ?>">
+                                </th>
                                 <td><?php echo esc_html(mysql2date(get_option('date_format') . ' ' . get_option('time_format'), $submission['created_at'])); ?></td>
                                 <td><?php echo esc_html(ucfirst($submission['submission_type'])); ?></td>
                                 <td><?php echo esc_html($submission['form_id']); ?></td>
@@ -208,6 +263,9 @@ class Dashboard
                                         <button type="button" class="button button-small button-primary we-move-to-normal" data-submission-id="<?php echo esc_attr($submission['id']); ?>">
                                             <?php esc_html_e('Move to Normal', 'we-spamfighter'); ?>
                                         </button>
+                                        <button type="button" class="button button-small button-link-delete we-delete-submission" data-submission-id="<?php echo esc_attr($submission['id']); ?>" style="color: #b32d2e; margin-left: 5px;">
+                                            <?php esc_html_e('Delete', 'we-spamfighter'); ?>
+                                        </button>
                                     </td>
                                 <?php else : ?>
                                     <?php if (!empty($submission['spam_score']) && $submission['spam_score'] > 0) : ?>
@@ -215,6 +273,14 @@ class Dashboard
                                     <?php else : ?>
                                         <td>-</td>
                                     <?php endif; ?>
+                                    <td>
+                                        <button type="button" class="button button-small button-primary we-move-to-spam" data-submission-id="<?php echo esc_attr($submission['id']); ?>">
+                                            <?php esc_html_e('Move to Spam', 'we-spamfighter'); ?>
+                                        </button>
+                                        <button type="button" class="button button-small button-link-delete we-delete-submission" data-submission-id="<?php echo esc_attr($submission['id']); ?>" style="color: #b32d2e; margin-left: 5px;">
+                                            <?php esc_html_e('Delete', 'we-spamfighter'); ?>
+                                        </button>
+                                    </td>
                                 <?php endif; ?>
                                 <td>
                                     <button type="button" class="button button-small we-view-details" data-submission-id="<?php echo esc_attr($submission['id']); ?>">
@@ -267,13 +333,13 @@ class Dashboard
         check_ajax_referer('we_spamfighter_nonce', 'nonce');
 
         if (! current_user_can('manage_options')) {
-            wp_send_json_error(array('message' => 'Unauthorized'));
+            wp_send_json_error(array('message' => esc_html__('Unauthorized', 'we-spamfighter')));
         }
 
         $submission_id = isset($_POST['submission_id']) ? absint($_POST['submission_id']) : 0;
 
         if (! $submission_id) {
-            wp_send_json_error(array('message' => 'Invalid submission ID'));
+            wp_send_json_error(array('message' => esc_html__('Invalid submission ID', 'we-spamfighter')));
         }
 
         $db = Database::get_instance();
@@ -287,6 +353,96 @@ class Dashboard
     }
 
     /**
+     * AJAX handler for moving submission to spam.
+     */
+    public function ajax_move_to_spam()
+    {
+        check_ajax_referer('we_spamfighter_nonce', 'nonce');
+
+        if (! current_user_can('manage_options')) {
+            wp_send_json_error(array('message' => esc_html__('Unauthorized', 'we-spamfighter')));
+        }
+
+        $submission_id = isset($_POST['submission_id']) ? absint($_POST['submission_id']) : 0;
+
+        if (! $submission_id) {
+            wp_send_json_error(array('message' => esc_html__('Invalid submission ID', 'we-spamfighter')));
+        }
+
+        $db = Database::get_instance();
+        $result = $db->move_to_spam($submission_id);
+
+        if ($result) {
+            wp_send_json_success(array('message' => __('Submission moved to spam.', 'we-spamfighter')));
+        } else {
+            wp_send_json_error(array('message' => __('Failed to move submission.', 'we-spamfighter')));
+        }
+    }
+
+    /**
+     * AJAX handler for deleting a single submission.
+     */
+    public function ajax_delete_submission()
+    {
+        check_ajax_referer('we_spamfighter_nonce', 'nonce');
+
+        if (! current_user_can('manage_options')) {
+            wp_send_json_error(array('message' => esc_html__('Unauthorized', 'we-spamfighter')));
+        }
+
+        $submission_id = isset($_POST['submission_id']) ? absint($_POST['submission_id']) : 0;
+
+        if (! $submission_id) {
+            wp_send_json_error(array('message' => esc_html__('Invalid submission ID', 'we-spamfighter')));
+        }
+
+        $db = Database::get_instance();
+        $result = $db->delete_submission($submission_id);
+
+        if ($result) {
+            wp_send_json_success(array('message' => __('Submission deleted successfully.', 'we-spamfighter')));
+        } else {
+            wp_send_json_error(array('message' => __('Failed to delete submission.', 'we-spamfighter')));
+        }
+    }
+
+    /**
+     * AJAX handler for bulk deleting submissions.
+     */
+    public function ajax_bulk_delete_submissions()
+    {
+        check_ajax_referer('we_spamfighter_nonce', 'nonce');
+
+        if (! current_user_can('manage_options')) {
+            wp_send_json_error(array('message' => esc_html__('Unauthorized', 'we-spamfighter')));
+        }
+
+        $submission_ids = isset($_POST['submission_ids']) ? array_map('absint', (array) $_POST['submission_ids']) : array();
+
+        if (empty($submission_ids) || ! is_array($submission_ids)) {
+            wp_send_json_error(array('message' => __('No submissions selected.', 'we-spamfighter')));
+        }
+
+        $db = Database::get_instance();
+        $deleted = $db->bulk_delete_submissions($submission_ids);
+
+        if ($deleted > 0) {
+            wp_send_json_success(
+                array(
+                    'message' => sprintf(
+                        /* translators: %d: Number of deleted submissions */
+                        _n('%d submission deleted.', '%d submissions deleted.', $deleted, 'we-spamfighter'),
+                        $deleted
+                    ),
+                    'deleted' => $deleted,
+                )
+            );
+        } else {
+            wp_send_json_error(array('message' => __('Failed to delete submissions.', 'we-spamfighter')));
+        }
+    }
+
+    /**
      * AJAX handler for getting submission details.
      */
     public function ajax_get_submission_details()
@@ -294,20 +450,20 @@ class Dashboard
         check_ajax_referer('we_spamfighter_nonce', 'nonce');
 
         if (! current_user_can('manage_options')) {
-            wp_send_json_error(array('message' => 'Unauthorized'));
+            wp_send_json_error(array('message' => esc_html__('Unauthorized', 'we-spamfighter')));
         }
 
         $submission_id = isset($_POST['submission_id']) ? absint($_POST['submission_id']) : 0;
 
         if (! $submission_id) {
-            wp_send_json_error(array('message' => 'Invalid submission ID'));
+            wp_send_json_error(array('message' => esc_html__('Invalid submission ID', 'we-spamfighter')));
         }
 
         $db = Database::get_instance();
         $submission = $db->get_submission($submission_id);
 
         if (! $submission) {
-            wp_send_json_error(array('message' => 'Submission not found'));
+            wp_send_json_error(array('message' => esc_html__('Submission not found', 'we-spamfighter')));
         }
 
         // Decode JSON fields.
