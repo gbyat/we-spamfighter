@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+- **Comment Storage**: Comments are no longer stored in the plugin's database. They are now handled entirely by WordPress's native comment system:
+- - Spam comments are marked as spam and stored in WordPress tables
+- - The plugin dashboard shows spam comment count from WordPress
+- - Direct link to WordPress comment management in dashboard statistics
+- - More efficient: No duplicate storage of comment data
+- **Dashboard**: Now displays only Contact Form 7 submissions (comments managed by WordPress)
+- **Statistics**: Dashboard statistics show spam comment count from WordPress with link to comment management
+- **README.md**: Updated to clarify that:
+- - CF7 doesn't store submissions by default - this plugin adds submission logging as a bonus feature
+- - Comments are managed by WordPress, not stored in plugin database
+- Removed redundant comment storage to prevent duplicate data management
+- Improved dashboard clarity by separating CF7 submissions from WordPress comments
+
 ## [1.0.0] - 2024-11-21
 
 ### Added

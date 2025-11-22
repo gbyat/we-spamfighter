@@ -123,7 +123,17 @@ ${allChanges.map(change => `- ${change}`).join('\n')}
 
     // Check if unreleased section already exists
     if (changelogContent.includes('## [Unreleased]')) {
-        // Replace existing unreleased section
+        // Check if it has structured sections (Changed, Fixed, Added, etc.)
+        const unreleasedMatch = changelogContent.match(/## \[Unreleased\]([\s\S]*?)(?=## \[|$)/);
+        if (unreleasedMatch && /^###\s+(Changed|Fixed|Added|Removed|Deprecated|Security)/m.test(unreleasedMatch[1])) {
+            // Has structured format - preserve it and only add new commits if not already present
+            console.log('ℹ️  CHANGELOG.md has structured format - preserving existing entries');
+            console.log(`   New commits will be added manually if needed`);
+            // Don't overwrite structured format
+            return;
+        }
+
+        // Simple format - replace with updated version
         changelogContent = changelogContent.replace(
             /## \[Unreleased\][\s\S]*?(?=## \[|$)/,
             unreleasedSection
