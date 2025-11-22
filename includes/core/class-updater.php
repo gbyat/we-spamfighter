@@ -119,6 +119,152 @@ class Updater
     }
 
     /**
+     * Get plugin data from ZIP file.
+     *
+     * Security considerations:
+     * - Only downloads from GitHub releases (verified URL)
+     * - Only extracts plugin header (first 8KB), not entire file
+     * - Validates that it's actually our plugin file
+     * - Uses caching to minimize downloads
+     * - Cleans up temp file immediately
+     *
+     * @param string $zip_url ZIP file URL.
+     * @return array|false Plugin data or false on failure.
+     */
+    private function get_plugin_data_from_zip($zip_url)
+    {
+        // Security: Only allow GitHub release URLs.
+        if (! preg_match('#^https://github\.com/' . preg_quote(WE_SPAMFIGHTER_GITHUB_REPO, '#') . '/releases/download/#', $zip_url)) {
+            return false;
+        }
+
+        // Check cache first (cache for 1 hour).
+        $cache_key = 'we_spamfighter_zip_data_' . md5($zip_url);
+        $cached    = get_transient($cache_key);
+        if (false !== $cached) {
+            return $cached;
+        }
+
+        // Download ZIP file temporarily with timeout.
+        $temp_file = download_url($zip_url, 300); // 5 minute timeout.
+        if (is_wp_error($temp_file)) {
+            return false;
+        }
+
+        // Security: Validate file size (max 50MB to prevent ZIP bombs).
+        $file_size = filesize($temp_file);
+        if ($file_size > 50 * 1024 * 1024) { // 50MB limit.
+            @unlink($temp_file); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
+            return false;
+        }
+
+        // Extract plugin header from ZIP.
+        $zip = new \ZipArchive();
+        if (true !== $zip->open($temp_file)) {
+            @unlink($temp_file); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
+            return false;
+        }
+
+        // Security: Limit number of files to prevent ZIP bomb attacks.
+        if ($zip->numFiles > 10000) {
+            $zip->close();
+            @unlink($temp_file); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
+            return false;
+        }
+
+        // Look for plugin file in ZIP (we-spamfighter/we-spamfighter.php).
+        $plugin_file = null;
+        for ($i = 0; $i < $zip->numFiles; $i++) {
+            $filename = $zip->getNameIndex($i);
+            // Security: Validate filename to prevent path traversal.
+            if (preg_match('#^we-spamfighter/we-spamfighter\.php$#', $filename)) {
+                $plugin_file = $filename;
+                break;
+            }
+        }
+
+        if (! $plugin_file) {
+            $zip->close();
+            @unlink($temp_file); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
+            return false;
+        }
+
+        // Security: Only extract first 8KB (plugin header only, not entire file).
+        $plugin_content = $zip->getFromName($plugin_file, 8192); // Limit to 8KB.
+        $zip->close();
+
+        // Clean up temp file immediately.
+        @unlink($temp_file); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
+
+        if (! $plugin_content) {
+            return false;
+        }
+
+        // Security: Validate that it's actually our plugin.
+        if (! preg_match('/Plugin Name:\s*WE Spamfighter/mi', $plugin_content)) {
+            return false;
+        }
+
+        // Parse plugin header from content.
+        $plugin_data = $this->parse_plugin_header($plugin_content);
+
+        if (! $plugin_data) {
+            return false;
+        }
+
+        // Cache the data for 1 hour.
+        set_transient($cache_key, $plugin_data, HOUR_IN_SECONDS);
+
+        return $plugin_data;
+    }
+
+    /**
+     * Parse plugin header from file content.
+     *
+     * @param string $file_content Plugin file content.
+     * @return array|false Plugin data array or false on failure.
+     */
+    private function parse_plugin_header($file_content)
+    {
+        // Extract plugin header (first 8KB should be enough).
+        $header = substr($file_content, 0, 8192);
+        $header = substr($header, 0, strpos($header, '*/') ?: strlen($header));
+
+        // Default plugin headers.
+        $default_headers = array(
+            'Name'            => 'Plugin Name',
+            'PluginURI'       => 'Plugin URI',
+            'Version'         => 'Version',
+            'Description'     => 'Description',
+            'Author'          => 'Author',
+            'AuthorURI'       => 'Author URI',
+            'TextDomain'      => 'Text Domain',
+            'DomainPath'      => 'Domain Path',
+            'Network'         => 'Network',
+            'RequiresWP'      => 'Requires at least',
+            'Tested'          => 'Tested up to',
+            'RequiresPHP'     => 'Requires PHP',
+            'UpdateURI'       => 'Update URI',
+        );
+
+        $plugin_data = array();
+
+        // Parse each header field.
+        foreach ($default_headers as $field => $regex) {
+            if (preg_match('/' . preg_quote($regex, '/') . ':\s*(.*)$/mi', $header, $match) && $match[1]) {
+                $plugin_data[$regex] = trim($match[1]);
+            }
+        }
+
+        // Return empty array if no data found.
+        if (empty($plugin_data)) {
+            return false;
+        }
+
+        return $plugin_data;
+    }
+
+    /**
      * Modify transient to show update.
      *
      * @param object $transient Update transient.
@@ -155,14 +301,22 @@ class Updater
             $download_url = $this->github_response->zipball_url;
         }
 
+        // Get compatibility data from ZIP file.
+        $zip_plugin_data = $this->get_plugin_data_from_zip($download_url);
+
+        // Use data from ZIP if available, otherwise fallback to installed plugin.
+        $tested      = $zip_plugin_data && isset($zip_plugin_data['Tested up to']) ? $zip_plugin_data['Tested up to'] : ($this->plugin['Tested up to'] ?? '6.8.3');
+        $requires    = $zip_plugin_data && isset($zip_plugin_data['Requires at least']) ? $zip_plugin_data['Requires at least'] : ($this->plugin['Requires at least'] ?? '6.0');
+        $requires_php = $zip_plugin_data && isset($zip_plugin_data['Requires PHP']) ? $zip_plugin_data['Requires PHP'] : ($this->plugin['Requires PHP'] ?? '8.0');
+
         $plugin_data = array(
             'slug'         => $this->basename,
             'new_version' => $new_version,
             'url'          => $this->plugin['PluginURI'],
             'package'     => $download_url,
-            'tested'      => $this->plugin['Tested up to'] ?? '6.8.3',
-            'requires'    => $this->plugin['Requires at least'] ?? '6.0',
-            'requires_php' => $this->plugin['Requires PHP'] ?? '8.0',
+            'tested'      => $tested,
+            'requires'    => $requires,
+            'requires_php' => $requires_php,
         );
 
         $transient->response[$this->basename] = (object) $plugin_data;
