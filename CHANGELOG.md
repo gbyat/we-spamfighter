@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.4] - 2025-11-22
+
+- Fix plugin compatibility display by reading tested up to from plugin header instead of hardcoded value
+
+
 ## [1.0.3] - 2025-11-22
 
 - Fix release workflow to use explicit file copying instead of rsync, prevent release-temp directory in ZIP, update tested up to 6.8.3
@@ -88,3 +93,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [1.0.1]: https://github.com/gbyat/we-spamfighter/releases/tag/v1.0.1
 [1.0.2]: https://github.com/gbyat/we-spamfighter/releases/tag/v1.0.2
 [1.0.3]: https://github.com/gbyat/we-spamfighter/releases/tag/v1.0.3
+[1.0.4]: https://github.com/gbyat/we-spamfighter/releases/tag/v1.0.4
