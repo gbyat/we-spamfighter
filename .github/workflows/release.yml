@@ -89,40 +89,57 @@ jobs:
           PLUGIN_NAME="we-spamfighter"
           ZIP_NAME="${PLUGIN_NAME}.zip"
 
-          # Create temporary directory
-          mkdir -p release-temp/${PLUGIN_NAME}
+          # Create a temporary directory for the plugin
+          mkdir -p ${PLUGIN_NAME}
 
-          # Copy plugin files (exclude unnecessary files)
-          rsync -av \
-            --exclude='.git' \
-            --exclude='.github' \
-            --exclude='node_modules' \
-            --exclude='.gitignore' \
-            --exclude='.editorconfig' \
-            --exclude='.phpcs.xml' \
-            --exclude='composer.json' \
-            --exclude='composer.lock' \
-            --exclude='package.json' \
-            --exclude='package-lock.json' \
-            --exclude='scripts' \
-            --exclude='bin' \
-            --exclude='tests' \
-            --exclude='vendor' \
-            --exclude='*.md' \
-            --exclude='.DS_Store' \
-            --exclude='Thumbs.db' \
-            ./ release-temp/${PLUGIN_NAME}/
+          # Copy main plugin file
+          cp we-spamfighter.php ${PLUGIN_NAME}/
+          echo "✅ Copied we-spamfighter.php"
 
-          # But keep README.md and LICENSE
-          cp README.md release-temp/${PLUGIN_NAME}/ 2>/dev/null || true
-          cp LICENSE release-temp/${PLUGIN_NAME}/ 2>/dev/null || true
+          # Copy uninstall script
+          if [ -f "uninstall.php" ]; then
+            cp uninstall.php ${PLUGIN_NAME}/
+            echo "✅ Copied uninstall.php"
+          fi
 
-          # Create ZIP file
-          cd release-temp
-          zip -r ../${ZIP_NAME} ${PLUGIN_NAME}/
-          cd ..
+          # Copy includes directory (PHP classes)
+          if [ -d "includes" ]; then
+            cp -r includes ${PLUGIN_NAME}/
+            echo "✅ Copied includes/ (PHP classes)"
+          else
+            echo "ERROR: Includes directory not found!"
+            exit 1
+          fi
 
-          echo "✓ Created ${ZIP_NAME}"
+          # Copy assets directory (CSS/JS)
+          if [ -d "assets" ]; then
+            cp -r assets ${PLUGIN_NAME}/
+            echo "✅ Copied assets/ (CSS/JS assets)"
+          else
+            echo "⚠️  Assets directory not found (optional)"
+          fi
+
+          # Copy languages directory (translations)
+          if [ -d "languages" ]; then
+            cp -r languages ${PLUGIN_NAME}/
+            echo "✅ Copied languages/ (translations)"
+          fi
+
+          # Copy documentation files
+          for doc in README.md LICENSE; do
+            if [ -f "$doc" ]; then
+              cp "$doc" ${PLUGIN_NAME}/
+              echo "✅ Copied $doc"
+            fi
+          done
+
+          # Create ZIP file - always named we-spamfighter.zip
+          zip -r ${ZIP_NAME} ${PLUGIN_NAME}/
+
+          # Clean up temporary directory
+          rm -rf ${PLUGIN_NAME}
+
+          echo "✅ ZIP file created: ${ZIP_NAME}"
           ls -lh ${ZIP_NAME}
 
       - name: Create GitHub Release
