@@ -68,7 +68,30 @@ class Comments
      */
     public function check_comment($approved, $commentdata)
     {
-        if (! $this->is_enabled() || ! $this->is_openai_enabled()) {
+        if (! $this->is_enabled()) {
+            return $approved;
+        }
+
+        // Check if pingbacks/trackbacks should be automatically marked as spam.
+        if (! empty($this->settings['auto_mark_pingbacks_spam'])) {
+            $comment_type = isset($commentdata['comment_type']) ? $commentdata['comment_type'] : '';
+
+            // Check if this is a pingback or trackback.
+            if ('pingback' === $comment_type || 'trackback' === $comment_type) {
+                // Automatically mark as spam without OpenAI check.
+                $approved = 'spam';
+
+                // Send immediate notification if enabled.
+                if (! empty($this->settings['notification_type']) && 'immediate' === $this->settings['notification_type']) {
+                    $this->send_comment_spam_notification($commentdata, 1.0, array('reason' => 'Automatically marked as spam (pingback/trackback)'));
+                }
+
+                return $approved;
+            }
+        }
+
+        // If OpenAI is not enabled, return approved status as-is.
+        if (! $this->is_openai_enabled()) {
             return $approved;
         }
 

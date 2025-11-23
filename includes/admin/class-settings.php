@@ -147,6 +147,19 @@ class Settings
             )
         );
 
+        add_settings_field(
+            'auto_mark_pingbacks_spam',
+            __('Automatically Mark Pingbacks/Trackbacks as Spam', 'we-spamfighter'),
+            array($this, 'render_checkbox_field'),
+            'we-spamfighter',
+            'we_spamfighter_general',
+            array(
+                'field_id'    => 'auto_mark_pingbacks_spam',
+                'description' => __('Automatically mark pingbacks and trackbacks as spam without OpenAI check', 'we-spamfighter'),
+                'class'       => 'we-spamfighter-pingback-option',
+            )
+        );
+
         // OpenAI section.
         add_settings_section(
             'we_spamfighter_openai',
@@ -335,9 +348,11 @@ class Settings
     {
         $settings = get_option($this->option_name, array());
         $value    = isset($settings[$args['field_id']]) ? $settings[$args['field_id']] : false;
+        $class    = isset($args['class']) ? esc_attr($args['class']) : '';
 
         printf(
-            '<label><input type="checkbox" name="%s[%s]" value="1" %s /> %s</label>',
+            '<label class="%s"><input type="checkbox" name="%s[%s]" value="1" %s /> %s</label>',
+            $class,
             esc_attr($this->option_name),
             esc_attr($args['field_id']),
             checked($value, true, false),
@@ -536,6 +551,7 @@ class Settings
             'cf7_enabled',
             'comments_enabled',
             'openai_enabled',
+            'auto_mark_pingbacks_spam',
         );
 
         foreach ($boolean_fields as $field) {
