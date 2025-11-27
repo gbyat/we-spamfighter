@@ -119,3 +119,23 @@
     margin: 0;
 }
 
+/* Pagination */
+.we-pagination-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    padding: 10px 0;
+}
+
+.we-pagination-pages {
+    display: inline-flex;
+    gap: 5px;
+    align-items: center;
+}
+
+.we-pagination-pages .button {
+    min-width: 35px;
+    text-align: center;
+}
+

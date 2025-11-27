@@ -294,23 +294,89 @@ class Dashboard
             </table>
 
             <?php
-            // Simple pagination.
-            if (count($submissions) === $per_page) {
-                $next_page = $page + 1;
-                echo '<p>';
-                if ($page > 1) {
+            // Pagination.
+            $total_count = ('spam' === $tab) ? $total_spam_count : $total_normal_count;
+            $total_pages = ceil($total_count / $per_page);
+
+            if ($total_pages > 1) {
+                $has_prev = $page > 1;
+                $has_next = $page < $total_pages;
+
+                echo '<div class="we-pagination-wrapper" style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">';
+
+                // Previous button (left side).
+                if ($has_prev) {
                     printf(
-                        '<a href="%s" class="button">%s</a> ',
+                        '<a href="%s" class="button">%s</a>',
                         esc_url(add_query_arg(array('paged' => $page - 1, 'tab' => $tab))),
                         esc_html__('Previous', 'we-spamfighter')
                     );
+                } else {
+                    echo '<span></span>'; // Placeholder to keep Next button on the right.
                 }
-                printf(
-                    '<a href="%s" class="button">%s</a>',
-                    esc_url(add_query_arg(array('paged' => $next_page, 'tab' => $tab))),
-                    esc_html__('Next', 'we-spamfighter')
-                );
-                echo '</p>';
+
+                // Page numbers (center) - only show if more than 2 pages.
+                if ($total_pages > 2) {
+                    echo '<span class="we-pagination-pages" style="display: inline-flex; gap: 5px; align-items: center;">';
+
+                    // Always show first page.
+                    if ($page > 3) {
+                        printf(
+                            '<a href="%s" class="button">%d</a>',
+                            esc_url(add_query_arg(array('paged' => 1, 'tab' => $tab))),
+                            1
+                        );
+                        if ($page > 4) {
+                            echo '<span style="padding: 0 5px;">&hellip;</span>';
+                        }
+                    }
+
+                    // Show pages around current page.
+                    $start_page = max(1, $page - 2);
+                    $end_page = min($total_pages, $page + 2);
+
+                    for ($i = $start_page; $i <= $end_page; $i++) {
+                        if ($i === $page) {
+                            printf(
+                                '<span class="button button-primary" style="cursor: default;">%d</span>',
+                                $i
+                            );
+                        } else {
+                            printf(
+                                '<a href="%s" class="button">%d</a>',
+                                esc_url(add_query_arg(array('paged' => $i, 'tab' => $tab))),
+                                $i
+                            );
+                        }
+                    }
+
+                    // Always show last page.
+                    if ($page < $total_pages - 2) {
+                        if ($page < $total_pages - 3) {
+                            echo '<span style="padding: 0 5px;">&hellip;</span>';
+                        }
+                        printf(
+                            '<a href="%s" class="button">%d</a>',
+                            esc_url(add_query_arg(array('paged' => $total_pages, 'tab' => $tab))),
+                            $total_pages
+                        );
+                    }
+
+                    echo '</span>';
+                }
+
+                // Next button (right side).
+                if ($has_next) {
+                    printf(
+                        '<a href="%s" class="button">%s</a>',
+                        esc_url(add_query_arg(array('paged' => $page + 1, 'tab' => $tab))),
+                        esc_html__('Next', 'we-spamfighter')
+                    );
+                } else {
+                    echo '<span></span>'; // Placeholder to keep Previous button on the left.
+                }
+
+                echo '</div>';
             }
             ?>
 

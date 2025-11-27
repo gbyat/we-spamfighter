@@ -8,7 +8,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Language-Team: webentwicklerin, Gabriele Laesser\n"
 "Last-Translator: webentwicklerin, Gabriele Laesser <info@webentwicklerin.at>\n"
-"POT-Creation-Date: 2025-11-21 20:24+0000\n"
+"POT-Creation-Date: 2025-11-27 14:57+0000\n"
 "Report-Msgid-Bugs-To: https://github.com/gbyat/we-spamfighter/issues\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: __;_e;_ex:1,2c;_n:1,2;_n_noop:1,2;_nx:1,2,4c;_nx_noop:1,2,3c;_x:1,2c;esc_attr__;esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c\n"
@@ -153,57 +153,57 @@ msgstr ""
 msgid "No submissions found."
 msgstr ""
 
-#: includes/admin/class-dashboard.php:305
+#: includes/admin/class-dashboard.php:312
 msgid "Previous"
 msgstr ""
 
-#: includes/admin/class-dashboard.php:311
+#: includes/admin/class-dashboard.php:373
 msgid "Next"
 msgstr ""
 
-#: includes/admin/class-dashboard.php:336, includes/admin/class-dashboard.php:363, includes/admin/class-dashboard.php:390, includes/admin/class-dashboard.php:417, includes/admin/class-dashboard.php:453
+#: includes/admin/class-dashboard.php:402, includes/admin/class-dashboard.php:429, includes/admin/class-dashboard.php:456, includes/admin/class-dashboard.php:483, includes/admin/class-dashboard.php:519
 msgid "Unauthorized"
 msgstr ""
 
-#: includes/admin/class-dashboard.php:342, includes/admin/class-dashboard.php:369, includes/admin/class-dashboard.php:396, includes/admin/class-dashboard.php:459
+#: includes/admin/class-dashboard.php:408, includes/admin/class-dashboard.php:435, includes/admin/class-dashboard.php:462, includes/admin/class-dashboard.php:525
 msgid "Invalid submission ID"
 msgstr ""
 
-#: includes/admin/class-dashboard.php:351, includes/admin/class-dashboard.php:378
+#: includes/admin/class-dashboard.php:417, includes/admin/class-dashboard.php:444
 msgid "Failed to move submission."
 msgstr ""
 
-#: includes/admin/class-dashboard.php:349
+#: includes/admin/class-dashboard.php:415
 msgid "Submission moved to normal mails."
 msgstr ""
 
-#: includes/admin/class-dashboard.php:376
+#: includes/admin/class-dashboard.php:442
 msgid "Submission moved to spam."
 msgstr ""
 
-#: includes/admin/class-dashboard.php:405
+#: includes/admin/class-dashboard.php:471
 msgid "Failed to delete submission."
 msgstr ""
 
-#: includes/admin/class-dashboard.php:403
+#: includes/admin/class-dashboard.php:469
 msgid "Submission deleted successfully."
 msgstr ""
 
-#: includes/admin/class-dashboard.php:423
+#: includes/admin/class-dashboard.php:489
 msgid "No submissions selected."
 msgstr ""
 
-#: includes/admin/class-dashboard.php:441
+#: includes/admin/class-dashboard.php:507
 msgid "Failed to delete submissions."
 msgstr ""
 
-#: includes/admin/class-dashboard.php:434
+#: includes/admin/class-dashboard.php:500
 msgid "%d submission deleted."
 msgid_plural "%d submissions deleted."
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/admin/class-dashboard.php:466
+#: includes/admin/class-dashboard.php:532
 msgid "Submission not found"
 msgstr ""
 
@@ -231,128 +231,136 @@ msgstr ""
 msgid "Enable spam protection for comments"
 msgstr ""
 
-#: includes/admin/class-settings.php:153
-msgid "OpenAI Integration"
+#: includes/admin/class-settings.php:152
+msgid "Automatically Mark Pingbacks/Trackbacks as Spam"
 msgstr ""
 
-#: includes/admin/class-settings.php:160
-msgid "Enable OpenAI Detection"
+#: includes/admin/class-settings.php:158
+msgid "Automatically mark pingbacks and trackbacks as spam without OpenAI check"
 msgstr ""
 
 #: includes/admin/class-settings.php:166
+msgid "OpenAI Integration"
+msgstr ""
+
+#: includes/admin/class-settings.php:173
+msgid "Enable OpenAI Detection"
+msgstr ""
+
+#: includes/admin/class-settings.php:179
 msgid "Use OpenAI to detect spam"
 msgstr ""
 
-#: includes/admin/class-settings.php:172
+#: includes/admin/class-settings.php:185
 msgid "OpenAI API Key"
 msgstr ""
 
 #. translators: %s: OpenAI API URL
-#: includes/admin/class-settings.php:181
+#: includes/admin/class-settings.php:194
 msgid "Get your API key from <a href=\"%s\" target=\"_blank\">OpenAI Platform</a>"
 msgstr ""
 
-#: includes/admin/class-settings.php:189
+#: includes/admin/class-settings.php:202
 msgid "OpenAI Model"
 msgstr ""
 
-#: includes/admin/class-settings.php:203
+#: includes/admin/class-settings.php:216
 msgid "Which AI model to use for spam detection"
 msgstr ""
 
-#: includes/admin/class-settings.php:209
+#: includes/admin/class-settings.php:222
 msgid "AI Spam Threshold"
 msgstr ""
 
-#: includes/admin/class-settings.php:218
+#: includes/admin/class-settings.php:231
 msgid "Spam score threshold (0.0 - 1.0). Higher values mean fewer submissions are flagged as spam (less strict). Lower values mean more submissions are flagged as spam (more strict). Default: 0.7"
 msgstr ""
 
-#: includes/admin/class-settings.php:225
+#: includes/admin/class-settings.php:238
 msgid "Email Notifications"
 msgstr ""
 
-#: includes/admin/class-settings.php:232
+#: includes/admin/class-settings.php:245
 msgid "Notification Email"
 msgstr ""
 
-#: includes/admin/class-settings.php:239
+#: includes/admin/class-settings.php:252
 msgid "Email address to receive spam notifications. If empty, admin email will be used."
 msgstr ""
 
-#: includes/admin/class-settings.php:245
+#: includes/admin/class-settings.php:258
 msgid "Notification Type"
 msgstr ""
 
-#: includes/admin/class-settings.php:252
+#: includes/admin/class-settings.php:265
 msgid "No notifications"
 msgstr ""
 
-#: includes/admin/class-settings.php:253
+#: includes/admin/class-settings.php:266
 msgid "Immediate (on each spam detection)"
 msgstr ""
 
-#: includes/admin/class-settings.php:254
+#: includes/admin/class-settings.php:267
 msgid "Daily summary"
 msgstr ""
 
-#: includes/admin/class-settings.php:255
+#: includes/admin/class-settings.php:268
 msgid "Weekly summary"
 msgstr ""
 
-#: includes/admin/class-settings.php:257
+#: includes/admin/class-settings.php:270
 msgid "How often to receive spam notifications."
 msgstr ""
 
-#: includes/admin/class-settings.php:264
+#: includes/admin/class-settings.php:277
 msgid "Maintenance"
 msgstr ""
 
-#: includes/admin/class-settings.php:271
+#: includes/admin/class-settings.php:284
 msgid "Log Retention"
 msgstr ""
 
-#: includes/admin/class-settings.php:280
+#: includes/admin/class-settings.php:293
 msgid "Days to keep logs (default: 30)"
 msgstr ""
 
-#: includes/admin/class-settings.php:286
+#: includes/admin/class-settings.php:299
 msgid "Keep Data on Uninstall"
 msgstr ""
 
-#: includes/admin/class-settings.php:292
+#: includes/admin/class-settings.php:305
 msgid "If enabled, all plugin data (options, submissions, statistics) will be kept when the plugin is deleted. If disabled, all data will be permanently deleted."
 msgstr ""
 
-#: includes/admin/class-settings.php:302
+#: includes/admin/class-settings.php:315
 msgid "Configure general spam protection settings."
 msgstr ""
 
-#: includes/admin/class-settings.php:310
+#: includes/admin/class-settings.php:323
 msgid "Configure OpenAI integration for spam detection."
 msgstr ""
 
-#: includes/admin/class-settings.php:318
+#: includes/admin/class-settings.php:331
 msgid "Configure email notifications for spam detections."
 msgstr ""
 
-#: includes/admin/class-settings.php:326
+#: includes/admin/class-settings.php:339
 msgid "Configure maintenance and cleanup settings."
 msgstr ""
 
-#: includes/admin/class-settings.php:440
+#: includes/admin/class-settings.php:455
 msgid "WE Spamfighter Settings"
 msgstr ""
 
-#: includes/admin/class-settings.php:454
+#: includes/admin/class-settings.php:469
 msgid "Test OpenAI Connection"
 msgstr ""
 
-#: includes/admin/class-settings.php:457
+#: includes/admin/class-settings.php:472
 msgid "Test your OpenAI API connection and configuration."
 msgstr ""
 
-#: includes/admin/class-settings.php:460
+#: includes/admin/class-settings.php:475
 msgid "Test Connection"
 msgstr ""
 
@@ -392,7 +400,7 @@ msgstr ""
 msgid "Form/Post ID:"
 msgstr ""
 
-#: includes/core/class-notifications.php:208, includes/integration/class-comments.php:224
+#: includes/core/class-notifications.php:208, includes/integration/class-comments.php:247
 msgid "Spam Score:"
 msgstr ""
 
@@ -404,7 +412,7 @@ msgstr ""
 msgid "Submission Data:"
 msgstr ""
 
-#: includes/core/class-notifications.php:226, includes/integration/class-comments.php:227
+#: includes/core/class-notifications.php:226, includes/integration/class-comments.php:250
 msgid "Detection Details:"
 msgstr ""
 
@@ -445,60 +453,60 @@ msgstr ""
 msgid "View All in Dashboard:"
 msgstr ""
 
-#: includes/core/class-updater.php:203
+#: includes/core/class-updater.php:360
 msgid "No changelog available."
 msgstr ""
 
-#: includes/core/class-updater.php:314
+#: includes/core/class-updater.php:471
 msgid "Installation"
 msgstr ""
 
-#: includes/core/class-updater.php:316
+#: includes/core/class-updater.php:473
 msgid "Download the latest release ZIP file"
 msgstr ""
 
-#: includes/core/class-updater.php:317
+#: includes/core/class-updater.php:474
 msgid "Go to WordPress Admin → Plugins → Add New → Upload Plugin"
 msgstr ""
 
-#: includes/core/class-updater.php:318
+#: includes/core/class-updater.php:475
 msgid "Upload the ZIP file and click Install Now"
 msgstr ""
 
-#: includes/core/class-updater.php:319
+#: includes/core/class-updater.php:476
 msgid "Activate the plugin"
 msgstr ""
 
-#: includes/core/class-updater.php:320
+#: includes/core/class-updater.php:477
 msgid "Configure settings under WE Spamfighter → Settings"
 msgstr ""
 
 #. translators: %s: Site name
-#: includes/integration/class-comments.php:198
+#: includes/integration/class-comments.php:221
 msgid "[%s] Spam Comment Detected"
 msgstr ""
 
-#: includes/integration/class-comments.php:220
+#: includes/integration/class-comments.php:243
 msgid "A spam comment has been detected by %s and moved to the spam folder."
 msgstr ""
 
-#: includes/integration/class-comments.php:221
+#: includes/integration/class-comments.php:244
 msgid "Author:"
 msgstr ""
 
-#: includes/integration/class-comments.php:222
+#: includes/integration/class-comments.php:245
 msgid "Email:"
 msgstr ""
 
-#: includes/integration/class-comments.php:223
+#: includes/integration/class-comments.php:246
 msgid "Post ID:"
 msgstr ""
 
-#: includes/integration/class-comments.php:225
+#: includes/integration/class-comments.php:248
 msgid "Comment Content:"
 msgstr ""
 
-#: includes/integration/class-comments.php:229
+#: includes/integration/class-comments.php:252
 msgid "View Spam Comments"
 msgstr ""
 
