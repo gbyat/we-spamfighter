@@ -54,6 +54,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - - Comments are managed by WordPress, not stored in plugin database
 - Removed redundant comment storage to prevent duplicate data management
 - Improved dashboard clarity by separating CF7 submissions from WordPress comments
+- Refactor pagination in admin dashboard and update styles
 
 ## [1.0.0] - 2024-11-21
 
