@@ -133,11 +133,49 @@ ${allChanges.map(change => `- ${change}`).join('\n')}
             return;
         }
 
-        // Simple format - replace with updated version
-        changelogContent = changelogContent.replace(
-            /## \[Unreleased\][\s\S]*?(?=## \[|$)/,
-            unreleasedSection
-        );
+        // Check if there are existing manual entries (not just empty section)
+        const existingContent = unreleasedMatch ? unreleasedMatch[1].trim() : '';
+        const hasManualEntries = existingContent.length > 0 && !existingContent.match(/^\s*$/);
+
+        if (hasManualEntries && newCommits.length > 0) {
+            // Has manual entries - append new commits that aren't duplicates
+            const existingLines = existingContent.split('\n').filter(line => line.trim());
+            const newCommitLines = newCommits
+                .filter(commit => {
+                    // Check if commit message already exists in any form
+                    const commitLower = commit.toLowerCase();
+                    return !existingLines.some(line => {
+                        const lineLower = line.toLowerCase().replace(/^[-\*]+\s*/, '').trim();
+                        return lineLower.includes(commitLower) || commitLower.includes(lineLower);
+                    });
+                })
+                .map(commit => `- ${commit}`);
+
+            if (newCommitLines.length > 0) {
+                // Append new commits to existing content
+                const updatedUnreleasedSection = `## [Unreleased]
+
+${existingContent}
+
+${newCommitLines.join('\n')}
+
+`;
+                changelogContent = changelogContent.replace(
+                    /## \[Unreleased\][\s\S]*?(?=## \[|$)/,
+                    updatedUnreleasedSection
+                );
+                console.log(`   Added ${newCommitLines.length} new commit(s) to existing unreleased section`);
+            } else {
+                console.log('ℹ️  All new commits are already in CHANGELOG.md');
+                return;
+            }
+        } else {
+            // No manual entries or no new commits - replace with updated version
+            changelogContent = changelogContent.replace(
+                /## \[Unreleased\][\s\S]*?(?=## \[|$)/,
+                unreleasedSection
+            );
+        }
     } else {
         // Insert after main heading
         changelogContent = changelogContent.replace(

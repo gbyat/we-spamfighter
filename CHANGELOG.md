@@ -9,38 +9,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add auto-marking of pingbacks/trackbacks as spam and enhance admin settings UI
 
-
 ## [1.0.6] - 2025-11-22
 
 - Extract WordPress compatibility data from release ZIP file to display correct compatibility information in update checks
-
 
 ## [1.0.5] - 2025-11-22
 
 - Add compatibility fields (tested, requires, requires_php) to update transient for proper WordPress compatibility display
 
-
 ## [1.0.4] - 2025-11-22
 
 - Fix plugin compatibility display by reading tested up to from plugin header instead of hardcoded value
-
 
 ## [1.0.3] - 2025-11-22
 
 - Fix release workflow to use explicit file copying instead of rsync, prevent release-temp directory in ZIP, update tested up to 6.8.3
 
-
 ## [1.0.2] - 2025-11-22
 
 - Update actions/upload-artifact to v4 to fix deprecation warning
 
-
 ## [1.0.1] - 2025-11-22
 
 - Remove CI workflow and improve release workflow to ensure ZIP file is attached
-
-
-## [Unreleased]
 
 - **Comment Storage**: Comments are no longer stored in the plugin's database. They are now handled entirely by WordPress's native comment system:
 - - Spam comments are marked as spam and stored in WordPress tables
