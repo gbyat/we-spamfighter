@@ -4,7 +4,7 @@
  * Plugin Name: WE Spamfighter
  * Plugin URI: https://github.com/gbyat/we-spamfighter
  * Description: Advanced spam protection for Contact Form 7 and Comments using AI detection
- * Version: 1.0.7
+ * Version: 1.0.8
  * Author: webentwicklerin, Gabriele Laesser
  * Author URI: https://webentwicklerin.at
  * Text Domain: we-spamfighter
@@ -26,7 +26,7 @@ if (! defined('ABSPATH')) {
 }
 
 // Define plugin constants.
-define('WE_SPAMFIGHTER_VERSION', '1.0.7');
+define('WE_SPAMFIGHTER_VERSION', '1.0.8');
 define('WE_SPAMFIGHTER_PLUGIN_FILE', __FILE__);
 define('WE_SPAMFIGHTER_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('WE_SPAMFIGHTER_PLUGIN_URL', plugin_dir_url(__FILE__));
