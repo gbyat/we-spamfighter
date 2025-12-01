@@ -160,6 +160,33 @@ class Settings
             )
         );
 
+        add_settings_field(
+            'mark_different_language_spam',
+            __('Mark Different Language as Spam', 'we-spamfighter'),
+            array($this, 'render_checkbox_field'),
+            'we-spamfighter',
+            'we_spamfighter_general',
+            array(
+                'field_id'    => 'mark_different_language_spam',
+                'description' => __('Automatically mark submissions as spam if they are in a different language than your website (useful for single-language websites)', 'we-spamfighter'),
+            )
+        );
+
+        add_settings_field(
+            'language_spam_score_boost',
+            __('Language Mismatch Score Boost', 'we-spamfighter'),
+            array($this, 'render_number_field'),
+            'we-spamfighter',
+            'we_spamfighter_general',
+            array(
+                'field_id'    => 'language_spam_score_boost',
+                'min'         => 0.1,
+                'max'         => 1.0,
+                'step'        => 0.1,
+                'description' => __('Amount to increase spam score when language doesn\'t match (0.1 - 1.0). Default: 0.3', 'we-spamfighter'),
+            )
+        );
+
         // OpenAI section.
         add_settings_section(
             'we_spamfighter_openai',
@@ -229,6 +256,89 @@ class Settings
                 'max'         => 1,
                 'step'        => 0.1,
                 'description' => __('Spam score threshold (0.0 - 1.0). Higher values mean fewer submissions are flagged as spam (less strict). Lower values mean more submissions are flagged as spam (more strict). Default: 0.7', 'we-spamfighter'),
+            )
+        );
+
+        // Heuristic Detection section.
+        add_settings_section(
+            'we_spamfighter_heuristic',
+            __('Heuristic Detection', 'we-spamfighter'),
+            array($this, 'render_heuristic_section'),
+            'we-spamfighter'
+        );
+
+        add_settings_field(
+            'heuristic_enabled',
+            __('Enable Heuristic Detection', 'we-spamfighter'),
+            array($this, 'render_checkbox_field'),
+            'we-spamfighter',
+            'we_spamfighter_heuristic',
+            array(
+                'field_id'    => 'heuristic_enabled',
+                'description' => __('Use local heuristics to detect spam patterns (works without OpenAI)', 'we-spamfighter'),
+            )
+        );
+
+        add_settings_field(
+            'heuristic_threshold',
+            __('Heuristic Spam Threshold', 'we-spamfighter'),
+            array($this, 'render_number_field'),
+            'we-spamfighter',
+            'we_spamfighter_heuristic',
+            array(
+                'field_id'    => 'heuristic_threshold',
+                'min'         => 0,
+                'max'         => 1,
+                'step'        => 0.1,
+                'description' => __('Spam score threshold for heuristic detection (0.0 - 1.0). Default: 0.6', 'we-spamfighter'),
+            )
+        );
+
+        add_settings_field(
+            'disable_link_check',
+            __('Disable Link Check', 'we-spamfighter'),
+            array($this, 'render_checkbox_field'),
+            'we-spamfighter',
+            'we_spamfighter_heuristic',
+            array(
+                'field_id'    => 'disable_link_check',
+                'description' => __('Disable suspicious link detection', 'we-spamfighter'),
+            )
+        );
+
+        add_settings_field(
+            'disable_character_check',
+            __('Disable Character Pattern Check', 'we-spamfighter'),
+            array($this, 'render_checkbox_field'),
+            'we-spamfighter',
+            'we_spamfighter_heuristic',
+            array(
+                'field_id'    => 'disable_character_check',
+                'description' => __('Disable suspicious character pattern detection (e.g., ALL CAPS, repeated characters)', 'we-spamfighter'),
+            )
+        );
+
+        add_settings_field(
+            'disable_phrase_check',
+            __('Disable Spam Phrase Check', 'we-spamfighter'),
+            array($this, 'render_checkbox_field'),
+            'we-spamfighter',
+            'we_spamfighter_heuristic',
+            array(
+                'field_id'    => 'disable_phrase_check',
+                'description' => __('Disable known spam phrase detection', 'we-spamfighter'),
+            )
+        );
+
+        add_settings_field(
+            'disable_email_check',
+            __('Disable Email Pattern Check', 'we-spamfighter'),
+            array($this, 'render_checkbox_field'),
+            'we-spamfighter',
+            'we_spamfighter_heuristic',
+            array(
+                'field_id'    => 'disable_email_check',
+                'description' => __('Disable suspicious email pattern detection', 'we-spamfighter'),
             )
         );
 
@@ -312,7 +422,7 @@ class Settings
      */
     public function render_general_section()
     {
-        echo '<p>' . esc_html__('Configure general spam protection settings.', 'we-spamfighter') . '</p>';
+        echo esc_html__('Configure general spam protection settings.', 'we-spamfighter');
     }
 
     /**
@@ -320,7 +430,15 @@ class Settings
      */
     public function render_openai_section()
     {
-        echo '<p>' . esc_html__('Configure OpenAI integration for spam detection.', 'we-spamfighter') . '</p>';
+        echo esc_html__('Configure OpenAI integration for spam detection.', 'we-spamfighter');
+    }
+
+    /**
+     * Render heuristic section.
+     */
+    public function render_heuristic_section()
+    {
+        echo esc_html__('Configure local heuristic spam detection (works without OpenAI).', 'we-spamfighter');
     }
 
     /**
@@ -328,7 +446,7 @@ class Settings
      */
     public function render_notifications_section()
     {
-        echo '<p>' . esc_html__('Configure email notifications for spam detections.', 'we-spamfighter') . '</p>';
+        echo esc_html__('Configure email notifications for spam detections.', 'we-spamfighter');
     }
 
     /**
@@ -336,11 +454,11 @@ class Settings
      */
     public function render_maintenance_section()
     {
-        echo '<p>' . esc_html__('Configure maintenance and cleanup settings.', 'we-spamfighter') . '</p>';
+        echo esc_html__('Configure maintenance and cleanup settings.', 'we-spamfighter');
     }
 
     /**
-     * Render checkbox field.
+     * Render checkbox field with toggle switch.
      *
      * @param array $args Field arguments.
      */
@@ -349,15 +467,22 @@ class Settings
         $settings = get_option($this->option_name, array());
         $value    = isset($settings[$args['field_id']]) ? $settings[$args['field_id']] : false;
         $class    = isset($args['class']) ? esc_attr($args['class']) : '';
+        $field_id = esc_attr($args['field_id']);
+        $field_name = esc_attr($this->option_name . '[' . $field_id . ']');
+        $checked = checked($value, true, false);
+        $label_text = isset($args['description']) ? wp_kses_post($args['description']) : '';
 
-        printf(
-            '<label class="%s"><input type="checkbox" name="%s[%s]" value="1" %s /> %s</label>',
-            $class,
-            esc_attr($this->option_name),
-            esc_attr($args['field_id']),
-            checked($value, true, false),
-            isset($args['description']) ? wp_kses_post($args['description']) : ''
-        );
+?>
+        <div class="we-toggle-wrapper <?php echo $class; ?>">
+            <label class="we-toggle-switch">
+                <input type="checkbox" name="<?php echo $field_name; ?>" value="1" <?php echo $checked; ?> />
+                <span class="we-toggle-slider"></span>
+            </label>
+            <?php if ($label_text) : ?>
+                <span class="we-toggle-label"><?php echo $label_text; ?></span>
+            <?php endif; ?>
+        </div>
+    <?php
     }
 
     /**
@@ -442,7 +567,7 @@ class Settings
     }
 
     /**
-     * Render settings page.
+     * Render settings page with tabs.
      */
     public function render_settings_page()
     {
@@ -450,32 +575,114 @@ class Settings
             return;
         }
 
-?>
-        <div class="wrap">
+        // Define tabs.
+        $tabs = array(
+            'general' => array(
+                'title' => __('General', 'we-spamfighter'),
+                'sections' => array('we_spamfighter_general'),
+            ),
+            'heuristic' => array(
+                'title' => __('Heuristic Detection', 'we-spamfighter'),
+                'sections' => array('we_spamfighter_heuristic'),
+            ),
+            'openai' => array(
+                'title' => __('OpenAI', 'we-spamfighter'),
+                'sections' => array('we_spamfighter_openai'),
+            ),
+            'notifications' => array(
+                'title' => __('Notifications', 'we-spamfighter'),
+                'sections' => array('we_spamfighter_notifications'),
+            ),
+            'maintenance' => array(
+                'title' => __('Maintenance', 'we-spamfighter'),
+                'sections' => array('we_spamfighter_maintenance'),
+            ),
+        );
+
+        // Get active tab from URL or default to first.
+        $active_tab = isset($_GET['tab']) ? sanitize_text_field(wp_unslash($_GET['tab'])) : 'general';
+        if (! isset($tabs[$active_tab])) {
+            $active_tab = 'general';
+        }
+
+    ?>
+        <div class="wrap we-spamfighter-settings-wrap">
             <h1><?php esc_html_e('WE Spamfighter Settings', 'we-spamfighter'); ?></h1>
 
             <?php settings_errors(); ?>
 
+            <nav class="we-settings-nav-tabs">
+                <?php foreach ($tabs as $tab_id => $tab) : ?>
+                    <a href="?page=we-spamfighter-settings&tab=<?php echo esc_attr($tab_id); ?>"
+                        class="nav-tab <?php echo $active_tab === $tab_id ? 'nav-tab-active' : ''; ?>">
+                        <?php echo esc_html($tab['title']); ?>
+                    </a>
+                <?php endforeach; ?>
+            </nav>
+
             <form method="post" action="options.php">
                 <?php
                 settings_fields('we_spamfighter_settings_group');
-                do_settings_sections('we-spamfighter');
-                submit_button();
                 ?>
+
+                <?php foreach ($tabs as $tab_id => $tab) : ?>
+                    <div class="we-settings-tab-content <?php echo $active_tab === $tab_id ? 'active' : ''; ?>" id="tab-<?php echo esc_attr($tab_id); ?>">
+                        <?php
+                        global $wp_settings_sections, $wp_settings_fields;
+
+                        foreach ($tab['sections'] as $section_id) {
+                            // Render section header.
+                            if (isset($wp_settings_sections['we-spamfighter'][$section_id])) {
+                                $section = $wp_settings_sections['we-spamfighter'][$section_id];
+                                if (! empty($section['title'])) {
+                                    echo '<h2 class="we-settings-section-title">' . esc_html($section['title']) . '</h2>';
+                                }
+                                if (! empty($section['callback']) && is_callable($section['callback'])) {
+                                    echo '<div class="we-settings-section-description">';
+                                    call_user_func($section['callback'], $section);
+                                    echo '</div>';
+                                }
+                            }
+
+                            // Render section fields.
+                            if (isset($wp_settings_fields['we-spamfighter'][$section_id])) {
+                                echo '<table class="form-table" role="presentation">';
+                                foreach ($wp_settings_fields['we-spamfighter'][$section_id] as $field_id => $field) {
+                                    echo '<tr>';
+                                    if (! empty($field['args']['label_for'])) {
+                                        echo '<th scope="row"><label for="' . esc_attr($field['args']['label_for']) . '">' . esc_html($field['title']) . '</label></th>';
+                                    } else {
+                                        echo '<th scope="row">' . esc_html($field['title']) . '</th>';
+                                    }
+                                    echo '<td>';
+                                    call_user_func($field['callback'], $field['args']);
+                                    echo '</td>';
+                                    echo '</tr>';
+                                }
+                                echo '</table>';
+                            }
+                        }
+                        ?>
+                    </div>
+                <?php endforeach; ?>
+
+                <div class="we-settings-submit-wrap">
+                    <?php submit_button(); ?>
+                </div>
             </form>
 
-            <hr />
-
-            <h2><?php esc_html_e('Test OpenAI Connection', 'we-spamfighter'); ?></h2>
-            <div>
-                <p>
-                    <?php esc_html_e('Test your OpenAI API connection and configuration.', 'we-spamfighter'); ?>
-                </p>
-                <button type="button" id="we-test-api-btn" class="button button-secondary">
-                    <?php esc_html_e('Test Connection', 'we-spamfighter'); ?>
-                </button>
-                <span id="we-test-api-result" style="margin-left:15px;"></span>
-            </div>
+            <?php if ($active_tab === 'openai') : ?>
+                <div class="we-test-api-section">
+                    <h2><?php esc_html_e('Test OpenAI Connection', 'we-spamfighter'); ?></h2>
+                    <p>
+                        <?php esc_html_e('Test your OpenAI API connection and configuration.', 'we-spamfighter'); ?>
+                    </p>
+                    <button type="button" id="we-test-api-btn" class="button button-secondary">
+                        <?php esc_html_e('Test Connection', 'we-spamfighter'); ?>
+                    </button>
+                    <span id="we-test-api-result" style="margin-left:15px;"></span>
+                </div>
+            <?php endif; ?>
         </div>
 <?php
     }
@@ -552,6 +759,12 @@ class Settings
             'comments_enabled',
             'openai_enabled',
             'auto_mark_pingbacks_spam',
+            'mark_different_language_spam',
+            'heuristic_enabled',
+            'disable_link_check',
+            'disable_character_check',
+            'disable_phrase_check',
+            'disable_email_check',
         );
 
         foreach ($boolean_fields as $field) {
@@ -579,6 +792,18 @@ class Settings
             $sanitized['ai_threshold'] = min(max(floatval($input['ai_threshold']), 0), 1);
         } else {
             $sanitized['ai_threshold'] = isset($existing['ai_threshold']) ? floatval($existing['ai_threshold']) : 0.7;
+        }
+
+        if (isset($input['language_spam_score_boost'])) {
+            $sanitized['language_spam_score_boost'] = min(max(floatval($input['language_spam_score_boost']), 0.1), 1.0);
+        } else {
+            $sanitized['language_spam_score_boost'] = isset($existing['language_spam_score_boost']) ? floatval($existing['language_spam_score_boost']) : 0.3;
+        }
+
+        if (isset($input['heuristic_threshold'])) {
+            $sanitized['heuristic_threshold'] = min(max(floatval($input['heuristic_threshold']), 0), 1);
+        } else {
+            $sanitized['heuristic_threshold'] = isset($existing['heuristic_threshold']) ? floatval($existing['heuristic_threshold']) : 0.6;
         }
 
         if (isset($input['log_retention_days'])) {

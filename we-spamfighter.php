@@ -3,8 +3,8 @@
 /**
  * Plugin Name: WE Spamfighter
  * Plugin URI: https://github.com/gbyat/we-spamfighter
- * Description: Advanced spam protection for Contact Form 7 and Comments using AI detection
- * Version: 1.0.8
+ * Description: Advanced spam protection for Contact Form 7 and Comments using AI-powered and heuristic detection. Works with or without OpenAI - includes local spam detection for cost-effective filtering.
+ * Version: 1.1.0
  * Author: webentwicklerin, Gabriele Laesser
  * Author URI: https://webentwicklerin.at
  * Text Domain: we-spamfighter
@@ -26,7 +26,7 @@ if (! defined('ABSPATH')) {
 }
 
 // Define plugin constants.
-define('WE_SPAMFIGHTER_VERSION', '1.0.8');
+define('WE_SPAMFIGHTER_VERSION', '1.1.0');
 define('WE_SPAMFIGHTER_PLUGIN_FILE', __FILE__);
 define('WE_SPAMFIGHTER_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('WE_SPAMFIGHTER_PLUGIN_URL', plugin_dir_url(__FILE__));
@@ -220,15 +220,24 @@ class Plugin
 
         // Set default options.
         $defaults = array(
-            'cf7_enabled'          => false,
-            'comments_enabled'     => false,
-            'openai_enabled'       => false,
-            'openai_api_key'       => '',
-            'openai_model'         => 'gpt-4o-mini',
-            'ai_threshold'         => 0.7,
-            'log_retention_days'   => 30,
-            'notification_email'   => get_option('admin_email'),
-            'notification_type'   => 'none',
+            'cf7_enabled'                  => false,
+            'comments_enabled'             => false,
+            'openai_enabled'               => false,
+            'openai_api_key'               => '',
+            'openai_model'                 => 'gpt-4o-mini',
+            'ai_threshold'                 => 0.7,
+            'auto_mark_pingbacks_spam'     => false,
+            'mark_different_language_spam' => false,
+            'language_spam_score_boost'    => 0.3,
+            'heuristic_enabled'            => false,
+            'heuristic_threshold'          => 0.6,
+            'disable_link_check'           => false,
+            'disable_character_check'      => false,
+            'disable_phrase_check'         => false,
+            'disable_email_check'          => false,
+            'log_retention_days'           => 30,
+            'notification_email'           => get_option('admin_email'),
+            'notification_type'            => 'none',
         );
 
         add_option('we_spamfighter_settings', $defaults);

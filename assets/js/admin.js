@@ -52,6 +52,26 @@
         $('input[name="we_spamfighter_settings[comments_enabled]"]').on('change', function () {
             togglePingbackOption();
         });
+
+        // Tab navigation - show/hide tab content.
+        $('.we-settings-nav-tabs .nav-tab').on('click', function (e) {
+            e.preventDefault();
+            var tabId = $(this).attr('href').split('tab=')[1];
+
+            // Update active tab.
+            $('.we-settings-nav-tabs .nav-tab').removeClass('nav-tab-active');
+            $(this).addClass('nav-tab-active');
+
+            // Show/hide tab content.
+            $('.we-settings-tab-content').removeClass('active');
+            $('#tab-' + tabId).addClass('active');
+
+            // Update URL without reload.
+            if (history.pushState) {
+                var newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?page=we-spamfighter-settings&tab=' + tabId;
+                window.history.pushState({ path: newUrl }, '', newUrl);
+            }
+        });
     });
 })(jQuery);
 

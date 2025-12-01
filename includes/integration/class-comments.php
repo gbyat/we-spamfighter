@@ -10,6 +10,8 @@ namespace WeSpamfighter\Integration;
 
 use WeSpamfighter\Core\Database;
 use WeSpamfighter\Detection\OpenAI;
+use WeSpamfighter\Detection\LanguageDetector;
+use WeSpamfighter\Detection\HeuristicDetector;
 
 /**
  * Comments integration class.
@@ -98,14 +100,62 @@ class Comments
         // Get entry data for analysis.
         $entry_data = $this->get_entry_data($commentdata);
 
-        // Check with OpenAI.
-        $openai_result = $this->check_with_openai($entry_data, 0);
-        $score = isset($openai_result['score']) ? (float) $openai_result['score'] : 0.0;
+        $is_spam = false;
+        $score = 0.0;
+        $openai_result = null;
         $threshold = (float) ($this->settings['ai_threshold'] ?? 0.7);
 
-        $is_spam = ! empty($openai_result['is_spam']);
-        if (! $is_spam && $score >= $threshold) {
-            $is_spam = true;
+        // STEP 1: Check with heuristic detector FIRST (local, fast, free).
+        if (! empty($this->settings['heuristic_enabled']) && ! empty($entry_data)) {
+            $heuristic_result = HeuristicDetector::analyze($entry_data, $this->settings);
+            $heuristic_score = isset($heuristic_result['score']) ? (float) $heuristic_result['score'] : 0.0;
+
+            if ($heuristic_score > 0) {
+                $score = min(1.0, $score + $heuristic_score);
+
+                // Check if already spam.
+                if ($score >= $threshold || ! empty($heuristic_result['is_spam'])) {
+                    $is_spam = true;
+                }
+            }
+        }
+
+        // STEP 2: Check language mismatch if enabled (local, fast, free).
+        if (! empty($this->settings['mark_different_language_spam']) && ! empty($entry_data)) {
+            // Use simple language detection (no OpenAI needed).
+            $detected_lang = OpenAI::normalize_language_code(LanguageDetector::detect_language($entry_data));
+
+            // Get expected language from WordPress locale.
+            $locale = get_locale();
+            $expected_lang = OpenAI::normalize_language_code(substr($locale, 0, 2));
+
+            // If languages don't match and both are valid.
+            if (! empty($expected_lang) && ! empty($detected_lang) && $expected_lang !== $detected_lang) {
+                $score_boost = (float) ($this->settings['language_spam_score_boost'] ?? 0.3);
+                $score = min(1.0, $score + $score_boost);
+
+                // Check if already spam.
+                if (! $is_spam && $score >= $threshold) {
+                    $is_spam = true;
+                }
+            }
+        }
+
+        // STEP 3: Only check with OpenAI if score is still below threshold (saves API costs).
+        if ($this->is_openai_enabled() && ! empty($entry_data) && ! $is_spam && $score < $threshold) {
+            $openai_result = $this->check_with_openai($entry_data, 0);
+            $openai_score = isset($openai_result['score']) ? (float) $openai_result['score'] : 0.0;
+
+            if ($openai_score > 0) {
+                // Add OpenAI score to existing score.
+                $score = min(1.0, $score + $openai_score);
+
+                // Check spam status.
+                $openai_is_spam = ! empty($openai_result['is_spam']);
+                if (! $is_spam && ($openai_is_spam || $score >= $threshold)) {
+                    $is_spam = true;
+                }
+            }
         }
 
         // If spam, mark as spam (WordPress will handle it).

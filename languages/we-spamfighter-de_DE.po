@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WE Spamfighter\n"
 "Report-Msgid-Bugs-To: https://github.com/gbyat/we-spamfighter/issues\n"
-"POT-Creation-Date: 2025-11-27 14:57+0000\n"
-"PO-Revision-Date: 2025-11-27 15:57+0100\n"
+"POT-Creation-Date: 2025-12-01 12:43+0000\n"
+"PO-Revision-Date: 2025-12-01 13:47+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: de_DE\n"
@@ -274,43 +274,67 @@ msgid ""
 msgstr ""
 "Pingbacks und Trackbacks automatisch als Spam markieren, ohne OpenAI-Prüfung"
 
-#: includes/admin/class-settings.php:166
+#: includes/admin/class-settings.php:165
+msgid "Mark Different Language as Spam"
+msgstr "Andere Sprache als Spam markieren"
+
+#: includes/admin/class-settings.php:171
+msgid ""
+"Automatically mark submissions as spam if they are in a different language "
+"than your website (useful for single-language websites)"
+msgstr ""
+"Markieren Sie Beiträge automatisch als Spam, wenn sie in einer anderen "
+"Sprache als Ihre Website verfasst sind (nützlich für einsprachige Websites)."
+
+#: includes/admin/class-settings.php:177
+msgid "Language Mismatch Score Boost"
+msgstr "Sprachinkongruenz-Score-Boost"
+
+#: includes/admin/class-settings.php:186
+msgid ""
+"Amount to increase spam score when language doesn't match (0.1 - 1.0). "
+"Default: 0.3"
+msgstr ""
+"Betrag zur Erhöhung der Spam-Bewertung, wenn die Sprache nicht übereinstimmt "
+"(0,1 – 1,0). Standardwert: 0,3"
+
+#: includes/admin/class-settings.php:193
 msgid "OpenAI Integration"
 msgstr "OpenAI-Integration"
 
-#: includes/admin/class-settings.php:173
+#: includes/admin/class-settings.php:200
 msgid "Enable OpenAI Detection"
 msgstr "OpenAI-Erkennung aktivieren"
 
-#: includes/admin/class-settings.php:179
+#: includes/admin/class-settings.php:206
 msgid "Use OpenAI to detect spam"
 msgstr "Verwenden Sie OpenAI, um Spam zu erkennen."
 
-#: includes/admin/class-settings.php:185
+#: includes/admin/class-settings.php:212
 msgid "OpenAI API Key"
 msgstr "OpenAI API-Schlüssel"
 
 #. translators: %s: OpenAI API URL
-#: includes/admin/class-settings.php:194
+#: includes/admin/class-settings.php:221
 msgid ""
 "Get your API key from <a href=\"%s\" target=\"_blank\">OpenAI Platform</a>"
 msgstr ""
 "API-Schlüssel von <a href=\"%s\" target=\"_blank\">der OpenAI-Plattform</a> "
 "holen."
 
-#: includes/admin/class-settings.php:202
+#: includes/admin/class-settings.php:229
 msgid "OpenAI Model"
 msgstr "OpenAI-Modell"
 
-#: includes/admin/class-settings.php:216
+#: includes/admin/class-settings.php:243
 msgid "Which AI model to use for spam detection"
 msgstr "Welches KI-Modell soll für die Spam-Erkennung verwendet werden?"
 
-#: includes/admin/class-settings.php:222
+#: includes/admin/class-settings.php:249
 msgid "AI Spam Threshold"
 msgstr "KI-Spam-Schwellenwert"
 
-#: includes/admin/class-settings.php:231
+#: includes/admin/class-settings.php:258
 msgid ""
 "Spam score threshold (0.0 - 1.0). Higher values mean fewer submissions are "
 "flagged as spam (less strict). Lower values mean more submissions are "
@@ -321,15 +345,75 @@ msgstr ""
 "bedeuten, dass mehr Beiträge als Spam markiert werden (strenger). "
 "Standardwert: 0,7"
 
-#: includes/admin/class-settings.php:238
+#: includes/admin/class-settings.php:265, includes/admin/class-settings.php:585
+msgid "Heuristic Detection"
+msgstr "Heuristische Erkennung"
+
+#: includes/admin/class-settings.php:272
+msgid "Enable Heuristic Detection"
+msgstr "Heuristische Erkennung aktivieren"
+
+#: includes/admin/class-settings.php:278
+msgid "Use local heuristics to detect spam patterns (works without OpenAI)"
+msgstr ""
+"Verwenden Sie lokale Heuristiken, um Spam-Muster zu erkennen (funktioniert "
+"ohne OpenAI)."
+
+#: includes/admin/class-settings.php:284
+msgid "Heuristic Spam Threshold"
+msgstr "Heuristik-Spam-Schwellenwert"
+
+#: includes/admin/class-settings.php:293
+msgid "Spam score threshold for heuristic detection (0.0 - 1.0). Default: 0.6"
+msgstr ""
+"Spam-Score-Schwellenwert für heuristische Erkennung (0,0 – 1,0). Höher = "
+"strenger. Standardwert: 0,7"
+
+#: includes/admin/class-settings.php:299
+msgid "Disable Link Check"
+msgstr "Link-Prüfung deaktivieren"
+
+#: includes/admin/class-settings.php:305
+msgid "Disable suspicious link detection"
+msgstr "Erkennung verdächtiger Links deaktivieren"
+
+#: includes/admin/class-settings.php:311
+msgid "Disable Character Pattern Check"
+msgstr "Zeichenmusterprüfung deaktivieren"
+
+#: includes/admin/class-settings.php:317
+msgid ""
+"Disable suspicious character pattern detection (e.g., ALL CAPS, repeated "
+"characters)"
+msgstr ""
+"Deaktivieren Sie die Erkennung verdächtiger Zeichenmuster (z. B. "
+"GROSSBUCHSTABEN, wiederholte Zeichen)."
+
+#: includes/admin/class-settings.php:323
+msgid "Disable Spam Phrase Check"
+msgstr "Spam-Phrasenprüfung deaktivieren"
+
+#: includes/admin/class-settings.php:329
+msgid "Disable known spam phrase detection"
+msgstr "Erkennung von Spam-Phrasen deaktivieren"
+
+#: includes/admin/class-settings.php:335
+msgid "Disable Email Pattern Check"
+msgstr "E-Mail-Musterprüfung deaktivieren"
+
+#: includes/admin/class-settings.php:341
+msgid "Disable suspicious email pattern detection"
+msgstr "Erkennung verdächtiger E-Mail-Muster deaktivieren"
+
+#: includes/admin/class-settings.php:348
 msgid "Email Notifications"
 msgstr "E-Mail Benachrichtigungen"
 
-#: includes/admin/class-settings.php:245
+#: includes/admin/class-settings.php:355
 msgid "Notification Email"
 msgstr "Benachrichtigungsemail"
 
-#: includes/admin/class-settings.php:252
+#: includes/admin/class-settings.php:362
 msgid ""
 "Email address to receive spam notifications. If empty, admin email will be "
 "used."
@@ -337,47 +421,47 @@ msgstr ""
 "E-Mail-Adresse für den Empfang von Spam-Benachrichtigungen. Wenn dieses Feld "
 "leer ist, wird die E-Mail-Adresse des Administrators verwendet."
 
-#: includes/admin/class-settings.php:258
+#: includes/admin/class-settings.php:368
 msgid "Notification Type"
 msgstr "Benachrichtigungsart"
 
-#: includes/admin/class-settings.php:265
+#: includes/admin/class-settings.php:375
 msgid "No notifications"
 msgstr "Keine Benachrichtigungen"
 
-#: includes/admin/class-settings.php:266
+#: includes/admin/class-settings.php:376
 msgid "Immediate (on each spam detection)"
 msgstr "Sofort (bei jeder Spam-Erkennung)"
 
-#: includes/admin/class-settings.php:267
+#: includes/admin/class-settings.php:377
 msgid "Daily summary"
 msgstr "Tägliche Zusammenfassung"
 
-#: includes/admin/class-settings.php:268
+#: includes/admin/class-settings.php:378
 msgid "Weekly summary"
 msgstr "Wöchentliche Zusammenfassung"
 
-#: includes/admin/class-settings.php:270
+#: includes/admin/class-settings.php:380
 msgid "How often to receive spam notifications."
 msgstr "Wie oft Spam-Benachrichtigungen empfangen werden sollen."
 
-#: includes/admin/class-settings.php:277
+#: includes/admin/class-settings.php:387, includes/admin/class-settings.php:597
 msgid "Maintenance"
 msgstr "Wartung"
 
-#: includes/admin/class-settings.php:284
+#: includes/admin/class-settings.php:394
 msgid "Log Retention"
 msgstr "Dauer der Protokollspeicherung"
 
-#: includes/admin/class-settings.php:293
+#: includes/admin/class-settings.php:403
 msgid "Days to keep logs (default: 30)"
 msgstr "Tage, an denen Protokolle aufbewahrt werden (Standard: 30)"
 
-#: includes/admin/class-settings.php:299
+#: includes/admin/class-settings.php:409
 msgid "Keep Data on Uninstall"
 msgstr "Daten bei Deinstallation behalten"
 
-#: includes/admin/class-settings.php:305
+#: includes/admin/class-settings.php:415
 msgid ""
 "If enabled, all plugin data (options, submissions, statistics) will be kept "
 "when the plugin is deleted. If disabled, all data will be permanently "
@@ -387,35 +471,52 @@ msgstr ""
 "Übermittlungen, Statistiken) beim Löschen des Plugins erhalten. Wenn diese "
 "Option deaktiviert ist, werden alle Daten dauerhaft gelöscht."
 
-#: includes/admin/class-settings.php:315
+#: includes/admin/class-settings.php:425
 msgid "Configure general spam protection settings."
 msgstr "Konfiguriere allgemeine Spam-Schutzeinstellungen."
 
-#: includes/admin/class-settings.php:323
+#: includes/admin/class-settings.php:433
 msgid "Configure OpenAI integration for spam detection."
 msgstr "OpenAI-Integration für die Spam-Erkennung."
 
-#: includes/admin/class-settings.php:331
+#: includes/admin/class-settings.php:441
+msgid "Configure local heuristic spam detection (works without OpenAI)."
+msgstr ""
+"Lokale heuristische Spam-Erkennung konfigurieren (funktioniert ohne OpenAI)."
+
+#: includes/admin/class-settings.php:449
 msgid "Configure email notifications for spam detections."
 msgstr "E-Mail-Benachrichtigungen für Spam-Erkennungen."
 
-#: includes/admin/class-settings.php:339
+#: includes/admin/class-settings.php:457
 msgid "Configure maintenance and cleanup settings."
 msgstr "Einstellungen für Wartung und Bereinigung."
 
-#: includes/admin/class-settings.php:455
+#: includes/admin/class-settings.php:581
+msgid "General"
+msgstr "Allgemein"
+
+#: includes/admin/class-settings.php:589
+msgid "OpenAI"
+msgstr "OpenAI"
+
+#: includes/admin/class-settings.php:593
+msgid "Notifications"
+msgstr "Benachrichtigungen"
+
+#: includes/admin/class-settings.php:610
 msgid "WE Spamfighter Settings"
 msgstr "WE Spamfighter-Einstellungen"
 
-#: includes/admin/class-settings.php:469
+#: includes/admin/class-settings.php:676
 msgid "Test OpenAI Connection"
 msgstr "OpenAI-Verbindung testen"
 
-#: includes/admin/class-settings.php:472
+#: includes/admin/class-settings.php:678
 msgid "Test your OpenAI API connection and configuration."
 msgstr "Testen Sie Ihre OpenAI-API-Verbindung und -Konfiguration."
 
-#: includes/admin/class-settings.php:475
+#: includes/admin/class-settings.php:681
 msgid "Test Connection"
 msgstr "Verbindung testen"
 
@@ -456,7 +557,7 @@ msgid "Form/Post ID:"
 msgstr "Formular-/Beitrags-ID:"
 
 #: includes/core/class-notifications.php:208,
-#: includes/integration/class-comments.php:247
+#: includes/integration/class-comments.php:297
 msgid "Spam Score:"
 msgstr "Spam-Bewertung"
 
@@ -469,7 +570,7 @@ msgid "Submission Data:"
 msgstr "Einreichungsdaten:"
 
 #: includes/core/class-notifications.php:226,
-#: includes/integration/class-comments.php:250
+#: includes/integration/class-comments.php:300
 msgid "Detection Details:"
 msgstr "Details zur Spam-Erkennung:"
 
@@ -539,44 +640,115 @@ msgstr "Aktivieren Sie das Plugin."
 msgid "Configure settings under WE Spamfighter → Settings"
 msgstr "WE Spamfighter-Einstellungen unter WE-Spamfighter → Einstellungen"
 
+#: includes/detection/class-heuristic-detector.php:118
+msgid "Multiple links (%d)"
+msgstr "Mehrere Links (%d)"
+
+#: includes/detection/class-heuristic-detector.php:115
+msgid "Too many links (%d)"
+msgstr "Zu viele Links (%d)"
+
+#: includes/detection/class-heuristic-detector.php:130
+msgid "High link-to-text ratio"
+msgstr "Hohe Link-zu-Text-Verhältnis"
+
+#: includes/detection/class-heuristic-detector.php:127
+msgid "Very high link-to-text ratio"
+msgstr "Sehr hohes Verhältnis von Links zu Text"
+
+#: includes/detection/class-heuristic-detector.php:182
+msgid "URL shortener detected: %s"
+msgstr "URL-Kürzer erkannt: %s"
+
+#: includes/detection/class-heuristic-detector.php:191
+msgid "Suspicious TLD: %s"
+msgstr "Verdächtige TLD: %s"
+
+#: includes/detection/class-heuristic-detector.php:199
+msgid "IP address used as URL"
+msgstr "Als URL verwendete IP-Adresse"
+
+#: includes/detection/class-heuristic-detector.php:223
+msgid "Repeated characters detected"
+msgstr "Wiederholte Zeichen erkannt"
+
+#: includes/detection/class-heuristic-detector.php:236
+msgid "High percentage of uppercase text"
+msgstr "Hoher Anteil an Großbuchstaben"
+
+#: includes/detection/class-heuristic-detector.php:233
+msgid "Text is mostly in uppercase"
+msgstr "Der Text ist größtenteils in Großbuchstaben geschrieben."
+
+#: includes/detection/class-heuristic-detector.php:243
+msgid "Suspicious mixed case pattern"
+msgstr "Verdächtiges gemischtes Fallmuster"
+
+#: includes/detection/class-heuristic-detector.php:252
+msgid "Too many special characters"
+msgstr "Zu viele Sonderzeichen"
+
+#: includes/detection/class-heuristic-detector.php:262
+msgid "Very long sentence without punctuation"
+msgstr "Sehr langer Satz ohne Zeichensetzung"
+
+#: includes/detection/class-heuristic-detector.php:271
+msgid "Too many emojis (%d)"
+msgstr "Zu viele Emojis (%d)"
+
+#: includes/detection/class-heuristic-detector.php:361
+msgid "Spam phrase detected: \"%s\""
+msgstr "Spam-Phrase erkannt: „%s“"
+
+#: includes/detection/class-heuristic-detector.php:384
+msgid "Keyword stuffing: \"%s\" repeated %d times"
+msgstr "Keyword-Spamming: „%s“ %d Mal wiederholt"
+
+#: includes/detection/class-heuristic-detector.php:413
+msgid "Multiple email addresses (%d)"
+msgstr "Mehrere E-Mail-Adressen (%d)"
+
+#: includes/detection/class-heuristic-detector.php:435
+msgid "Suspicious email provider: %s"
+msgstr "Verdächtiger E-Mail-Anbieter: %s"
+
+#: includes/detection/class-heuristic-detector.php:444
+msgid "Suspicious random email pattern"
+msgstr "Verdächtiges zufälliges E-Mail-Muster"
+
 #. translators: %s: Site name
-#: includes/integration/class-comments.php:221
+#: includes/integration/class-comments.php:271
 msgid "[%s] Spam Comment Detected"
 msgstr "[%s] Spam-Kommentar erkannt"
 
-#: includes/integration/class-comments.php:243
+#: includes/integration/class-comments.php:293
 msgid "A spam comment has been detected by %s and moved to the spam folder."
 msgstr ""
 "Ein Spam-Kommentar wurde von %s erkannt und in den Spam-Ordner verschoben."
 
-#: includes/integration/class-comments.php:244
+#: includes/integration/class-comments.php:294
 msgid "Author:"
 msgstr "Autor:"
 
-#: includes/integration/class-comments.php:245
+#: includes/integration/class-comments.php:295
 msgid "Email:"
 msgstr "E-Mail:"
 
-#: includes/integration/class-comments.php:246
+#: includes/integration/class-comments.php:296
 msgid "Post ID:"
 msgstr "Beitrags-ID:"
 
-#: includes/integration/class-comments.php:248
+#: includes/integration/class-comments.php:298
 msgid "Comment Content:"
 msgstr "Kommentarinhalt:"
 
-#: includes/integration/class-comments.php:252
+#: includes/integration/class-comments.php:302
 msgid "View Spam Comments"
 msgstr "Spam-Kommentare anzeigen"
 
-#: includes/integration/class-contact-form-7.php:413
+#: includes/integration/class-contact-form-7.php:479
 msgid "Thank you for your message."
 msgstr "Vielen Dank für Ihre Nachricht."
-
-#, fuzzy
-#~ msgid "Spam score threshold (0.0 - 1.0). Higher = stricter. Default: 0.7"
-#~ msgstr ""
-#~ "Spam-Score-Schwellenwert (0,0 – 1,0). Höher = strenger. Standardwert: 0,7"
 
 #~ msgid "https://webentwicklerin.at"
 #~ msgstr "https://webentwicklerin.at"

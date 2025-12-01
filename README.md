@@ -5,20 +5,38 @@
 **Requires at least:** 6.0  
 **Tested up to:** 6.8.3  
 **Requires PHP:** 8.0  
-**Stable tag:** 1.0.0  
+**Stable tag:** 1.1.0  
 **License:** GPLv2 or later  
 **License URI:** https://www.gnu.org/licenses/gpl-2.0.html
 
-Advanced spam protection for WordPress using AI-powered detection. Protects Contact Form 7 forms and WordPress comments from spam submissions with intelligent analysis powered by OpenAI.
+Advanced spam protection for WordPress using AI-powered and heuristic detection.
+
+## Description
+
+Protects Contact Form 7 forms and WordPress comments from spam submissions with intelligent analysis. Works with or without OpenAI - includes local heuristic detection for cost-effective spam filtering.
 
 ## Features
 
-### 🤖 AI-Powered Spam Detection
+### 🤖 Multi-Layer Spam Detection
 
-- **OpenAI Integration**: Uses GPT-4o-mini (or other OpenAI models) to analyze form submissions and comments
-- **Intelligent Analysis**: Detects spam patterns, AI-generated content, SEO spam, and suspicious links
-- **Language Detection**: Automatically detects and validates language consistency
-- **Configurable Threshold**: Adjustable spam score threshold (default: 0.7)
+- **Heuristic Detection** (Local, Free): Advanced local spam detection without external APIs
+  - Link analysis (URL shorteners, suspicious domains, excessive links)
+  - Character pattern detection (repeated characters, ALL CAPS, mixed case spam)
+  - Known spam phrase detection (multi-language)
+  - Email pattern analysis (suspicious providers, random patterns)
+- **Language Detection** (Local, Free): Automatically detects and flags submissions in different languages
+  - Works without OpenAI using heuristic language detection
+  - Can use OpenAI's language detection when available
+  - Configurable score boost for language mismatches
+- **AI-Powered Detection** (Optional): OpenAI integration for advanced analysis
+  - Uses GPT-4o-mini (or other OpenAI models) to analyze form submissions and comments
+  - Detects spam patterns, AI-generated content, SEO spam, and suspicious links
+  - Only called when needed (cost-efficient: local checks run first)
+- **Smart Detection Order**: Heuristic → Language → OpenAI (saves API costs)
+  - Local checks run first (instant, free)
+  - OpenAI only called for uncertain cases
+  - Plugin works completely without OpenAI
+- **Configurable Thresholds**: Adjustable spam score thresholds for each detection method
 
 ### 📋 Form Integration
 
@@ -64,7 +82,7 @@ Advanced spam protection for WordPress using AI-powered detection. Protects Cont
 
 - **WordPress**: 6.0 or higher
 - **PHP**: 8.0 or higher
-- **OpenAI API Key**: Required for spam detection
+- **OpenAI API Key**: Optional - enables AI-powered detection. Plugin works fully with local heuristic detection only.
 - **Contact Form 7**: Optional, for form protection (version 6.0+ recommended)
 
 ## Installation
@@ -109,16 +127,41 @@ This method is more secure as the API key is not stored in the database.
 
 ### 2. Plugin Settings
 
-Navigate to **WE Spamfighter → Settings** to configure:
+Navigate to **WE Spamfighter → Settings** (organized in tabs) to configure:
+
+#### General Tab
 
 - **Enable Contact Form 7 Protection**: Toggle CF7 spam detection
 - **Enable Comments Protection**: Toggle comment spam detection
-- **Enable OpenAI Detection**: Enable/disable AI-powered spam detection
+- **Auto-Mark Pingbacks/Trackbacks**: Automatically mark pingbacks/trackbacks as spam
+- **Mark Different Language as Spam**: Automatically flag submissions in different languages
+- **Language Mismatch Score Boost**: Amount to increase spam score when language doesn't match (0.1 - 1.0, default: 0.3)
+
+#### Heuristic Detection Tab
+
+- **Enable Heuristic Detection**: Use local spam detection (works without OpenAI)
+- **Heuristic Spam Threshold**: Threshold for heuristic detection (0.0 - 1.0, default: 0.6)
+- **Disable Link Check**: Option to disable suspicious link detection
+- **Disable Character Pattern Check**: Option to disable character pattern detection
+- **Disable Spam Phrase Check**: Option to disable known spam phrase detection
+- **Disable Email Pattern Check**: Option to disable email pattern detection
+
+#### OpenAI Tab
+
+- **Enable OpenAI Detection**: Enable/disable AI-powered spam detection (optional)
+- **OpenAI API Key**: Enter your OpenAI API key
 - **OpenAI Model**: Choose the OpenAI model (default: gpt-4o-mini)
-- **Spam Threshold**: Adjust spam score threshold (0.0 - 1.0, default: 0.7). Higher values mean fewer submissions are flagged as spam (less strict). Lower values mean more submissions are flagged as spam (more strict).
-- **Expected Language**: Set expected form language for better detection
-- **Store All Submissions**: Log all submissions (spam and non-spam)
-- **Email Notification**: Receive email notifications for spam detections
+- **AI Spam Threshold**: Adjust spam score threshold (0.0 - 1.0, default: 0.7). Higher values mean fewer submissions are flagged as spam (less strict). Lower values mean more submissions are flagged as spam (more strict).
+
+#### Notifications Tab
+
+- **Notification Email**: Email address for spam notifications
+- **Notification Type**: Choose frequency (none, immediate, daily, weekly)
+
+#### Maintenance Tab
+
+- **Log Retention**: Days to keep logs (default: 30)
+- **Keep Data on Uninstall**: Option to preserve data when uninstalling
 
 ### 3. Contact Form 7 Integration
 
@@ -133,10 +176,10 @@ No additional configuration is required for basic functionality.
 
 ### 4. Comments Integration
 
-WordPress comment spam protection is enabled automatically when:
+WordPress comment spam protection works when:
 
 - Comments protection is enabled in settings
-- OpenAI detection is enabled
+- Heuristic detection and/or OpenAI detection is enabled
 
 **Important**: Comments are NOT saved in the plugin's database. They are handled by WordPress's native comment system:
 
@@ -144,6 +187,7 @@ WordPress comment spam protection is enabled automatically when:
 - You can manage spam comments in **Comments → Spam** in WordPress admin
 - The plugin dashboard shows the spam comment count with a link to WordPress comment management
 - Only Contact Form 7 submissions are stored in the plugin's database
+- Detection works with or without OpenAI (local heuristic detection is available)
 
 ## Usage
 
@@ -288,19 +332,29 @@ The plugin creates a custom table `wp_we_spamfighter_submissions`:
 
 ## Troubleshooting
 
-### OpenAI API Issues
+### Spam Detection Not Working
+
+**Problem**: Spam submissions are not being blocked
+
+- **Solution**: Check that at least one detection method is enabled:
+  - Heuristic Detection (works without OpenAI)
+  - Language Detection (works without OpenAI)
+  - OpenAI Detection (requires API key)
+- **Note**: The plugin works completely without OpenAI using local detection methods
+
+### OpenAI API Issues (Optional)
 
 **Problem**: "OpenAI API key not configured"
 
-- **Solution**: Add your API key in Settings or wp-config.php
+- **Solution**: Add your API key in Settings → OpenAI tab or wp-config.php. Or disable OpenAI and use local heuristic detection only.
 
 **Problem**: "API rate limit exceeded"
 
-- **Solution**: The plugin includes rate limiting. Wait a few minutes or check your OpenAI account limits
+- **Solution**: The plugin includes rate limiting and only calls OpenAI when needed. Wait a few minutes or check your OpenAI account limits. Local checks reduce API usage.
 
 **Problem**: "API request failed"
 
-- **Solution**: Check your API key validity and internet connection
+- **Solution**: Check your API key validity and internet connection. The plugin will fall back to local detection if OpenAI fails.
 
 ### Form Not Disabling
 
@@ -326,11 +380,13 @@ The plugin creates a custom table `wp_we_spamfighter_submissions`:
 
 ## Security Best Practices
 
-1. **Store API Key in wp-config.php**: More secure than database storage
-2. **Regular Updates**: Keep the plugin updated for security patches
-3. **Review Submissions**: Regularly review spam submissions for false positives
-4. **Database Access**: Limit database access to trusted administrators
-5. **Rate Limiting**: Monitor API usage to prevent abuse
+1. **Store API Key in wp-config.php**: More secure than database storage (if using OpenAI)
+2. **Use Local Detection**: Heuristic detection works without external APIs, reducing security surface
+3. **Regular Updates**: Keep the plugin updated for security patches
+4. **Review Submissions**: Regularly review spam submissions for false positives
+5. **Database Access**: Limit database access to trusted administrators
+6. **Rate Limiting**: Monitor API usage to prevent abuse (OpenAI has built-in rate limiting)
+7. **Language Filtering**: Enable language mismatch detection for single-language websites
 
 ## Multisite Support
 
@@ -358,6 +414,18 @@ To add your own translation:
 5. Place in `languages/` directory
 
 ## Changelog
+
+### Version 1.0.8+
+
+- **Heuristic Detection**: Local spam detection without external APIs
+  - Link analysis (URL shorteners, suspicious domains)
+  - Character pattern detection (repeated chars, ALL CAPS)
+  - Known spam phrase detection
+  - Email pattern analysis
+- **Language Detection**: Automatic language mismatch detection (with/without OpenAI)
+- **Optimized Detection Order**: Local checks first, OpenAI only when needed (saves costs)
+- **Modern Settings UI**: Tab-based navigation with toggle switches
+- **Plugin Works Without OpenAI**: Fully functional with local detection only
 
 ### Version 1.0.0
 

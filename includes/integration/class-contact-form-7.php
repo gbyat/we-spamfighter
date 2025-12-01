@@ -10,6 +10,8 @@ namespace WeSpamfighter\Integration;
 
 use WeSpamfighter\Core\Database;
 use WeSpamfighter\Detection\OpenAI;
+use WeSpamfighter\Detection\LanguageDetector;
+use WeSpamfighter\Detection\HeuristicDetector;
 
 /**
  * Contact Form 7 integration class.
@@ -180,23 +182,87 @@ class ContactForm7
             $score = 0.0;
             $detection_method = '';
             $detection_details = array();
+            $threshold = (float) ($this->settings['ai_threshold'] ?? 0.7);
+            $openai_result = null;
 
-            // Check if OpenAI is enabled.
-            $openai_enabled = $this->is_openai_enabled();
+            // STEP 1: Check with heuristic detector FIRST (local, fast, free).
+            if (! empty($this->settings['heuristic_enabled']) && ! empty($entry_data)) {
+                $heuristic_result = HeuristicDetector::analyze($entry_data, $this->settings);
+                $heuristic_score = isset($heuristic_result['score']) ? (float) $heuristic_result['score'] : 0.0;
 
-            // Check with OpenAI if enabled.
-            if ($openai_enabled && ! empty($entry_data)) {
-                $openai_result = $this->check_with_openai($entry_data, $form_id);
-                $score = isset($openai_result['score']) ? (float) $openai_result['score'] : 0.0;
-                $threshold = (float) ($this->settings['ai_threshold'] ?? 0.7);
+                if ($heuristic_score > 0) {
+                    $score = min(1.0, $score + $heuristic_score);
+                    $detection_details['heuristic'] = $heuristic_result;
 
-                $is_spam = ! empty($openai_result['is_spam']);
-                if (! $is_spam && $score >= $threshold) {
-                    $is_spam = true;
+                    // Check if already spam.
+                    if ($score >= $threshold || ! empty($heuristic_result['is_spam'])) {
+                        $is_spam = true;
+                        $detection_method = 'heuristic';
+                    } else {
+                        $detection_method = 'heuristic';
+                    }
                 }
+            }
 
-                $detection_method = $is_spam ? 'openai' : '';
-                $detection_details = $is_spam ? array('openai' => $openai_result) : array();
+            // STEP 2: Check language mismatch if enabled (local, fast, free).
+            if (! empty($this->settings['mark_different_language_spam']) && ! empty($entry_data)) {
+                // Use simple language detection (no OpenAI needed).
+                $detected_lang = OpenAI::normalize_language_code(LanguageDetector::detect_language($entry_data));
+
+                // Get expected language from WordPress locale.
+                $locale = get_locale();
+                $expected_lang = OpenAI::normalize_language_code(substr($locale, 0, 2));
+
+                // If languages don't match and both are valid.
+                if (! empty($expected_lang) && ! empty($detected_lang) && $expected_lang !== $detected_lang) {
+                    $score_boost = (float) ($this->settings['language_spam_score_boost'] ?? 0.3);
+                    $score = min(1.0, $score + $score_boost);
+
+                    // Update detection details.
+                    if (empty($detection_details)) {
+                        $detection_details = array();
+                    }
+                    $detection_details['language_mismatch'] = array(
+                        'expected' => $expected_lang,
+                        'detected' => $detected_lang,
+                        'score_boost' => $score_boost,
+                        'detection_method' => 'heuristic',
+                    );
+
+                    // Check if already spam.
+                    if (! $is_spam && $score >= $threshold) {
+                        $is_spam = true;
+                        $detection_method = empty($detection_method) ? 'language' : $detection_method . '+language';
+                    } else {
+                        $detection_method = empty($detection_method) ? 'language' : $detection_method . '+language';
+                    }
+                }
+            }
+
+            // STEP 3: Only check with OpenAI if score is still below threshold (saves API costs).
+            $openai_enabled = $this->is_openai_enabled();
+            if ($openai_enabled && ! empty($entry_data) && ! $is_spam && $score < $threshold) {
+                $openai_result = $this->check_with_openai($entry_data, $form_id);
+                $openai_score = isset($openai_result['score']) ? (float) $openai_result['score'] : 0.0;
+
+                if ($openai_score > 0) {
+                    // Add OpenAI score to existing score.
+                    $score = min(1.0, $score + $openai_score);
+                    $detection_details['openai'] = $openai_result;
+
+                    // Check spam status.
+                    $openai_is_spam = ! empty($openai_result['is_spam']);
+                    if (! $is_spam && ($openai_is_spam || $score >= $threshold)) {
+                        $is_spam = true;
+                    }
+
+                    // Update detection method.
+                    if (empty($detection_method)) {
+                        $detection_method = 'openai';
+                    } else {
+                        $detection_method .= '+openai';
+                    }
+                }
             }
 
             // Save submission to database (always save, even if not spam).

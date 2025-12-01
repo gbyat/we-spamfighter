@@ -515,4 +515,27 @@ is_spam should be true if spam_score >= 0.7',
 
         return $ip;
     }
+
+    /**
+     * Normalize language code to base language (e.g., 'en-US' → 'en', 'de_DE' → 'de').
+     *
+     * @param string $lang_code Language code.
+     * @return string Normalized language code (2 characters).
+     */
+    public static function normalize_language_code($lang_code)
+    {
+        if (empty($lang_code) || 'unknown' === strtolower($lang_code)) {
+            return '';
+        }
+
+        // Extract first 2 characters and convert to lowercase.
+        $normalized = strtolower(substr($lang_code, 0, 2));
+
+        // Return empty if not a valid 2-letter code.
+        if (strlen($normalized) !== 2 || ! preg_match('/^[a-z]{2}$/', $normalized)) {
+            return '';
+        }
+
+        return $normalized;
+    }
 }

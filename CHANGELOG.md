@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2025-12-01
+
+- Add auto-marking of pingbacks/trackbacks as spam and enhance admin settings UI
+- Extract WordPress compatibility data from release ZIP file to display correct compatibility information in update checks
+- Add compatibility fields (tested, requires, requires_php) to update transient for proper WordPress compatibility display
+- Fix plugin compatibility display by reading tested up to from plugin header instead of hardcoded value
+- Fix release workflow to use explicit file copying instead of rsync, prevent release-temp directory in ZIP, update tested up to 6.8.3
+- Update actions/upload-artifact to v4 to fix deprecation warning
+- Remove CI workflow and improve release workflow to ensure ZIP file is attached
+- Remove RELEASE-FILES.md and RELEASE.md documentation files as part of repository cleanup
+- Add remote repository existence check before pushing to GitHub
+
+
 ## [1.0.8] - 2025-11-27
 
 - Update CHANGELOG.md and enhance changelog generation script
@@ -112,3 +125,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [1.0.6]: https://github.com/gbyat/we-spamfighter/releases/tag/v1.0.6
 [1.0.7]: https://github.com/gbyat/we-spamfighter/releases/tag/v1.0.7
 [1.0.8]: https://github.com/gbyat/we-spamfighter/releases/tag/v1.0.8
+[1.1.0]: https://github.com/gbyat/we-spamfighter/releases/tag/v1.1.0
