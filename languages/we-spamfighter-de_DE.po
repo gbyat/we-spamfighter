@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WE Spamfighter\n"
 "Report-Msgid-Bugs-To: https://github.com/gbyat/we-spamfighter/issues\n"
-"POT-Creation-Date: 2025-12-01 12:43+0000\n"
-"PO-Revision-Date: 2025-12-01 13:47+0100\n"
+"POT-Creation-Date: 2025-12-01 14:16+0000\n"
+"PO-Revision-Date: 2025-12-01 15:18+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: de_DE\n"
@@ -640,81 +640,97 @@ msgstr "Aktivieren Sie das Plugin."
 msgid "Configure settings under WE Spamfighter → Settings"
 msgstr "WE Spamfighter-Einstellungen unter WE-Spamfighter → Einstellungen"
 
-#: includes/detection/class-heuristic-detector.php:118
+#: includes/detection/class-heuristic-detector.php:101
+msgid "Multiple suspicious patterns detected (%d checks)"
+msgstr "Mehrere verdächtige Muster entdeckt (%d checks)"
+
+#: includes/detection/class-heuristic-detector.php:142
 msgid "Multiple links (%d)"
 msgstr "Mehrere Links (%d)"
 
-#: includes/detection/class-heuristic-detector.php:115
+#: includes/detection/class-heuristic-detector.php:139
 msgid "Too many links (%d)"
 msgstr "Zu viele Links (%d)"
 
-#: includes/detection/class-heuristic-detector.php:130
+#: includes/detection/class-heuristic-detector.php:154
 msgid "High link-to-text ratio"
 msgstr "Hohe Link-zu-Text-Verhältnis"
 
-#: includes/detection/class-heuristic-detector.php:127
+#: includes/detection/class-heuristic-detector.php:151
 msgid "Very high link-to-text ratio"
 msgstr "Sehr hohes Verhältnis von Links zu Text"
 
-#: includes/detection/class-heuristic-detector.php:182
+#: includes/detection/class-heuristic-detector.php:206
 msgid "URL shortener detected: %s"
 msgstr "URL-Kürzer erkannt: %s"
 
-#: includes/detection/class-heuristic-detector.php:191
+#: includes/detection/class-heuristic-detector.php:215
 msgid "Suspicious TLD: %s"
 msgstr "Verdächtige TLD: %s"
 
-#: includes/detection/class-heuristic-detector.php:199
+#: includes/detection/class-heuristic-detector.php:223
 msgid "IP address used as URL"
 msgstr "Als URL verwendete IP-Adresse"
 
-#: includes/detection/class-heuristic-detector.php:223
+#: includes/detection/class-heuristic-detector.php:247
 msgid "Repeated characters detected"
 msgstr "Wiederholte Zeichen erkannt"
 
-#: includes/detection/class-heuristic-detector.php:236
+#: includes/detection/class-heuristic-detector.php:260
 msgid "High percentage of uppercase text"
 msgstr "Hoher Anteil an Großbuchstaben"
 
-#: includes/detection/class-heuristic-detector.php:233
+#: includes/detection/class-heuristic-detector.php:257
 msgid "Text is mostly in uppercase"
 msgstr "Der Text ist größtenteils in Großbuchstaben geschrieben."
 
-#: includes/detection/class-heuristic-detector.php:243
+#: includes/detection/class-heuristic-detector.php:267
 msgid "Suspicious mixed case pattern"
 msgstr "Verdächtiges gemischtes Fallmuster"
 
-#: includes/detection/class-heuristic-detector.php:252
+#: includes/detection/class-heuristic-detector.php:276
 msgid "Too many special characters"
 msgstr "Zu viele Sonderzeichen"
 
-#: includes/detection/class-heuristic-detector.php:262
+#: includes/detection/class-heuristic-detector.php:286
 msgid "Very long sentence without punctuation"
 msgstr "Sehr langer Satz ohne Zeichensetzung"
 
-#: includes/detection/class-heuristic-detector.php:271
+#: includes/detection/class-heuristic-detector.php:295
 msgid "Too many emojis (%d)"
 msgstr "Zu viele Emojis (%d)"
 
-#: includes/detection/class-heuristic-detector.php:361
+#: includes/detection/class-heuristic-detector.php:385
 msgid "Spam phrase detected: \"%s\""
 msgstr "Spam-Phrase erkannt: „%s“"
 
-#: includes/detection/class-heuristic-detector.php:384
+#: includes/detection/class-heuristic-detector.php:408
 msgid "Keyword stuffing: \"%s\" repeated %d times"
 msgstr "Keyword-Spamming: „%s“ %d Mal wiederholt"
 
-#: includes/detection/class-heuristic-detector.php:413
+#: includes/detection/class-heuristic-detector.php:437
 msgid "Multiple email addresses (%d)"
 msgstr "Mehrere E-Mail-Adressen (%d)"
 
-#: includes/detection/class-heuristic-detector.php:435
+#: includes/detection/class-heuristic-detector.php:459
 msgid "Suspicious email provider: %s"
 msgstr "Verdächtiger E-Mail-Anbieter: %s"
 
-#: includes/detection/class-heuristic-detector.php:444
+#: includes/detection/class-heuristic-detector.php:470
+msgid "Very suspicious email pattern (numbers only)"
+msgstr "Sehr verdächtige E-Mail-Muster (nur Nummern)"
+
+#: includes/detection/class-heuristic-detector.php:476
 msgid "Suspicious random email pattern"
 msgstr "Verdächtiges zufälliges E-Mail-Muster"
+
+#: includes/detection/class-heuristic-detector.php:484
+msgid "Suspicious email domain TLD: %s"
+msgstr "Verdächtige E-Mail-Domain: %s"
+
+#: includes/detection/class-heuristic-detector.php:493
+msgid "Suspicious email domain with numbers"
+msgstr "Verdächtige E-Mail-Domain mit Nummern"
 
 #. translators: %s: Site name
 #: includes/integration/class-comments.php:271

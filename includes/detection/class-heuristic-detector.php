@@ -78,6 +78,30 @@ class HeuristicDetector
             }
         }
 
+        // Apply combination bonus if multiple checks found issues.
+        $checks_with_issues = 0;
+        if (isset($details['link_check']) && $details['link_check']['score'] > 0) {
+            $checks_with_issues++;
+        }
+        if (isset($details['character_check']) && $details['character_check']['score'] > 0) {
+            $checks_with_issues++;
+        }
+        if (isset($details['phrase_check']) && $details['phrase_check']['score'] > 0) {
+            $checks_with_issues++;
+        }
+        if (isset($details['email_check']) && $details['email_check']['score'] > 0) {
+            $checks_with_issues++;
+        }
+
+        // Combination bonus: if 3 or more checks found issues, add bonus.
+        if ($checks_with_issues >= 3) {
+            $total_score += 0.2;
+            $details['combination_bonus'] = array(
+                'score' => 0.2,
+                'reason' => sprintf(__('Multiple suspicious patterns detected (%d checks)', 'we-spamfighter'), $checks_with_issues),
+            );
+        }
+
         // Normalize score to 0.0 - 1.0 range.
         $normalized_score = min(1.0, $total_score);
 
@@ -439,9 +463,34 @@ class HeuristicDetector
 
             // Random character pattern in email (suspicious).
             $local_part = substr($email, 0, strpos($email, '@'));
+
+            // Very short local part with only numbers (e.g., "123@")
+            if (preg_match('/^\d{1,4}$/', $local_part)) {
+                $score += 0.4;
+                $reasons[] = __('Very suspicious email pattern (numbers only)', 'we-spamfighter');
+            }
+
+            // Random character pattern (long alphanumeric with many numbers).
             if (preg_match('/^[a-z0-9]{10,}$/i', $local_part) && preg_match_all('/[0-9]/', $local_part) > 3) {
                 $score += 0.2;
                 $reasons[] = __('Suspicious random email pattern', 'we-spamfighter');
+            }
+
+            // Suspicious TLDs in email domain (common spam domains).
+            $suspicious_tlds = array('.ru', '.tk', '.ml', '.ga', '.cf', '.gq', '.xyz', '.top');
+            foreach ($suspicious_tlds as $sus_tld) {
+                if (substr($domain_lower, -strlen($sus_tld)) === $sus_tld) {
+                    $score += 0.3;
+                    $reasons[] = sprintf(__('Suspicious email domain TLD: %s', 'we-spamfighter'), $sus_tld);
+                    break;
+                }
+            }
+
+            // Suspicious domain patterns (numbers in domain like "2mail2.ru").
+            if (preg_match('/\d/', $domain_lower) && !preg_match('/^mail\d+\./i', $domain_lower)) {
+                // Numbers in domain name (but not common patterns like mail.ru)
+                $score += 0.2;
+                $reasons[] = __('Suspicious email domain with numbers', 'we-spamfighter');
             }
         }
 

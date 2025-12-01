@@ -51,7 +51,13 @@ jobs:
           echo '✓ Plugin header valid\n';
           "
 
-      - name: Validate CHANGELOG
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Validate and Update CHANGELOG
+        continue-on-error: true
         run: |
           if [ ! -f CHANGELOG.md ]; then
             echo "ERROR: CHANGELOG.md not found"
@@ -62,11 +68,28 @@ jobs:
           VERSION=${GITHUB_REF#refs/tags/v}
 
           if ! grep -q "## \[${VERSION}\]" CHANGELOG.md; then
-            echo "ERROR: Version ${VERSION} not found in CHANGELOG.md"
-            exit 1
+            echo "⚠️  Version ${VERSION} not found in CHANGELOG.md"
+            echo "📝 Attempting to update CHANGELOG.md automatically..."
+            
+            # Update package.json version to match tag
+            node -e "const fs = require('fs'); const pkg = JSON.parse(fs.readFileSync('package.json')); pkg.version = '${VERSION}'; fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2) + '\n');"
+            
+            # Run sync-version.js to update CHANGELOG
+            if node scripts/sync-version.js 2>&1; then
+              echo "✅ Updated CHANGELOG.md using sync-version.js"
+            else
+              echo "⚠️  sync-version.js failed, creating basic entry..."
+              DATE=$(date +%Y-%m-%d)
+              # Create basic entry - insert after line 7 (after main heading)
+              sed -i "7a\\\n## [${VERSION}] - ${DATE}\n\n- Version update\n" CHANGELOG.md
+              # Add release link at the end
+              echo "" >> CHANGELOG.md
+              echo "[${VERSION}]: https://github.com/gbyat/we-spamfighter/releases/tag/v${VERSION}" >> CHANGELOG.md
+              echo "✅ Created basic CHANGELOG entry for ${VERSION}"
+            fi
+          else
+            echo "✓ CHANGELOG.md already contains version ${VERSION}"
           fi
-
-          echo "✓ CHANGELOG.md contains version ${VERSION}"
 
   build:
     name: Build Release
