@@ -121,6 +121,12 @@ class Comments
         }
 
         // STEP 2: Check language mismatch if enabled (local, fast, free).
+        $has_language_mismatch = false;
+        $heuristic_has_links = false;
+        if (! empty($this->settings['heuristic_enabled']) && ! empty($detection_details['heuristic']['details']['link_check'])) {
+            $heuristic_has_links = true;
+        }
+
         if (! empty($this->settings['mark_different_language_spam']) && ! empty($entry_data)) {
             // Use simple language detection (no OpenAI needed).
             $detected_lang = OpenAI::normalize_language_code(LanguageDetector::detect_language($entry_data));
@@ -131,6 +137,7 @@ class Comments
 
             // If languages don't match and both are valid.
             if (! empty($expected_lang) && ! empty($detected_lang) && $expected_lang !== $detected_lang) {
+                $has_language_mismatch = true;
                 $score_boost = (float) ($this->settings['language_spam_score_boost'] ?? 0.3);
                 $score = min(1.0, $score + $score_boost);
 
@@ -141,20 +148,46 @@ class Comments
             }
         }
 
-        // STEP 3: Only check with OpenAI if score is still below threshold (saves API costs).
-        if ($this->is_openai_enabled() && ! empty($entry_data) && ! $is_spam && $score < $threshold) {
+        // Bonus: Link + Language Mismatch is a very strong spam indicator.
+        if ($has_language_mismatch && $heuristic_has_links) {
+            $link_bonus = 0.3;
+            $score = min(1.0, $score + $link_bonus);
+
+            // Check if now spam.
+            if (! $is_spam && $score >= $threshold) {
+                $is_spam = true;
+            }
+        }
+
+        // STEP 3: MANDATORY OpenAI check if heuristic did not mark as spam.
+        // CRITICAL: If heuristic did not definitively mark as spam, OpenAI MUST check before allowing comment through.
+        // This ensures that OpenAI always validates comments that pass heuristic checks.
+        $openai_enabled = $this->is_openai_enabled();
+
+        if ($openai_enabled && ! empty($entry_data) && ! $is_spam) {
+            // MANDATORY: OpenAI must check if not already marked as spam by heuristic.
+            // No conditions - if OpenAI is enabled and comment is not spam yet, OpenAI must verify.
             $openai_result = $this->check_with_openai($entry_data, 0);
             $openai_score = isset($openai_result['score']) ? (float) $openai_result['score'] : 0.0;
+
+            // Always store OpenAI result, even if score is 0.
+            if (empty($detection_details)) {
+                $detection_details = array();
+            }
+            $detection_details['openai'] = $openai_result;
 
             if ($openai_score > 0) {
                 // Add OpenAI score to existing score.
                 $score = min(1.0, $score + $openai_score);
 
-                // Check spam status.
+                // Check spam status based on OpenAI result.
                 $openai_is_spam = ! empty($openai_result['is_spam']);
                 if (! $is_spam && ($openai_is_spam || $score >= $threshold)) {
                     $is_spam = true;
                 }
+            } elseif (isset($openai_result['is_spam']) && $openai_result['is_spam']) {
+                // OpenAI marked as spam even if score is 0 or not provided.
+                $is_spam = true;
             }
         }
 

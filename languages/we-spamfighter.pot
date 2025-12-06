@@ -8,7 +8,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Language-Team: webentwicklerin, Gabriele Laesser\n"
 "Last-Translator: webentwicklerin, Gabriele Laesser <info@webentwicklerin.at>\n"
-"POT-Creation-Date: 2025-12-01 14:16+0000\n"
+"POT-Creation-Date: 2025-12-06 08:49+0000\n"
 "Report-Msgid-Bugs-To: https://github.com/gbyat/we-spamfighter/issues\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: __;_e;_ex:1,2c;_n:1,2;_n_noop:1,2;_nx:1,2,4c;_nx_noop:1,2,3c;_x:1,2c;esc_attr__;esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c\n"
@@ -484,7 +484,7 @@ msgstr ""
 msgid "Form/Post ID:"
 msgstr ""
 
-#: includes/core/class-notifications.php:208, includes/integration/class-comments.php:297
+#: includes/core/class-notifications.php:208, includes/integration/class-comments.php:330
 msgid "Spam Score:"
 msgstr ""
 
@@ -496,7 +496,7 @@ msgstr ""
 msgid "Submission Data:"
 msgstr ""
 
-#: includes/core/class-notifications.php:226, includes/integration/class-comments.php:300
+#: includes/core/class-notifications.php:226, includes/integration/class-comments.php:333
 msgid "Detection Details:"
 msgstr ""
 
@@ -585,107 +585,115 @@ msgstr ""
 msgid "Very high link-to-text ratio"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:206
+#: includes/detection/class-heuristic-detector.php:212
 msgid "URL shortener detected: %s"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:215
+#: includes/detection/class-heuristic-detector.php:226
 msgid "Suspicious TLD: %s"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:223
+#: includes/detection/class-heuristic-detector.php:237
+msgid "Suspicious domain pattern detected"
+msgstr ""
+
+#: includes/detection/class-heuristic-detector.php:244
 msgid "IP address used as URL"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:247
+#: includes/detection/class-heuristic-detector.php:268
 msgid "Repeated characters detected"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:260
+#: includes/detection/class-heuristic-detector.php:281
 msgid "High percentage of uppercase text"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:257
+#: includes/detection/class-heuristic-detector.php:278
 msgid "Text is mostly in uppercase"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:267
+#: includes/detection/class-heuristic-detector.php:288
 msgid "Suspicious mixed case pattern"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:276
+#: includes/detection/class-heuristic-detector.php:297
 msgid "Too many special characters"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:286
+#: includes/detection/class-heuristic-detector.php:307
 msgid "Very long sentence without punctuation"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:295
+#: includes/detection/class-heuristic-detector.php:316
 msgid "Too many emojis (%d)"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:385
+#: includes/detection/class-heuristic-detector.php:406
 msgid "Spam phrase detected: \"%s\""
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:408
+#: includes/detection/class-heuristic-detector.php:429
 msgid "Keyword stuffing: \"%s\" repeated %d times"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:437
+#: includes/detection/class-heuristic-detector.php:458
 msgid "Multiple email addresses (%d)"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:459
+#: includes/detection/class-heuristic-detector.php:485
 msgid "Suspicious email provider: %s"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:470
+#: includes/detection/class-heuristic-detector.php:496
 msgid "Very suspicious email pattern (numbers only)"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:476
+#: includes/detection/class-heuristic-detector.php:502
 msgid "Suspicious random email pattern"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:484
+#: includes/detection/class-heuristic-detector.php:515
 msgid "Suspicious email domain TLD: %s"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:493
+#: includes/detection/class-heuristic-detector.php:524
 msgid "Suspicious email domain with numbers"
 msgstr ""
 
 #. translators: %s: Site name
-#: includes/integration/class-comments.php:271
+#: includes/integration/class-comments.php:304
 msgid "[%s] Spam Comment Detected"
 msgstr ""
 
-#: includes/integration/class-comments.php:293
+#: includes/integration/class-comments.php:326
 msgid "A spam comment has been detected by %s and moved to the spam folder."
 msgstr ""
 
-#: includes/integration/class-comments.php:294
+#: includes/integration/class-comments.php:327
 msgid "Author:"
 msgstr ""
 
-#: includes/integration/class-comments.php:295
+#: includes/integration/class-comments.php:328
 msgid "Email:"
 msgstr ""
 
-#: includes/integration/class-comments.php:296
+#: includes/integration/class-comments.php:329
 msgid "Post ID:"
 msgstr ""
 
-#: includes/integration/class-comments.php:298
+#: includes/integration/class-comments.php:331
 msgid "Comment Content:"
 msgstr ""
 
-#: includes/integration/class-comments.php:302
+#: includes/integration/class-comments.php:335
 msgid "View Spam Comments"
 msgstr ""
 
-#: includes/integration/class-contact-form-7.php:479
+#: includes/integration/class-contact-form-7.php:251
+msgid "Link detected in foreign language content (strong spam indicator)"
+msgstr ""
+
+#: includes/integration/class-contact-form-7.php:513
 msgid "Thank you for your message."
 msgstr ""

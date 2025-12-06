@@ -189,6 +189,12 @@ class HeuristicDetector
             '.online',
             '.site',
             '.website',
+            '.lv', // Latvia (often used for spam)
+            '.ru', // Russia (often used for spam)
+            '.su', // Soviet Union (often used for spam)
+            '.info', // Often used for spam
+            '.biz', // Often used for spam
+            '.cc', // Cocos Islands (often used for spam)
         );
 
         foreach ($urls[0] as $url) {
@@ -211,9 +217,24 @@ class HeuristicDetector
             // Check for suspicious TLDs.
             foreach ($suspicious_tlds as $sus_tld) {
                 if (substr($domain_lower, -strlen($sus_tld)) === $sus_tld) {
-                    $score += 0.2;
+                    // Higher score for very suspicious TLDs.
+                    if (in_array($sus_tld, array('.ru', '.su', '.tk', '.ml', '.ga', '.cf', '.gq'))) {
+                        $score += 0.3;
+                    } else {
+                        $score += 0.2;
+                    }
                     $reasons[] = sprintf(__('Suspicious TLD: %s', 'we-spamfighter'), $sus_tld);
                     break;
+                }
+            }
+            
+            // Check for suspicious domain patterns (new/unknown domains with links in foreign language context).
+            // This is a heuristic: if domain looks like it could be spam-related.
+            if (preg_match('/[a-z]{6,}\.[a-z]{2,}$/i', $domain_lower)) {
+                // Check for suspicious patterns in domain name.
+                if (preg_match('/(tarif|recipe|recipe|cook|food|health|weight|diet|pills|drug|pharma|casino|poker|bet|loan|credit|debt|money|free|win|prize)/i', $domain_lower)) {
+                    $score += 0.3;
+                    $reasons[] = __('Suspicious domain pattern detected', 'we-spamfighter');
                 }
             }
 
@@ -447,6 +468,11 @@ class HeuristicDetector
             'tempmail',
             'fakemail',
             'trashmail',
+            'inbox.lv', // Latvia email provider (often used for spam)
+            'inbox',
+            'mail.ru',
+            'yandex.ru',
+            'rambler.ru',
         );
 
         foreach ($emails[0] as $email) {
@@ -477,10 +503,15 @@ class HeuristicDetector
             }
 
             // Suspicious TLDs in email domain (common spam domains).
-            $suspicious_tlds = array('.ru', '.tk', '.ml', '.ga', '.cf', '.gq', '.xyz', '.top');
+            $suspicious_tlds = array('.ru', '.tk', '.ml', '.ga', '.cf', '.gq', '.xyz', '.top', '.lv', '.su', '.info', '.biz', '.cc');
             foreach ($suspicious_tlds as $sus_tld) {
                 if (substr($domain_lower, -strlen($sus_tld)) === $sus_tld) {
-                    $score += 0.3;
+                    // Higher score for very suspicious TLDs.
+                    if (in_array($sus_tld, array('.ru', '.su', '.tk', '.ml', '.ga', '.cf', '.gq', '.lv'))) {
+                        $score += 0.4;
+                    } else {
+                        $score += 0.3;
+                    }
                     $reasons[] = sprintf(__('Suspicious email domain TLD: %s', 'we-spamfighter'), $sus_tld);
                     break;
                 }
