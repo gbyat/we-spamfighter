@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.10] - 2025-12-10
+
+- Update GitHub Actions workflow to use action-gh-release@v2 for improved release handling
+
+
 ## [1.1.9] - 2025-12-10
 
 - Refactor release notes handling in GitHub Actions workflow
@@ -200,3 +205,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [1.1.7]: https://github.com/gbyat/we-spamfighter/releases/tag/v1.1.7
 [1.1.8]: https://github.com/gbyat/we-spamfighter/releases/tag/v1.1.8
 [1.1.9]: https://github.com/gbyat/we-spamfighter/releases/tag/v1.1.9
+[1.1.10]: https://github.com/gbyat/we-spamfighter/releases/tag/v1.1.10
