@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.5] - 2025-12-10
+
+- Update dependencies, scripts, and improve asset handling
+  - Added new build script for assets in package.json.
+  - Updated devDependencies to include clean-css-cli and terser for asset optimization.
+  - Updated README.md and we-spamfighter.php to reflect compatibility with WordPress 6.9.
+  - Enhanced GitHub Actions workflow to build minified assets before release.
+  - Improved asset loading in admin dashboard and settings by checking for file existence and debug mode.
+  - Updated release script to include asset building and POT file updates before release.
+
+
 ## [1.1.4] - 2025-12-10
 
 - Refactor changelog generation in sync-version script
@@ -153,3 +164,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [1.1.2]: https://github.com/gbyat/we-spamfighter/releases/tag/v1.1.2
 [1.1.3]: https://github.com/gbyat/we-spamfighter/releases/tag/v1.1.3
 [1.1.4]: https://github.com/gbyat/we-spamfighter/releases/tag/v1.1.4
+[1.1.5]: https://github.com/gbyat/we-spamfighter/releases/tag/v1.1.5
