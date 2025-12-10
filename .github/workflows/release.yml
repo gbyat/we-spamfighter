@@ -112,36 +112,13 @@ jobs:
         run: |
           VERSION=${GITHUB_REF#refs/tags/v}
 
-          if grep -q "## \[${VERSION}\]" CHANGELOG.md; then
-            # Extract changelog entry using Node.js (more reliable for multiline)
-            node -e "
-              const fs = require('fs');
-              const content = fs.readFileSync('CHANGELOG.md', 'utf8');
-              const versionPattern = '## \\\\[' + '${VERSION}'.replace(/\./g, '\\\\.') + '\\\\]';
-              const regex = new RegExp(versionPattern + ' - [0-9-]+([\\\\s\\\\S]*?)(?=## \\\\[|$)', 'm');
-              const match = content.match(regex);
-              
-              if (match && match[1]) {
-                let notes = match[1].trim();
-                // Remove excessive empty lines
-                notes = notes.replace(/\\n{3,}/g, '\\n\\n');
-                // Write to file for multiline output
-                fs.writeFileSync('release_notes.txt', notes);
-              } else {
-                fs.writeFileSync('release_notes.txt', 'Release v${VERSION}');
-              }
-            "
-            
-            echo "notes<<RELEASE_NOTES_EOF" >> $GITHUB_OUTPUT
-            cat release_notes.txt >> $GITHUB_OUTPUT
-            echo "RELEASE_NOTES_EOF" >> $GITHUB_OUTPUT
-            echo "✅ Extracted release notes from CHANGELOG.md"
-          else
-            echo "⚠️  Version ${VERSION} not found in CHANGELOG.md, using auto-generated notes"
-            echo "notes<<RELEASE_NOTES_EOF" >> $GITHUB_OUTPUT
-            echo "Release v${VERSION}" >> $GITHUB_OUTPUT
-            echo "RELEASE_NOTES_EOF" >> $GITHUB_OUTPUT
-          fi
+          # Extract release notes using dedicated script
+          node scripts/extract-release-notes.js ${VERSION} release_notes.txt
+
+          # Read the notes file and set as output (using delimiter for multiline)
+          echo "notes<<EOF" >> $GITHUB_OUTPUT
+          cat release_notes.txt >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
