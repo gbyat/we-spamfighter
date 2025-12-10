@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 
+
 // Read package.json
 const packagePath = path.join(__dirname, '..', 'package.json');
 const packageData = JSON.parse(fs.readFileSync(packagePath, 'utf8'));
@@ -77,8 +78,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
         const changelogLines = changelogContent.split('\n');
         changelogLines.forEach(line => {
             // Match lines that start with "- " (changelog entries)
+            // Only extract the subject (first line), ignore indented body lines
             const match = line.match(/^-\s+(.+)$/);
-            if (match) {
+            if (match && !line.startsWith('  ')) { // Not an indented body line
                 const commitMsg = match[1].trim();
                 existingCommits.add(commitMsg);
             }
@@ -101,31 +103,60 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
             // Get commits since last tag (or last 20 if no tags)
             // Exclude release commits and merge commits
+            // Use a unique separator to split commits, then get full message
+            const separator = '|||COMMIT_SEPARATOR|||';
             const gitCommand = lastTag
-                ? `git log ${lastTag}..HEAD --oneline --pretty=format:"%s" --no-merges`
-                : 'git log -20 --oneline --pretty=format:"%s" --no-merges';
+                ? `git log ${lastTag}..HEAD --pretty=format:"${separator}%B" --no-merges`
+                : `git log -20 --pretty=format:"${separator}%B" --no-merges`;
 
-            let allCommits = execSync(gitCommand, {
+            let commitMessages = execSync(gitCommand, {
                 encoding: 'utf8',
                 stdio: ['pipe', 'pipe', 'ignore']
-            }).trim().split('\n').filter(line => {
-                // Filter out release commits and empty lines
-                const trimmed = line.trim();
-                return trimmed &&
-                    !trimmed.match(/^Release v\d+\.\d+\.\d+$/i) &&
-                    !trimmed.match(/^Bump version/i) &&
-                    !trimmed.match(/^Version update$/i);
-            });
+            }).trim();
+
+            // Split by our unique separator
+            let allCommits = commitMessages.split(separator)
+                .map(commit => commit.trim())
+                .filter(commit => commit.length > 0)
+                .map(commit => {
+                    // Clean up the commit message
+                    const lines = commit.split('\n');
+                    // Remove empty lines at start/end, but preserve structure
+                    const cleaned = lines.filter(line => line.trim().length > 0);
+                    return cleaned.join('\n').trim();
+                })
+                .filter(commit => {
+                    // Filter out release commits and empty commits
+                    const trimmed = commit.trim();
+                    return trimmed &&
+                        !trimmed.match(/^Release v\d+\.\d+\.\d+$/i) &&
+                        !trimmed.match(/^Bump version/i) &&
+                        !trimmed.match(/^Version update$/i);
+                });
 
             // Filter out commits that are already in CHANGELOG
+            // Check only the first line (subject) for duplicates
             const newCommits = allCommits.filter(commit => {
-                const trimmed = commit.trim();
-                return !existingCommits.has(trimmed);
+                const firstLine = commit.split('\n')[0].trim();
+                return !existingCommits.has(firstLine);
             });
 
             // Format as changelog entries
+            // For multi-line commits, indent body lines
             if (newCommits.length > 0) {
-                gitLog = newCommits.map(commit => `- ${commit.trim()}`).join('\n');
+                gitLog = newCommits.map(commit => {
+                    const lines = commit.split('\n');
+                    const subject = lines[0].trim();
+                    const body = lines.slice(1).filter(l => l.trim().length > 0);
+
+                    if (body.length > 0) {
+                        // Multi-line commit: subject as main line, body indented
+                        return `- ${subject}\n  ${body.map(l => l.trim()).join('\n  ')}`;
+                    } else {
+                        // Single-line commit
+                        return `- ${subject}`;
+                    }
+                }).join('\n');
             } else {
                 gitLog = '';
             }
@@ -150,25 +181,46 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
         } else {
             // If no commits found, try to get commits from the last 20 commits
             try {
-                const allCommits = execSync('git log -20 --oneline --pretty=format:"%s" --no-merges', {
+                const separator = '|||COMMIT_SEPARATOR|||';
+                const commitMessages = execSync(`git log -20 --pretty=format:"${separator}%B" --no-merges`, {
                     encoding: 'utf8',
                     stdio: ['pipe', 'pipe', 'ignore']
-                }).trim().split('\n').filter(line => {
-                    const trimmed = line.trim();
-                    return trimmed &&
-                        !trimmed.match(/^Release v\d+\.\d+\.\d+$/i) &&
-                        !trimmed.match(/^Bump version/i) &&
-                        !trimmed.match(/^Version update$/i);
-                });
+                }).trim();
+
+                let allCommits = commitMessages.split(separator)
+                    .map(commit => commit.trim())
+                    .filter(commit => commit.length > 0)
+                    .map(commit => {
+                        const lines = commit.split('\n');
+                        const cleaned = lines.filter(line => line.trim().length > 0);
+                        return cleaned.join('\n').trim();
+                    })
+                    .filter(commit => {
+                        const trimmed = commit.trim();
+                        return trimmed &&
+                            !trimmed.match(/^Release v\d+\.\d+\.\d+$/i) &&
+                            !trimmed.match(/^Bump version/i) &&
+                            !trimmed.match(/^Version update$/i);
+                    });
 
                 // Filter out commits that are already in CHANGELOG
                 const newCommits = allCommits.filter(commit => {
-                    const trimmed = commit.trim();
-                    return !existingCommits.has(trimmed);
+                    const firstLine = commit.split('\n')[0].trim();
+                    return !existingCommits.has(firstLine);
                 });
 
                 if (newCommits.length > 0) {
-                    changelogEntry = newCommits.slice(0, 10).map(commit => `- ${commit.trim()}`).join('\n');
+                    changelogEntry = newCommits.slice(0, 10).map(commit => {
+                        const lines = commit.split('\n');
+                        const subject = lines[0].trim();
+                        const body = lines.slice(1).filter(l => l.trim().length > 0);
+
+                        if (body.length > 0) {
+                            return `- ${subject}\n  ${body.map(l => l.trim()).join('\n  ')}`;
+                        } else {
+                            return `- ${subject}`;
+                        }
+                    }).join('\n');
                 } else {
                     changelogEntry = '- Version update';
                 }
