@@ -108,17 +108,12 @@ jobs:
           echo "Version: ${VERSION}"
 
       - name: Extract release notes from CHANGELOG
-        id: release_notes
         run: |
           VERSION=${GITHUB_REF#refs/tags/v}
 
           # Extract release notes using dedicated script
           node scripts/extract-release-notes.js ${VERSION} release_notes.txt
-
-          # Read the notes file and set as output (using delimiter for multiline)
-          echo "notes<<EOF" >> $GITHUB_OUTPUT
-          cat release_notes.txt >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          echo "✅ Extracted release notes from CHANGELOG.md"
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -198,7 +193,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: we-spamfighter.zip
-          body: ${{ steps.release_notes.outputs.notes }}
+          body_path: release_notes.txt
           generate_release_notes: false
           draft: false
           prerelease: false
