@@ -54,7 +54,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: "18"
 
       - name: Validate and Update CHANGELOG
         continue-on-error: true
@@ -107,6 +107,17 @@ jobs:
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
           echo "Version: ${VERSION}"
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      - name: Install Node.js dependencies
+        run: npm ci
+
+      - name: Build minified assets
+        run: npm run build:assets
+
       - name: Create plugin ZIP
         run: |
           PLUGIN_NAME="we-spamfighter"
@@ -149,7 +160,7 @@ jobs:
           fi
 
           # Copy documentation files
-          for doc in README.md LICENSE; do
+          for doc in README.md README.txt LICENSE; do
             if [ -f "$doc" ]; then
               cp "$doc" ${PLUGIN_NAME}/
               echo "✅ Copied $doc"
@@ -172,7 +183,6 @@ jobs:
           generate_release_notes: true
           draft: false
           prerelease: false
-          make_latest: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

@@ -79,20 +79,48 @@ class Settings
             return;
         }
 
-        wp_enqueue_style(
-            'we-spamfighter-admin',
-            WE_SPAMFIGHTER_PLUGIN_URL . 'assets/css/admin.css',
-            array(),
-            WE_SPAMFIGHTER_VERSION
-        );
+        // Check if we're in debug mode - load unminified files if WP_DEBUG is enabled.
+        $suffix = (defined('WP_DEBUG') && constant('WP_DEBUG')) ? '' : '.min';
 
-        wp_enqueue_script(
-            'we-spamfighter-admin',
-            WE_SPAMFIGHTER_PLUGIN_URL . 'assets/js/admin.js',
-            array('jquery'),
-            WE_SPAMFIGHTER_VERSION,
-            true
-        );
+        // Build CSS URL and path.
+        $css_url  = WE_SPAMFIGHTER_PLUGIN_URL . 'assets/css/admin' . $suffix . '.css';
+        $css_path = WE_SPAMFIGHTER_PLUGIN_DIR . 'assets/css/admin' . $suffix . '.css';
+
+        // Fallback to non-minified if minified doesn't exist.
+        if (!file_exists($css_path) && $suffix === '.min') {
+            $css_url  = WE_SPAMFIGHTER_PLUGIN_URL . 'assets/css/admin.css';
+            $css_path = WE_SPAMFIGHTER_PLUGIN_DIR . 'assets/css/admin.css';
+        }
+
+        // Build JS URL and path.
+        $js_url  = WE_SPAMFIGHTER_PLUGIN_URL . 'assets/js/admin' . $suffix . '.js';
+        $js_path = WE_SPAMFIGHTER_PLUGIN_DIR . 'assets/js/admin' . $suffix . '.js';
+
+        // Fallback to non-minified if minified doesn't exist.
+        if (!file_exists($js_path) && $suffix === '.min') {
+            $js_url  = WE_SPAMFIGHTER_PLUGIN_URL . 'assets/js/admin.js';
+            $js_path = WE_SPAMFIGHTER_PLUGIN_DIR . 'assets/js/admin.js';
+        }
+
+        // Only enqueue if files exist.
+        if (file_exists($css_path)) {
+            wp_enqueue_style(
+                'we-spamfighter-admin',
+                $css_url,
+                array(),
+                WE_SPAMFIGHTER_VERSION
+            );
+        }
+
+        if (file_exists($js_path)) {
+            wp_enqueue_script(
+                'we-spamfighter-admin',
+                $js_url,
+                array('jquery'),
+                WE_SPAMFIGHTER_VERSION,
+                true
+            );
+        }
 
         wp_localize_script(
             'we-spamfighter-admin',

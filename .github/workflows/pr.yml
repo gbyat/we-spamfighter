@@ -1,0 +1,72 @@
+name: Pull Request Checks
+
+on:
+  pull_request:
+    branches:
+      - main
+      - master
+
+jobs:
+  validate:
+    name: Validate Code
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.0"
+          tools: composer
+
+      - name: Install PHP dependencies
+        run: |
+          if [ -f composer.json ]; then
+            composer install --no-interaction --prefer-dist
+          fi
+
+      - name: Run PHP Linter (phpcs)
+        continue-on-error: true
+        run: |
+          # Check if phpcs is available
+          if command -v phpcs &> /dev/null || [ -f vendor/bin/phpcs ]; then
+            if [ -f vendor/bin/phpcs ]; then
+              vendor/bin/phpcs --standard=WordPress --extensions=php includes/
+            else
+              phpcs --standard=WordPress --extensions=php includes/
+            fi
+          else
+            echo "phpcs not found, skipping lint check"
+          fi
+
+      - name: Validate Plugin Header
+        run: |
+          php -r "
+          \$header = file_get_contents('we-spamfighter.php');
+          if (!preg_match('/Version:\s*[\d.]+/', \$header)) {
+            echo 'ERROR: Version not found in plugin header\n';
+            exit(1);
+          }
+          echo '✓ Plugin header valid\n';
+          "
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Validate package.json
+        run: |
+          node -e "
+          const pkg = require('./package.json');
+          if (!pkg.version || !/^\d+\.\d+\.\d+$/.test(pkg.version)) {
+            console.error('ERROR: Invalid version in package.json');
+            process.exit(1);
+          }
+          console.log('✓ package.json valid');
+          "

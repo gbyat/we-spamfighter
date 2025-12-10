@@ -31,6 +31,24 @@ try {
     console.log('🔄 Syncing version to plugin file...');
     execSync('node scripts/sync-version.js', { stdio: 'inherit' });
 
+    // Update POT file before release
+    console.log('🌐 Updating POT translation file...');
+    try {
+        execSync('npm run pot', { stdio: 'inherit' });
+        console.log('✅ POT file updated');
+    } catch (e) {
+        console.log('⚠️  POT update failed (non-critical)');
+    }
+
+    // Build minified assets before release
+    console.log('🔨 Building minified assets...');
+    try {
+        execSync('npm run build:assets', { stdio: 'inherit' });
+        console.log('✅ Assets built');
+    } catch (e) {
+        console.log('⚠️  Asset build failed (non-critical)');
+    }
+
     // Add all changed files (package.json, plugin file, CHANGELOG.md)
     console.log('📦 Adding all changes to git...');
     execSync('git add -A', { stdio: 'inherit' });

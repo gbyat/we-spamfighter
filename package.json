@@ -13,13 +13,16 @@
   },
   "scripts": {
     "pot": "node scripts/update-pot.js",
+    "build:assets": "node scripts/build-assets.js",
     "release:patch": "node scripts/release.js patch",
     "release:minor": "node scripts/release.js minor",
     "release:major": "node scripts/release.js major",
     "sync-version": "node scripts/sync-version.js"
   },
   "devDependencies": {
-    "wp-pot": "^1.10.0"
+    "wp-pot": "^1.10.0",
+    "clean-css-cli": "^5.6.3",
+    "terser": "^5.31.0"
   },
   "engines": {
     "node": ">=14.0.0",

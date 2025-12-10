@@ -77,20 +77,48 @@ class Dashboard
             return;
         }
 
-        wp_enqueue_style(
-            'we-spamfighter-dashboard',
-            WE_SPAMFIGHTER_PLUGIN_URL . 'assets/css/dashboard.css',
-            array(),
-            WE_SPAMFIGHTER_VERSION
-        );
+        // Check if we're in debug mode - load unminified files if WP_DEBUG is enabled.
+        $suffix = (defined('WP_DEBUG') && constant('WP_DEBUG')) ? '' : '.min';
 
-        wp_enqueue_script(
-            'we-spamfighter-dashboard',
-            WE_SPAMFIGHTER_PLUGIN_URL . 'assets/js/dashboard.js',
-            array('jquery'),
-            WE_SPAMFIGHTER_VERSION,
-            true
-        );
+        // Build CSS URL and path.
+        $css_url  = WE_SPAMFIGHTER_PLUGIN_URL . 'assets/css/dashboard' . $suffix . '.css';
+        $css_path = WE_SPAMFIGHTER_PLUGIN_DIR . 'assets/css/dashboard' . $suffix . '.css';
+
+        // Fallback to non-minified if minified doesn't exist.
+        if (!file_exists($css_path) && $suffix === '.min') {
+            $css_url  = WE_SPAMFIGHTER_PLUGIN_URL . 'assets/css/dashboard.css';
+            $css_path = WE_SPAMFIGHTER_PLUGIN_DIR . 'assets/css/dashboard.css';
+        }
+
+        // Build JS URL and path.
+        $js_url  = WE_SPAMFIGHTER_PLUGIN_URL . 'assets/js/dashboard' . $suffix . '.js';
+        $js_path = WE_SPAMFIGHTER_PLUGIN_DIR . 'assets/js/dashboard' . $suffix . '.js';
+
+        // Fallback to non-minified if minified doesn't exist.
+        if (!file_exists($js_path) && $suffix === '.min') {
+            $js_url  = WE_SPAMFIGHTER_PLUGIN_URL . 'assets/js/dashboard.js';
+            $js_path = WE_SPAMFIGHTER_PLUGIN_DIR . 'assets/js/dashboard.js';
+        }
+
+        // Only enqueue if files exist.
+        if (file_exists($css_path)) {
+            wp_enqueue_style(
+                'we-spamfighter-dashboard',
+                $css_url,
+                array(),
+                WE_SPAMFIGHTER_VERSION
+            );
+        }
+
+        if (file_exists($js_path)) {
+            wp_enqueue_script(
+                'we-spamfighter-dashboard',
+                $js_url,
+                array('jquery'),
+                WE_SPAMFIGHTER_VERSION,
+                true
+            );
+        }
 
         wp_localize_script(
             'we-spamfighter-dashboard',

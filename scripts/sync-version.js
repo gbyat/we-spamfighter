@@ -31,9 +31,9 @@ fs.writeFileSync(pluginPath, pluginContent);
 console.log(`✅ Updated we-spamfighter.php`);
 
 // Update README.md stable tag
-const readmePath = path.join(__dirname, '..', 'README.md');
-if (fs.existsSync(readmePath)) {
-    let readmeContent = fs.readFileSync(readmePath, 'utf8');
+const readmeMdPath = path.join(__dirname, '..', 'README.md');
+if (fs.existsSync(readmeMdPath)) {
+    let readmeContent = fs.readFileSync(readmeMdPath, 'utf8');
 
     // Update Stable tag line
     readmeContent = readmeContent.replace(
@@ -41,8 +41,23 @@ if (fs.existsSync(readmePath)) {
         `**Stable tag:** ${version}`
     );
 
-    fs.writeFileSync(readmePath, readmeContent);
+    fs.writeFileSync(readmeMdPath, readmeContent);
     console.log(`✅ Updated README.md stable tag to ${version}`);
+}
+
+// Update README.txt stable tag (WordPress format)
+const readmeTxtPath = path.join(__dirname, '..', 'README.txt');
+if (fs.existsSync(readmeTxtPath)) {
+    let readmeTxtContent = fs.readFileSync(readmeTxtPath, 'utf8');
+
+    // Update Stable tag line (WordPress README.txt format: "Stable tag: X.Y.Z")
+    readmeTxtContent = readmeTxtContent.replace(
+        /Stable tag:\s*\d+\.\d+\.\d+/,
+        `Stable tag: ${version}`
+    );
+
+    fs.writeFileSync(readmeTxtPath, readmeTxtContent);
+    console.log(`✅ Updated README.txt stable tag to ${version}`);
 }
 
 // Update CHANGELOG.md
