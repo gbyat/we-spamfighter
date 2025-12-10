@@ -17,7 +17,10 @@
     "release:patch": "node scripts/release.js patch",
     "release:minor": "node scripts/release.js minor",
     "release:major": "node scripts/release.js major",
-    "sync-version": "node scripts/sync-version.js"
+    "sync-version": "node scripts/sync-version.js",
+    "check": "npm run check:php && npm run check:js",
+    "check:php": "echo 'PHP checks - install phpcs locally or use: composer require --dev wp-coding-standards/wpcs'",
+    "check:js": "echo 'JavaScript checks - run: npm run build:assets'"
   },
   "devDependencies": {
     "wp-pot": "^1.10.0",

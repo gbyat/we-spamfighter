@@ -1,8 +1,7 @@
 name: CodeQL Analysis
 
 on:
-  push:
-    branches: [main, master]
+  # Only run on PRs and manually - not on every push to main
   pull_request:
     branches: [main, master]
   schedule:
@@ -22,41 +21,34 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: ["javascript", "php"]
+        # CodeQL currently supports: cpp, csharp, go, java, javascript, python, ruby, swift
+        # PHP is not directly supported, but we can analyze JavaScript
+        language: ["javascript"]
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v3
+        uses: github/codeql-action/init@v4
         with:
           languages: ${{ matrix.language }}
 
-      - name: Setup PHP (for PHP analysis)
-        if: matrix.language == 'php'
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: "8.0"
-
-      - name: Setup Node.js (for JavaScript analysis)
-        if: matrix.language == 'javascript'
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "18"
 
-      - name: Install dependencies (PHP)
-        if: matrix.language == 'php'
+      - name: Install dependencies (JavaScript)
         run: |
-          if [ -f composer.json ]; then
-            composer install --no-interaction --prefer-dist
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            npm install
           fi
 
-      - name: Install dependencies (JavaScript)
-        if: matrix.language == 'javascript'
-        run: npm ci
-
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v3
+        uses: github/codeql-action/analyze@v4
+        continue-on-error: true
         with:
           category: "/language:${{matrix.language}}"

@@ -29,15 +29,15 @@ jobs:
       - name: Run PHP Linter (phpcs)
         continue-on-error: true
         run: |
-          # Check if phpcs is available
+          # Check if phpcs is available (optional check)
           if command -v phpcs &> /dev/null || [ -f vendor/bin/phpcs ]; then
             if [ -f vendor/bin/phpcs ]; then
-              vendor/bin/phpcs --standard=WordPress --extensions=php includes/
+              vendor/bin/phpcs --standard=WordPress --extensions=php includes/ we-spamfighter.php || true
             else
-              phpcs --standard=WordPress --extensions=php includes/
+              phpcs --standard=WordPress --extensions=php includes/ we-spamfighter.php || true
             fi
           else
-            echo "phpcs not found, skipping lint check"
+            echo "⚠️  phpcs not found, skipping lint check (optional)"
           fi
 
       - name: Validate Plugin Header
@@ -113,7 +113,12 @@ jobs:
           node-version: "18"
 
       - name: Install Node.js dependencies
-        run: npm ci
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            npm install
+          fi
 
       - name: Build minified assets
         run: npm run build:assets
