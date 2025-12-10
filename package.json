@@ -14,6 +14,7 @@
   "scripts": {
     "pot": "node scripts/update-pot.js",
     "build:assets": "node scripts/build-assets.js",
+    "update:tested": "node scripts/update-tested-version.js",
     "release:patch": "node scripts/release.js patch",
     "release:minor": "node scripts/release.js minor",
     "release:major": "node scripts/release.js major",
