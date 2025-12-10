@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.4] - 2025-12-10
+
+- Refactor changelog generation in sync-version script
+  - Improved commit message extraction to avoid duplicates by checking only the subject line.
+  - Enhanced handling of multi-line commit messages for better formatting in the CHANGELOG.
+  - Removed the outdated update-changelog.js script to streamline changelog management.
+
+
 ## [1.1.3] - 2025-12-06
 
 - Enhance spam detection heuristics and language mismatch handling
@@ -144,3 +152,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [1.1.1]: https://github.com/gbyat/we-spamfighter/releases/tag/v1.1.1
 [1.1.2]: https://github.com/gbyat/we-spamfighter/releases/tag/v1.1.2
 [1.1.3]: https://github.com/gbyat/we-spamfighter/releases/tag/v1.1.3
+[1.1.4]: https://github.com/gbyat/we-spamfighter/releases/tag/v1.1.4
