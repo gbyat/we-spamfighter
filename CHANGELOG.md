@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.6] - 2025-12-10
+
+- Update workflows and scripts for improved checks and dependency management
+  - Updated .gitignore to require package-lock.json for reproducible builds.
+  - Enhanced package.json with new check scripts for PHP and JavaScript.
+  - Modified CodeQL workflow to run only on pull requests and updated to use the latest actions.
+  - Improved PHP linter checks in workflows to indicate optional checks and refined dependency installation logic.
+
+
 ## [1.1.5] - 2025-12-10
 
 - Update dependencies, scripts, and improve asset handling
@@ -165,3 +174,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [1.1.3]: https://github.com/gbyat/we-spamfighter/releases/tag/v1.1.3
 [1.1.4]: https://github.com/gbyat/we-spamfighter/releases/tag/v1.1.4
 [1.1.5]: https://github.com/gbyat/we-spamfighter/releases/tag/v1.1.5
+[1.1.6]: https://github.com/gbyat/we-spamfighter/releases/tag/v1.1.6
