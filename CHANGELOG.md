@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.1] - 2025-12-15
+
+- Enhance database management features with automatic table repair and maintenance
+  - Added functionality to automatically detect and repair missing database tables or columns.
+  - Implemented weekly maintenance tasks to check table integrity and optimize performance.
+  - Updated documentation in README.md and README.txt to reflect new features and troubleshooting steps.
+  - Refactored database interaction methods to handle missing tables/columns gracefully.
+
+
 ## [1.2.0] - 2025-12-15
 
 - Add GitHub Updates feature with settings and documentation
@@ -216,3 +225,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [1.1.9]: https://github.com/gbyat/we-spamfighter/releases/tag/v1.1.9
 [1.1.10]: https://github.com/gbyat/we-spamfighter/releases/tag/v1.1.10
 [1.2.0]: https://github.com/gbyat/we-spamfighter/releases/tag/v1.2.0
+[1.2.1]: https://github.com/gbyat/we-spamfighter/releases/tag/v1.2.1

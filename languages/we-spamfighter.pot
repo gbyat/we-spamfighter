@@ -8,7 +8,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Language-Team: webentwicklerin, Gabriele Laesser\n"
 "Last-Translator: webentwicklerin, Gabriele Laesser <info@webentwicklerin.at>\n"
-"POT-Creation-Date: 2025-12-15 18:36+0000\n"
+"POT-Creation-Date: 2025-12-15 22:01+0000\n"
 "Report-Msgid-Bugs-To: https://github.com/gbyat/we-spamfighter/issues\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: __;_e;_ex:1,2c;_n:1,2;_n_noop:1,2;_nx:1,2,4c;_nx_noop:1,2,3c;_x:1,2c;esc_attr__;esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c\n"
@@ -454,6 +454,26 @@ msgstr ""
 
 #: includes/admin/class-settings.php:721
 msgid "Test Connection"
+msgstr ""
+
+#: includes/core/class-database.php:781
+msgid "Failed to verify or repair table structure"
+msgstr ""
+
+#: includes/core/class-database.php:789
+msgid "Table does not exist and could not be created"
+msgstr ""
+
+#: includes/core/class-database.php:822
+msgid "Failed to check table"
+msgstr ""
+
+#: includes/core/class-database.php:818
+msgid "Failed to repair table"
+msgstr ""
+
+#: includes/core/class-database.php:838
+msgid "Failed to optimize table"
 msgstr ""
 
 #. translators: %s: Site name
