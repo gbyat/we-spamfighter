@@ -158,6 +158,14 @@ class Plugin
             return;
         }
 
+        // Check if GitHub updates are enabled in settings.
+        $settings = get_option('we_spamfighter_settings', array());
+        $github_updates_enabled = isset($settings['github_updates_enabled']) && $settings['github_updates_enabled'];
+
+        if (! $github_updates_enabled) {
+            return;
+        }
+
         if (class_exists('WeSpamfighter\\Core\\Updater')) {
             new Core\Updater(WE_SPAMFIGHTER_PLUGIN_FILE);
         }
@@ -236,6 +244,8 @@ class Plugin
             'disable_phrase_check'         => false,
             'disable_email_check'          => false,
             'log_retention_days'           => 30,
+            'keep_data_on_uninstall'       => false,
+            'github_updates_enabled'       => false,
             'notification_email'           => get_option('admin_email'),
             'notification_type'            => 'none',
         );

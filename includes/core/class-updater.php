@@ -75,6 +75,17 @@ class Updater
     }
 
     /**
+     * Check if GitHub updates are enabled in settings.
+     *
+     * @return bool
+     */
+    private function is_updates_enabled()
+    {
+        $settings = get_option('we_spamfighter_settings', array());
+        return isset($settings['github_updates_enabled']) && $settings['github_updates_enabled'];
+    }
+
+    /**
      * Set plugin properties.
      */
     public function set_plugin_properties()
@@ -91,6 +102,11 @@ class Updater
      */
     public function get_github_response()
     {
+        // Check if updates are enabled before making API requests.
+        if (! $this->is_updates_enabled()) {
+            return;
+        }
+
         // Token is optional - only used to increase rate limits.
         $this->access_token = get_option('we_spamfighter_github_token');
 
@@ -272,6 +288,11 @@ class Updater
      */
     public function modify_transient($transient)
     {
+        // Check if updates are enabled before showing updates.
+        if (! $this->is_updates_enabled()) {
+            return $transient;
+        }
+
         if (! $this->github_response || ! $this->active) {
             return $transient;
         }
@@ -333,6 +354,11 @@ class Updater
      */
     public function plugin_popup($result, $action, $args)
     {
+        // Check if updates are enabled before showing update details.
+        if (! $this->is_updates_enabled()) {
+            return $result;
+        }
+
         if ($action !== 'plugin_information') {
             return $result;
         }

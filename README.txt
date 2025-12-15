@@ -90,6 +90,15 @@ The plugin uses a smart detection order to save costs:
 
 This ensures maximum spam detection while minimizing API costs.
 
+= How do I update the plugin? =
+
+You have two options:
+
+1. Manual Updates (Recommended): Download the latest release from GitHub and install manually via WordPress admin
+2. Automatic Updates (Optional): Enable "Enable GitHub Updates" in Settings -> Maintenance tab. WARNING: Automatic updates will install without additional confirmation. Enable at your own risk.
+
+Automatic GitHub updates are disabled by default for security. You must manually enable them in Settings -> Maintenance tab if you want automatic updates.
+
 == Screenshots ==
 
 1. Dashboard with submission list

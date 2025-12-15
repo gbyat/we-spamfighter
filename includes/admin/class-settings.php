@@ -443,6 +443,18 @@ class Settings
                 'description' => __('If enabled, all plugin data (options, submissions, statistics) will be kept when the plugin is deleted. If disabled, all data will be permanently deleted.', 'we-spamfighter'),
             )
         );
+
+        add_settings_field(
+            'github_updates_enabled',
+            __('Enable GitHub Updates', 'we-spamfighter'),
+            array($this, 'render_checkbox_field'),
+            'we-spamfighter',
+            'we_spamfighter_maintenance',
+            array(
+                'field_id'    => 'github_updates_enabled',
+                'description' => __('Enable automatic updates from GitHub releases. <strong>Activate at your own risk.</strong> Updates will be installed automatically without additional confirmation.', 'we-spamfighter'),
+            )
+        );
     }
 
     /**
@@ -793,6 +805,8 @@ class Settings
             'disable_character_check',
             'disable_phrase_check',
             'disable_email_check',
+            'keep_data_on_uninstall',
+            'github_updates_enabled',
         );
 
         foreach ($boolean_fields as $field) {
@@ -840,11 +854,6 @@ class Settings
             $sanitized['log_retention_days'] = isset($existing['log_retention_days']) ? intval($existing['log_retention_days']) : 30;
         }
 
-        if (isset($input['keep_data_on_uninstall'])) {
-            $sanitized['keep_data_on_uninstall'] = (bool) $input['keep_data_on_uninstall'];
-        } else {
-            $sanitized['keep_data_on_uninstall'] = isset($existing['keep_data_on_uninstall']) ? (bool) $existing['keep_data_on_uninstall'] : false;
-        }
 
         // Notification email.
         if (isset($input['notification_email'])) {

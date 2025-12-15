@@ -162,6 +162,7 @@ Navigate to **WE Spamfighter → Settings** (organized in tabs) to configure:
 
 - **Log Retention**: Days to keep logs (default: 30)
 - **Keep Data on Uninstall**: Option to preserve data when uninstalling
+- **Enable GitHub Updates**: Optional automatic updates from GitHub releases. **⚠️ Activate at your own risk** - Updates will be installed automatically without additional confirmation. Disabled by default for security.
 
 ### 3. Contact Form 7 Integration
 
@@ -371,6 +372,19 @@ The plugin creates a custom table `wp_we_spamfighter_submissions`:
 - **Check**: Verify database table exists (plugin activation creates it)
 - **Note**: Comments are not stored in the plugin database - they are managed by WordPress. Check **Comments → Spam** in WordPress admin for spam comments.
 
+### Plugin Updates
+
+**Q: How do I update the plugin?**
+
+**A**: You have two options:
+
+1. **Manual Updates (Recommended)**: Download the latest release from [GitHub](https://github.com/gbyat/we-spamfighter/releases) and install manually via WordPress admin
+2. **Automatic Updates (Optional)**: Enable "Enable GitHub Updates" in **Settings → Maintenance** tab. **⚠️ Warning**: Automatic updates will install without additional confirmation. Enable at your own risk.
+
+**Q: Are automatic updates enabled by default?**
+
+**A**: No, automatic GitHub updates are **disabled by default** for security. You must manually enable them in Settings → Maintenance tab if you want automatic updates.
+
 ### CSS Not Loading
 
 **Problem**: Disabled fields don't look different
@@ -383,6 +397,8 @@ The plugin creates a custom table `wp_we_spamfighter_submissions`:
 1. **Store API Key in wp-config.php**: More secure than database storage (if using OpenAI)
 2. **Use Local Detection**: Heuristic detection works without external APIs, reducing security surface
 3. **Regular Updates**: Keep the plugin updated for security patches
+   - **Manual Updates** (Recommended): Download and install updates manually from GitHub releases
+   - **Automatic Updates** (Optional): Enable GitHub updates in Settings → Maintenance tab at your own risk
 4. **Review Submissions**: Regularly review spam submissions for false positives
 5. **Database Access**: Limit database access to trusted administrators
 6. **Rate Limiting**: Monitor API usage to prevent abuse (OpenAI has built-in rate limiting)
