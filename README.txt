@@ -99,6 +99,13 @@ You have two options:
 
 Automatic GitHub updates are disabled by default for security. You must manually enable them in Settings -> Maintenance tab if you want automatic updates.
 
+= What happens if the database table is accidentally deleted? =
+
+The plugin automatically detects and repairs missing tables or columns:
+- Missing table: Automatically recreated on next database operation
+- Missing columns: Automatically added without data loss
+- Weekly maintenance: Runs every Sunday at 3 AM to check table integrity and optimize performance (CHECK TABLE, OPTIMIZE TABLE)
+
 == Screenshots ==
 
 1. Dashboard with submission list

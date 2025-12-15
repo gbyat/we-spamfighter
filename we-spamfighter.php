@@ -123,6 +123,9 @@ class Plugin
         // Cron: daily cleanup of old logs.
         add_action('we_spamfighter_clean_logs', array($this, 'clean_logs_cron'));
 
+        // Cron: weekly table maintenance (check, optimize, repair).
+        add_action('we_spamfighter_maintain_tables', array($this, 'maintain_tables_cron'));
+
         // Cron: daily and weekly spam summaries.
         add_action('we_spamfighter_daily_summary', array($this, 'send_daily_summary_cron'));
         add_action('we_spamfighter_weekly_summary', array($this, 'send_weekly_summary_cron'));
@@ -272,6 +275,12 @@ class Plugin
             // WordPress doesn't have a built-in 'weekly' schedule, so we schedule it as a one-time event and reschedule it.
             wp_schedule_single_event($next_monday, 'we_spamfighter_weekly_summary');
         }
+
+        // Schedule weekly table maintenance (runs on Sunday at 3 AM).
+        if (! wp_next_scheduled('we_spamfighter_maintain_tables')) {
+            $next_sunday = strtotime('next Sunday 3:00');
+            wp_schedule_single_event($next_sunday, 'we_spamfighter_maintain_tables');
+        }
     }
 
     /**
@@ -280,8 +289,9 @@ class Plugin
     public function deactivate()
     {
         flush_rewrite_rules();
-        // Clear scheduled cleanup and summaries.
+        // Clear scheduled cleanup, maintenance, and summaries.
         wp_clear_scheduled_hook('we_spamfighter_clean_logs');
+        wp_clear_scheduled_hook('we_spamfighter_maintain_tables');
         wp_clear_scheduled_hook('we_spamfighter_daily_summary');
         wp_clear_scheduled_hook('we_spamfighter_weekly_summary');
     }
@@ -315,6 +325,33 @@ class Plugin
         // Optional: debug log
         if (defined('WP_DEBUG') && constant('WP_DEBUG')) {
             Core\Logger::get_instance()->info('Cron: cleaned old logs', array('retention_days' => $days, 'deleted_rows' => (int) $deleted));
+        }
+    }
+
+    /**
+     * Cron callback: check and maintain database table consistency.
+     *
+     * Runs weekly to check table integrity, optimize indexes, and repair if needed.
+     */
+    public function maintain_tables_cron()
+    {
+        $results = Core\Database::get_instance()->check_and_repair_tables();
+
+        // Reschedule for next week (Sunday at 3 AM).
+        $next_sunday = strtotime('next Sunday 3:00');
+        wp_schedule_single_event($next_sunday, 'we_spamfighter_maintain_tables');
+
+        // Optional: debug log
+        if (defined('WP_DEBUG') && constant('WP_DEBUG')) {
+            Core\Logger::get_instance()->info(
+                'Cron: table maintenance completed',
+                array(
+                    'check'    => $results['check'],
+                    'optimize' => $results['optimize'],
+                    'repair'   => $results['repair'],
+                    'errors'   => $results['errors'],
+                )
+            );
         }
     }
 

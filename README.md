@@ -299,6 +299,12 @@ The plugin creates a custom table `wp_we_spamfighter_submissions`:
 
 **Note**: Only Contact Form 7 submissions are stored in this table. Comments are handled by WordPress's native comment system and stored in WordPress tables.
 
+**Automatic Recovery**: The plugin automatically detects and repairs missing tables or columns:
+
+- If the table is accidentally deleted, it will be automatically recreated on the next database operation
+- If columns are missing, they will be automatically added without data loss
+- Weekly maintenance runs CHECK TABLE and OPTIMIZE TABLE to ensure consistency and performance
+
 ```sql
 - id (bigint) - Primary key
 - submission_type (varchar) - 'cf7' (comments are not stored here)
@@ -330,6 +336,8 @@ The plugin creates a custom table `wp_we_spamfighter_submissions`:
 - **Single Submission Cache**: Individual submissions cached for 1 hour
 - **Cache Invalidation**: Automatic cache clearing on new submissions
 - **Indexed Queries**: Database indexes on frequently queried columns
+- **Automatic Table Repair**: Missing tables or columns are automatically detected and restored
+- **Weekly Maintenance**: Automatic table consistency checks and optimization (CHECK TABLE, OPTIMIZE TABLE)
 
 ## Troubleshooting
 
@@ -370,7 +378,18 @@ The plugin creates a custom table `wp_we_spamfighter_submissions`:
 
 - **Solution**: Check that "Store All Submissions" is enabled in settings
 - **Check**: Verify database table exists (plugin activation creates it)
+- **Auto-Repair**: If the table or columns are missing, the plugin will automatically attempt to repair them on the next operation
 - **Note**: Comments are not stored in the plugin database - they are managed by WordPress. Check **Comments → Spam** in WordPress admin for spam comments.
+
+### Database Table Issues
+
+**Problem**: Database errors or missing table/columns
+
+- **Solution**: The plugin automatically detects and repairs missing tables or columns
+  - Missing table: Automatically recreated on next database operation
+  - Missing columns: Automatically added using dbDelta (no data loss)
+  - Weekly maintenance: Runs every Sunday at 3 AM to check table integrity and optimize performance
+- **Manual Repair**: You can also manually repair by deactivating and reactivating the plugin (this runs table creation)
 
 ### Plugin Updates
 

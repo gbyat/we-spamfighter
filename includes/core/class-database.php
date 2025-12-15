@@ -22,13 +22,6 @@ class Database
     private static $instance = null;
 
     /**
-     * Table name for submissions.
-     *
-     * @var string
-     */
-    private $table_name;
-
-    /**
      * Get instance.
      *
      * @return Database
@@ -46,8 +39,18 @@ class Database
      */
     private function __construct()
     {
+        // Table name is generated dynamically to support Multisite.
+    }
+
+    /**
+     * Get table name (dynamic for Multisite compatibility).
+     *
+     * @return string Table name with current site's prefix.
+     */
+    private function get_table_name()
+    {
         global $wpdb;
-        $this->table_name = $wpdb->prefix . 'we_spamfighter_submissions';
+        return $wpdb->prefix . 'we_spamfighter_submissions';
     }
 
     /**
@@ -59,7 +62,7 @@ class Database
 
         $charset_collate = $wpdb->get_charset_collate();
 
-        $sql = "CREATE TABLE IF NOT EXISTS {$this->table_name} (
+        $sql = "CREATE TABLE IF NOT EXISTS {$this->get_table_name()} (
 			id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
 			submission_type varchar(50) NOT NULL DEFAULT 'cf7',
 			form_id bigint(20) UNSIGNED,
@@ -122,7 +125,7 @@ class Database
 
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Custom table insert.
         $result = $wpdb->insert(
-            $this->table_name,
+            $this->get_table_name(),
             $data,
             array(
                 '%s', // submission_type
@@ -138,6 +141,38 @@ class Database
                 '%d', // email_sent
             )
         );
+
+        // If insert failed due to missing table/columns, try to repair and retry once.
+        if (! $result && ! empty($wpdb->last_error)) {
+            // Check if error is related to missing table or column.
+            $error_lower = strtolower($wpdb->last_error);
+            if (
+                stripos($error_lower, "doesn't exist") !== false ||
+                stripos($error_lower, 'unknown column') !== false ||
+                stripos($error_lower, 'table') !== false
+            ) {
+                // Attempt to repair table structure.
+                $this->verify_and_repair_table();
+                // Retry insert once.
+                $result = $wpdb->insert(
+                    $this->get_table_name(),
+                    $data,
+                    array(
+                        '%s',
+                        '%d',
+                        '%s',
+                        '%d',
+                        '%f',
+                        '%s',
+                        '%s',
+                        '%s',
+                        '%s',
+                        '%d',
+                        '%d',
+                    )
+                );
+            }
+        }
 
         // Clear cache after insert.
         if ($result) {
@@ -237,13 +272,33 @@ class Database
 
         // Build query - order_by and order are whitelisted and escaped.
         $query = $wpdb->prepare(
-            "SELECT * FROM {$this->table_name} WHERE {$where_clause} ORDER BY {$order_by} {$order} LIMIT %d OFFSET %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- order_by and order are whitelisted and escaped.
+            "SELECT * FROM {$this->get_table_name()} WHERE {$where_clause} ORDER BY {$order_by} {$order} LIMIT %d OFFSET %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- order_by and order are whitelisted and escaped.
             $args['limit'],
             $args['offset']
         );
 
         // Custom table query. No WordPress API available for custom tables. Query is prepared above. ARRAY_A is WordPress core constant.
         $results = $wpdb->get_results($query, \ARRAY_A); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.PreparedSQL.NotPrepared, WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound
+
+        // If query failed due to missing table/columns, try to repair and retry once.
+        if (false === $results && ! empty($wpdb->last_error)) {
+            $error_lower = strtolower($wpdb->last_error);
+            if (
+                stripos($error_lower, "doesn't exist") !== false ||
+                stripos($error_lower, 'unknown column') !== false ||
+                stripos($error_lower, 'table') !== false
+            ) {
+                // Attempt to repair table structure.
+                $this->verify_and_repair_table();
+                // Retry query once.
+                $results = $wpdb->get_results($query, \ARRAY_A); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.PreparedSQL.NotPrepared
+            }
+        }
+
+        // If still false (error), return empty array instead of false to prevent errors in calling code.
+        if (false === $results) {
+            $results = array();
+        }
 
         // Cache the results for 5 minutes.
         wp_cache_set($cache_key, $results, 'we_spamfighter', 5 * \MINUTE_IN_SECONDS);
@@ -272,11 +327,29 @@ class Database
 
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound -- Custom table query with caching. ARRAY_A is WordPress core constant.
         $result = $wpdb->get_row(
-            $wpdb->prepare("SELECT * FROM {$this->table_name} WHERE id = %d", $id),
+            $wpdb->prepare("SELECT * FROM {$this->get_table_name()} WHERE id = %d", $id),
             \ARRAY_A
         );
 
-        // Cache the result for 1 hour.
+        // If query failed due to missing table/columns, try to repair and retry once.
+        if (false === $result && ! empty($wpdb->last_error)) {
+            $error_lower = strtolower($wpdb->last_error);
+            if (
+                stripos($error_lower, "doesn't exist") !== false ||
+                stripos($error_lower, 'unknown column') !== false ||
+                stripos($error_lower, 'table') !== false
+            ) {
+                // Attempt to repair table structure.
+                $this->verify_and_repair_table();
+                // Retry query once.
+                $result = $wpdb->get_row(
+                    $wpdb->prepare("SELECT * FROM {$this->get_table_name()} WHERE id = %d", $id),
+                    \ARRAY_A
+                );
+            }
+        }
+
+        // Cache the result for 1 hour (even if null).
         wp_cache_set($cache_key, $result, 'we_spamfighter', \HOUR_IN_SECONDS);
 
         return $result;
@@ -305,7 +378,7 @@ class Database
 
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Custom table update.
         $result = (bool) $wpdb->update(
-            $this->table_name,
+            $this->get_table_name(),
             $data,
             array('id' => $id),
             null,
@@ -379,7 +452,7 @@ class Database
 
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Delete operation.
         $result = (bool) $wpdb->delete(
-            $this->table_name,
+            $this->get_table_name(),
             array('id' => $id),
             array('%d')
         );
@@ -430,7 +503,7 @@ class Database
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Bulk delete operation.
         $result = $wpdb->query(
             $wpdb->prepare(
-                "DELETE FROM {$this->table_name} WHERE id IN ({$placeholders})", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Placeholders are prepared.
+                "DELETE FROM {$this->get_table_name()} WHERE id IN ({$placeholders})", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Placeholders are prepared.
                 ...$ids
             )
         );
@@ -494,26 +567,26 @@ class Database
         // Total submissions (CF7 only).
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Statistics query. where_clause is prepared with wpdb->prepare() or safe literal.
         $stats['total'] = (int) $wpdb->get_var(
-            "SELECT COUNT(*) FROM {$this->table_name} WHERE {$cf7_where_clause}" // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- where_clause is already prepared or safe.
+            "SELECT COUNT(*) FROM {$this->get_table_name()} WHERE {$cf7_where_clause}" // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- where_clause is already prepared or safe.
         );
 
         // Normal submissions (CF7 only).
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Statistics query. where_clause is prepared with wpdb->prepare() or safe literal.
         $stats['normal'] = (int) $wpdb->get_var(
-            "SELECT COUNT(*) FROM {$this->table_name} WHERE {$cf7_where_clause} AND is_spam = 0" // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- where_clause is already prepared or safe.
+            "SELECT COUNT(*) FROM {$this->get_table_name()} WHERE {$cf7_where_clause} AND is_spam = 0" // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- where_clause is already prepared or safe.
         );
 
         // Spam submissions (CF7 only).
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Statistics query. where_clause is prepared with wpdb->prepare() or safe literal.
         $stats['spam'] = (int) $wpdb->get_var(
-            "SELECT COUNT(*) FROM {$this->table_name} WHERE {$cf7_where_clause} AND is_spam = 1" // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- where_clause is already prepared or safe.
+            "SELECT COUNT(*) FROM {$this->get_table_name()} WHERE {$cf7_where_clause} AND is_spam = 1" // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- where_clause is already prepared or safe.
         );
 
         // By submission type (CF7 only, since comments are handled by WordPress).
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter, WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound -- Statistics query. where_clause is prepared with wpdb->prepare() or safe literal. ARRAY_A is WordPress core constant.
         $stats['by_type'] = $wpdb->get_results(
             "SELECT submission_type, COUNT(*) as count 
-			 FROM {$this->table_name} 
+			 FROM {$this->get_table_name()} 
 			 WHERE {$cf7_where_clause} 
 			 GROUP BY submission_type 
 			 ORDER BY count DESC", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- where_clause is already prepared or safe.
@@ -527,7 +600,7 @@ class Database
 			 COUNT(*) as total,
 			 SUM(CASE WHEN is_spam = 0 THEN 1 ELSE 0 END) as normal,
 			 SUM(CASE WHEN is_spam = 1 THEN 1 ELSE 0 END) as spam
-			 FROM {$this->table_name} 
+			 FROM {$this->get_table_name()} 
 			 WHERE {$cf7_where_clause} 
 			 GROUP BY DATE(created_at) 
 			 ORDER BY date ASC", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- where_clause is already prepared or safe.
@@ -556,7 +629,7 @@ class Database
             return (int) $count;
         }
 
-        $query = "SELECT COUNT(*) FROM {$this->table_name}";
+        $query = "SELECT COUNT(*) FROM {$this->get_table_name()}";
         $where = array();
 
         // Only count CF7 submissions (comments are handled by WordPress).
@@ -601,10 +674,171 @@ class Database
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Cleanup operation.
         return $wpdb->query(
             $wpdb->prepare(
-                "DELETE FROM {$this->table_name} WHERE created_at < %s",
+                "DELETE FROM {$this->get_table_name()} WHERE created_at < %s",
                 $date
             )
         );
+    }
+
+    /**
+     * Check if table exists.
+     *
+     * @return bool True if table exists, false otherwise.
+     */
+    private function table_exists()
+    {
+        global $wpdb;
+
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Table existence check.
+        $table_exists = $wpdb->get_var(
+            $wpdb->prepare(
+                'SHOW TABLES LIKE %s',
+                $this->get_table_name()
+            )
+        );
+
+        return (bool) $table_exists;
+    }
+
+    /**
+     * Verify table structure and repair if needed.
+     *
+     * Checks if table exists and all required columns are present.
+     * Automatically repairs by recreating table structure using dbDelta.
+     *
+     * @return bool True if table is valid or was successfully repaired, false on failure.
+     */
+    public function verify_and_repair_table()
+    {
+        // Check if table exists.
+        if (! $this->table_exists()) {
+            // Table doesn't exist - recreate it.
+            $this->create_tables();
+            return $this->table_exists();
+        }
+
+        // Table exists - verify structure using dbDelta (which adds missing columns).
+        global $wpdb;
+
+        $charset_collate = $wpdb->get_charset_collate();
+
+        $sql = "CREATE TABLE {$this->get_table_name()} (
+			id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+			submission_type varchar(50) NOT NULL DEFAULT 'cf7',
+			form_id bigint(20) UNSIGNED,
+			submission_data longtext NOT NULL,
+			is_spam tinyint(1) NOT NULL DEFAULT 0,
+			spam_score float NOT NULL DEFAULT 0,
+			detection_method varchar(255),
+			detection_details longtext,
+			user_ip varchar(100),
+			user_agent text,
+			site_id bigint(20) UNSIGNED,
+			email_sent tinyint(1) NOT NULL DEFAULT 0,
+			created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+			PRIMARY KEY  (id),
+			KEY form_id (form_id),
+			KEY created_at (created_at),
+			KEY is_spam (is_spam),
+			KEY submission_type (submission_type),
+			KEY site_id (site_id)
+		) $charset_collate;";
+
+        // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound -- WordPress core constant in global namespace.
+        require_once \ABSPATH . 'wp-admin/includes/upgrade.php';
+        dbDelta($sql); // dbDelta compares and adds missing columns without losing data.
+
+        return true;
+    }
+
+    /**
+     * Check and repair database table for consistency.
+     *
+     * Performs CHECK TABLE, OPTIMIZE TABLE, and REPAIR TABLE if needed.
+     * This helps prevent query issues and maintains table performance.
+     * Also verifies table structure and repairs missing columns.
+     *
+     * @return array Results of maintenance operations.
+     */
+    public function check_and_repair_tables()
+    {
+        global $wpdb;
+
+        $results = array(
+            'check'         => false,
+            'optimize'      => false,
+            'repair'        => false,
+            'structure_ok'  => false,
+            'repaired'      => false,
+            'errors'        => array(),
+        );
+
+        // First, verify table structure and repair if needed (missing table or columns).
+        $structure_ok = $this->verify_and_repair_table();
+        $results['structure_ok'] = $structure_ok;
+
+        if (! $structure_ok) {
+            $results['errors'][] = __('Failed to verify or repair table structure', 'we-spamfighter');
+            // Continue anyway - table might exist but structure check failed.
+        } else {
+            $results['repaired'] = true; // Structure was verified/repaired.
+        }
+
+        // Check if table exists now (after repair attempt).
+        if (! $this->table_exists()) {
+            $results['errors'][] = __('Table does not exist and could not be created', 'we-spamfighter');
+            return $results;
+        }
+
+        // 1. CHECK TABLE - Check for corruption or inconsistencies.
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Maintenance operation.
+        $check_result = $wpdb->get_row(
+            "CHECK TABLE {$this->get_table_name()}",
+            ARRAY_A
+        );
+
+        if ($check_result) {
+            $results['check'] = true;
+            $status = isset($check_result['Msg_text']) ? $check_result['Msg_text'] : '';
+
+            // If table is corrupted or has issues, attempt repair.
+            if (stripos($status, 'corrupt') !== false || stripos($status, 'warning') !== false || stripos($status, 'error') !== false) {
+                // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Maintenance operation.
+                $repair_result = $wpdb->get_row(
+                    "REPAIR TABLE {$this->get_table_name()}",
+                    ARRAY_A
+                );
+
+                if ($repair_result) {
+                    $results['repair'] = true;
+                    if (isset($repair_result['Msg_text'])) {
+                        $results['repair_message'] = $repair_result['Msg_text'];
+                    }
+                } else {
+                    $results['errors'][] = __('Failed to repair table', 'we-spamfighter');
+                }
+            }
+        } else {
+            $results['errors'][] = __('Failed to check table', 'we-spamfighter');
+        }
+
+        // 2. OPTIMIZE TABLE - Defragment table and optimize indexes (safe, non-destructive).
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Maintenance operation.
+        $optimize_result = $wpdb->get_row(
+            "OPTIMIZE TABLE {$this->get_table_name()}",
+            ARRAY_A
+        );
+
+        if ($optimize_result) {
+            $results['optimize'] = true;
+            if (isset($optimize_result['Msg_text'])) {
+                $results['optimize_message'] = $optimize_result['Msg_text'];
+            }
+        } else {
+            $results['errors'][] = __('Failed to optimize table', 'we-spamfighter');
+        }
+
+        return $results;
     }
 
     /**
