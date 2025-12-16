@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WE Spamfighter\n"
 "Report-Msgid-Bugs-To: https://github.com/gbyat/we-spamfighter/issues\n"
-"POT-Creation-Date: 2025-12-15 18:33+0000\n"
-"PO-Revision-Date: 2025-12-15 19:35+0100\n"
+"POT-Creation-Date: 2025-12-16 11:15+0000\n"
+"PO-Revision-Date: 2025-12-16 12:20+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: de_DE\n"
@@ -345,7 +345,7 @@ msgstr ""
 "bedeuten, dass mehr Beiträge als Spam markiert werden (strenger). "
 "Standardwert: 0,7"
 
-#: includes/admin/class-settings.php:293, includes/admin/class-settings.php:625
+#: includes/admin/class-settings.php:293, includes/admin/class-settings.php:637
 msgid "Heuristic Detection"
 msgstr "Heuristische Erkennung"
 
@@ -445,7 +445,7 @@ msgstr "Wöchentliche Zusammenfassung"
 msgid "How often to receive spam notifications."
 msgstr "Wie oft Spam-Benachrichtigungen empfangen werden sollen."
 
-#: includes/admin/class-settings.php:415, includes/admin/class-settings.php:637
+#: includes/admin/class-settings.php:415, includes/admin/class-settings.php:649
 msgid "Maintenance"
 msgstr "Wartung"
 
@@ -485,54 +485,141 @@ msgstr ""
 "Aktivierung erfolgt auf eigene Gefahr.</strong> Updates werden automatisch "
 "und ohne zusätzliche Bestätigung installiert."
 
-#: includes/admin/class-settings.php:465
+#: includes/admin/class-settings.php:461
+msgid "Enable Activity Log"
+msgstr "Aktivitätsprotokoll aktivieren"
+
+#: includes/admin/class-settings.php:467
+msgid ""
+"Enable activity logging to track important plugin events (e.g., weekly "
+"summaries sent, table maintenance)."
+msgstr ""
+"Aktivieren Sie die Aktivitätsprotokollierung, um wichtige Plugin-Ereignisse "
+"zu verfolgen (z. B. versendete wöchentliche Zusammenfassungen, "
+"Tabellenpflege)."
+
+#: includes/admin/class-settings.php:477
 msgid "Configure general spam protection settings."
 msgstr "Konfiguriere allgemeine Spam-Schutzeinstellungen."
 
-#: includes/admin/class-settings.php:473
+#: includes/admin/class-settings.php:485
 msgid "Configure OpenAI integration for spam detection."
 msgstr "OpenAI-Integration für die Spam-Erkennung."
 
-#: includes/admin/class-settings.php:481
+#: includes/admin/class-settings.php:493
 msgid "Configure local heuristic spam detection (works without OpenAI)."
 msgstr ""
 "Lokale heuristische Spam-Erkennung konfigurieren (funktioniert ohne OpenAI)."
 
-#: includes/admin/class-settings.php:489
+#: includes/admin/class-settings.php:501
 msgid "Configure email notifications for spam detections."
 msgstr "E-Mail-Benachrichtigungen für Spam-Erkennungen."
 
-#: includes/admin/class-settings.php:497
+#: includes/admin/class-settings.php:509
 msgid "Configure maintenance and cleanup settings."
 msgstr "Einstellungen für Wartung und Bereinigung."
 
-#: includes/admin/class-settings.php:621
+#: includes/admin/class-settings.php:633
 msgid "General"
 msgstr "Allgemein"
 
-#: includes/admin/class-settings.php:629
+#: includes/admin/class-settings.php:641
 msgid "OpenAI"
 msgstr "OpenAI"
 
-#: includes/admin/class-settings.php:633
+#: includes/admin/class-settings.php:645
 msgid "Notifications"
 msgstr "Benachrichtigungen"
 
-#: includes/admin/class-settings.php:650
+#: includes/admin/class-settings.php:662
 msgid "WE Spamfighter Settings"
 msgstr "WE Spamfighter-Einstellungen"
 
-#: includes/admin/class-settings.php:716
+#: includes/admin/class-settings.php:728
 msgid "Test OpenAI Connection"
 msgstr "OpenAI-Verbindung testen"
 
-#: includes/admin/class-settings.php:718
+#: includes/admin/class-settings.php:730
 msgid "Test your OpenAI API connection and configuration."
 msgstr "Testen Sie Ihre OpenAI-API-Verbindung und -Konfiguration."
 
-#: includes/admin/class-settings.php:721
+#: includes/admin/class-settings.php:733
 msgid "Test Connection"
 msgstr "Verbindung testen"
+
+#: includes/admin/class-settings.php:748
+msgid "Activity Log"
+msgstr "Aktivitätsprotokoll"
+
+#: includes/admin/class-settings.php:750
+msgid "Recent plugin activities and events."
+msgstr "Aktuelle Plugin-Aktivitäten und Ereignisse."
+
+#: includes/admin/class-settings.php:774
+msgid "No activity log entries yet."
+msgstr "Noch keine Aktivitätsprotokolleinträge."
+
+#: includes/admin/class-settings.php:777
+msgid ""
+"Activity log entries will appear here once plugin events occur, such as:"
+msgstr ""
+"Aktivitätsprotokolleinträge werden hier angezeigt, sobald Plugin-Ereignisse "
+"auftreten, wie z. B.:"
+
+#: includes/admin/class-settings.php:780
+msgid "Weekly spam summary emails sent"
+msgstr "Wöchentliche E-Mail-Zusammenfassung gesendet"
+
+#: includes/admin/class-settings.php:781
+msgid "Daily spam summary emails sent"
+msgstr "Tägliche E-Mail-Zusammenfassung gesendet"
+
+#: includes/admin/class-settings.php:782, we-spamfighter.php:357
+msgid "Table maintenance completed"
+msgstr "Tabellenpflege abgeschlossen"
+
+#: includes/admin/class-settings.php:783, we-spamfighter.php:331
+msgid "Old logs cleaned"
+msgstr "Alte Logs gereinigt"
+
+#: includes/admin/class-settings.php:786
+msgid "The log will start recording events after the next scheduled task runs."
+msgstr ""
+"Das Protokoll beginnt mit der Aufzeichnung von Ereignissen, nachdem die "
+"nächste geplante Aufgabe ausgeführt wurde."
+
+#: includes/admin/class-settings.php:756
+msgid "Date/Time"
+msgstr "Datum/Uhrzeit"
+
+#: includes/admin/class-settings.php:757
+msgid "Event"
+msgstr "Ereignis"
+
+#: includes/admin/class-settings.php:758
+msgid "Message"
+msgstr "Nachricht"
+
+#: includes/core/class-database.php:781
+msgid "Failed to verify or repair table structure"
+msgstr ""
+"Die Überprüfung oder Reparatur der Tabellenstruktur ist fehlgeschlagen."
+
+#: includes/core/class-database.php:789
+msgid "Table does not exist and could not be created"
+msgstr "Die Tabelle existiert nicht und konnte nicht erstellt werden."
+
+#: includes/core/class-database.php:822
+msgid "Failed to check table"
+msgstr "Tabelle konnte nicht überprüft werden"
+
+#: includes/core/class-database.php:818
+msgid "Failed to repair table"
+msgstr "Reparatur der Tabelle fehlgeschlagen"
+
+#: includes/core/class-database.php:838
+msgid "Failed to optimize table"
+msgstr "Optimierung der Tabelle fehlgeschlagen"
 
 #. translators: %s: Site name
 #: includes/core/class-notifications.php:86
@@ -540,88 +627,108 @@ msgid "[%s] Spam Detected"
 msgstr "[%s] Spam erkannt"
 
 #. translators: %s: Site name
-#: includes/core/class-notifications.php:132
+#: includes/core/class-notifications.php:131
 msgid "[%s] Daily Spam Summary"
 msgstr "[%s] Tägliche Spam-Zusammenfassung"
 
 #. translators: %s: Site name
-#: includes/core/class-notifications.php:178
+#: includes/core/class-notifications.php:138
+msgid "No spam submissions were detected on %s yesterday."
+msgstr "Keine Spam-Beiträge wurden seit gestern auf %s entdeckt."
+
+#: includes/core/class-notifications.php:141,
+#: includes/core/class-notifications.php:198
+msgid "Great job keeping your site clean!"
+msgstr "Tolle Arbeit, Ihre Website sauber zu halten!"
+
+#: includes/core/class-notifications.php:143,
+#: includes/core/class-notifications.php:200
+msgid "View Dashboard:"
+msgstr "zum Dashboard"
+
+#. translators: %s: Site name
+#: includes/core/class-notifications.php:187
 msgid "[%s] Weekly Spam Summary"
 msgstr "[%s] Wöchentliche Spam-Zusammenfassung"
 
 #. translators: %s: Site name
-#: includes/core/class-notifications.php:200
+#: includes/core/class-notifications.php:195
+msgid "No spam submissions were detected on %s in the last week."
+msgstr "Keine Spam-Beiträge wurden letzte Woche auf %s entdeckt."
+
+#. translators: %s: Site name
+#: includes/core/class-notifications.php:222
 msgid "A spam submission was detected on %s."
 msgstr "Auf %s wurde eine Spam-Einreichung entdeckt."
 
-#: includes/core/class-notifications.php:204
+#: includes/core/class-notifications.php:226
 msgid "Submission Details:"
 msgstr "Einreichungsdetails:"
 
-#: includes/core/class-notifications.php:205
+#: includes/core/class-notifications.php:227
 msgid "ID:"
 msgstr "ID:"
 
-#: includes/core/class-notifications.php:206
+#: includes/core/class-notifications.php:228
 msgid "Type:"
 msgstr "Typ:"
 
-#: includes/core/class-notifications.php:207
+#: includes/core/class-notifications.php:229
 msgid "Form/Post ID:"
 msgstr "Formular-/Beitrags-ID:"
 
-#: includes/core/class-notifications.php:208,
+#: includes/core/class-notifications.php:230,
 #: includes/integration/class-comments.php:330
 msgid "Spam Score:"
 msgstr "Spam-Bewertung"
 
-#: includes/core/class-notifications.php:209
+#: includes/core/class-notifications.php:231
 msgid "Date:"
 msgstr "Datum:"
 
-#: includes/core/class-notifications.php:212
+#: includes/core/class-notifications.php:234
 msgid "Submission Data:"
 msgstr "Einreichungsdaten:"
 
-#: includes/core/class-notifications.php:226,
+#: includes/core/class-notifications.php:248,
 #: includes/integration/class-comments.php:333
 msgid "Detection Details:"
 msgstr "Details zur Spam-Erkennung:"
 
-#: includes/core/class-notifications.php:234
+#: includes/core/class-notifications.php:256
 msgid "View in Dashboard:"
 msgstr "Im Dashboard anzeigen:"
 
-#: includes/core/class-notifications.php:249
+#: includes/core/class-notifications.php:271
 msgid "last week"
 msgstr "Letzte Woche"
 
-#: includes/core/class-notifications.php:249
+#: includes/core/class-notifications.php:271
 msgid "yesterday"
 msgstr "gestern"
 
 #. translators: %1$d: Count, %2$s: Period, %3$s: Site name
-#: includes/core/class-notifications.php:254
+#: includes/core/class-notifications.php:276
 msgid "%1$d spam submission(s) were detected on %3$s %2$s."
 msgstr "%1$d Spam-Beiträge wurden auf %3$s %2$s entdeckt."
 
-#: includes/core/class-notifications.php:260
+#: includes/core/class-notifications.php:282
 msgid "Summary:"
 msgstr "Zusammenfassung:"
 
-#: includes/core/class-notifications.php:261
+#: includes/core/class-notifications.php:283
 msgid "Total Spam:"
 msgstr "Gesamt-Spam:"
 
-#: includes/core/class-notifications.php:280
+#: includes/core/class-notifications.php:302
 msgid "By Form/Type:"
 msgstr "Nach Formular/Typ"
 
-#: includes/core/class-notifications.php:290
+#: includes/core/class-notifications.php:312
 msgid "Top Spam Submissions:"
 msgstr "Top-Spam-Einsendungen:"
 
-#: includes/core/class-notifications.php:319
+#: includes/core/class-notifications.php:341
 msgid "View All in Dashboard:"
 msgstr "Alle im Dashboard anzeigen:"
 
@@ -787,6 +894,14 @@ msgstr "Link in fremdsprachigem Inhalt entdeckt (starker Spam-Indikator)"
 #: includes/integration/class-contact-form-7.php:513
 msgid "Thank you for your message."
 msgstr "Vielen Dank für Ihre Nachricht."
+
+#: we-spamfighter.php:378
+msgid "Daily spam summary sent"
+msgstr "Tägliche Zusammenfassung gesendet"
+
+#: we-spamfighter.php:399
+msgid "Weekly spam summary sent"
+msgstr "Wöchentliche Zusammenfassung gesendet"
 
 #~ msgid "https://webentwicklerin.at"
 #~ msgstr "https://webentwicklerin.at"

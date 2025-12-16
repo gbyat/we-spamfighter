@@ -99,6 +99,8 @@ class Notifications
      */
     public function send_daily_summary()
     {
+        // Reload settings to get current values.
+        $this->settings = get_option('we_spamfighter_settings', array());
         $notification_type = $this->settings['notification_type'] ?? 'none';
 
         // Only send if daily notifications are enabled.
@@ -123,17 +125,26 @@ class Notifications
             'limit'     => 1000, // Get all from yesterday.
         ));
 
-        if (empty($spam_submissions)) {
-            return false; // Don't send email if no spam.
-        }
-
+        // Send email even if no spam (to confirm the system is working).
         $subject = sprintf(
             /* translators: %s: Site name */
             __('[%s] Daily Spam Summary', 'we-spamfighter'),
             get_bloginfo('name')
         );
 
-        $message = $this->build_summary_message($spam_submissions, 'daily');
+        if (empty($spam_submissions)) {
+            $message = sprintf(
+                /* translators: %s: Site name */
+                __('No spam submissions were detected on %s yesterday.', 'we-spamfighter'),
+                get_bloginfo('name')
+            ) . "\n\n";
+            $message .= __('Great job keeping your site clean!', 'we-spamfighter') . "\n\n";
+            $admin_url = admin_url('admin.php?page=we-spamfighter');
+            $message .= __('View Dashboard:', 'we-spamfighter') . "\n";
+            $message .= $admin_url . "\n";
+        } else {
+            $message = $this->build_summary_message($spam_submissions, 'daily');
+        }
 
         return wp_mail($email, $subject, $message, $this->get_email_headers());
     }
@@ -145,6 +156,8 @@ class Notifications
      */
     public function send_weekly_summary()
     {
+        // Reload settings to get current values.
+        $this->settings = get_option('we_spamfighter_settings', array());
         $notification_type = $this->settings['notification_type'] ?? 'none';
 
         // Only send if weekly notifications are enabled.
@@ -169,17 +182,26 @@ class Notifications
             'limit'     => 1000, // Get all from last week.
         ));
 
-        if (empty($spam_submissions)) {
-            return false; // Don't send email if no spam.
-        }
-
         $subject = sprintf(
             /* translators: %s: Site name */
             __('[%s] Weekly Spam Summary', 'we-spamfighter'),
             get_bloginfo('name')
         );
 
-        $message = $this->build_summary_message($spam_submissions, 'weekly');
+        // Send email even if no spam (to confirm the system is working).
+        if (empty($spam_submissions)) {
+            $message = sprintf(
+                /* translators: %s: Site name */
+                __('No spam submissions were detected on %s in the last week.', 'we-spamfighter'),
+                get_bloginfo('name')
+            ) . "\n\n";
+            $message .= __('Great job keeping your site clean!', 'we-spamfighter') . "\n\n";
+            $admin_url = admin_url('admin.php?page=we-spamfighter');
+            $message .= __('View Dashboard:', 'we-spamfighter') . "\n";
+            $message .= $admin_url . "\n";
+        } else {
+            $message = $this->build_summary_message($spam_submissions, 'weekly');
+        }
 
         return wp_mail($email, $subject, $message, $this->get_email_headers());
     }

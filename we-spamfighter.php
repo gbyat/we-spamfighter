@@ -182,6 +182,7 @@ class Plugin
         // Initialize core components.
         Core\Logger::get_instance();
         Core\Database::get_instance();
+        Core\ActivityLog::get_instance();
     }
 
     /**
@@ -249,6 +250,7 @@ class Plugin
             'log_retention_days'           => 30,
             'keep_data_on_uninstall'       => false,
             'github_updates_enabled'       => false,
+            'activity_log_enabled'         => false,
             'notification_email'           => get_option('admin_email'),
             'notification_type'            => 'none',
         );
@@ -322,9 +324,16 @@ class Plugin
 
         $deleted = Core\Database::get_instance()->clean_old_logs($days);
 
-        // Optional: debug log
-        if (defined('WP_DEBUG') && constant('WP_DEBUG')) {
-            Core\Logger::get_instance()->info('Cron: cleaned old logs', array('retention_days' => $days, 'deleted_rows' => (int) $deleted));
+        // Log activity.
+        if (class_exists('\WeSpamfighter\Core\ActivityLog')) {
+            \WeSpamfighter\Core\ActivityLog::get_instance()->log(
+                'logs_cleaned',
+                __('Old logs cleaned', 'we-spamfighter'),
+                array(
+                    'retention_days' => $days,
+                    'deleted_rows' => (int) $deleted,
+                )
+            );
         }
     }
 
@@ -341,15 +350,15 @@ class Plugin
         $next_sunday = strtotime('next Sunday 3:00');
         wp_schedule_single_event($next_sunday, 'we_spamfighter_maintain_tables');
 
-        // Optional: debug log
-        if (defined('WP_DEBUG') && constant('WP_DEBUG')) {
-            Core\Logger::get_instance()->info(
-                'Cron: table maintenance completed',
+        // Log activity.
+        if (class_exists('\WeSpamfighter\Core\ActivityLog')) {
+            \WeSpamfighter\Core\ActivityLog::get_instance()->log(
+                'table_maintenance',
+                __('Table maintenance completed', 'we-spamfighter'),
                 array(
                     'check'    => $results['check'],
                     'optimize' => $results['optimize'],
                     'repair'   => $results['repair'],
-                    'errors'   => $results['errors'],
                 )
             );
         }
@@ -360,7 +369,16 @@ class Plugin
      */
     public function send_daily_summary_cron()
     {
-        Core\Notifications::get_instance()->send_daily_summary();
+        $result = Core\Notifications::get_instance()->send_daily_summary();
+
+        // Log activity.
+        if (class_exists('\WeSpamfighter\Core\ActivityLog')) {
+            \WeSpamfighter\Core\ActivityLog::get_instance()->log(
+                'daily_summary_sent',
+                __('Daily spam summary sent', 'we-spamfighter'),
+                array('success' => $result)
+            );
+        }
     }
 
     /**
@@ -368,11 +386,23 @@ class Plugin
      */
     public function send_weekly_summary_cron()
     {
-        Core\Notifications::get_instance()->send_weekly_summary();
+        $result = Core\Notifications::get_instance()->send_weekly_summary();
 
         // Reschedule for next week (Monday at 8 AM).
         $next_monday = strtotime('next Monday 8:00');
         wp_schedule_single_event($next_monday, 'we_spamfighter_weekly_summary');
+
+        // Log activity.
+        if (class_exists('\WeSpamfighter\Core\ActivityLog')) {
+            \WeSpamfighter\Core\ActivityLog::get_instance()->log(
+                'weekly_summary_sent',
+                __('Weekly spam summary sent', 'we-spamfighter'),
+                array(
+                    'success' => $result,
+                    'next_run' => date('Y-m-d H:i:s', $next_monday),
+                )
+            );
+        }
     }
 
     /**

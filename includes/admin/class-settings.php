@@ -455,6 +455,18 @@ class Settings
                 'description' => __('Enable automatic updates from GitHub releases. <strong>Activate at your own risk.</strong> Updates will be installed automatically without additional confirmation.', 'we-spamfighter'),
             )
         );
+
+        add_settings_field(
+            'activity_log_enabled',
+            __('Enable Activity Log', 'we-spamfighter'),
+            array($this, 'render_checkbox_field'),
+            'we-spamfighter',
+            'we_spamfighter_maintenance',
+            array(
+                'field_id'    => 'activity_log_enabled',
+                'description' => __('Enable activity logging to track important plugin events (e.g., weekly summaries sent, table maintenance).', 'we-spamfighter'),
+            )
+        );
     }
 
     /**
@@ -723,6 +735,61 @@ class Settings
                     <span id="we-test-api-result" style="margin-left:15px;"></span>
                 </div>
             <?php endif; ?>
+
+            <?php if ($active_tab === 'maintenance') : ?>
+                <?php
+                $settings = get_option('we_spamfighter_settings', array());
+                $activity_log_enabled = isset($settings['activity_log_enabled']) && $settings['activity_log_enabled'];
+                if ($activity_log_enabled && class_exists('\WeSpamfighter\Core\ActivityLog')) :
+                    $activity_log = \WeSpamfighter\Core\ActivityLog::get_instance();
+                    $log_entries = $activity_log->get_entries(20);
+                ?>
+                    <div class="we-activity-log-section" style="margin-top: 30px;">
+                        <h2><?php esc_html_e('Activity Log', 'we-spamfighter'); ?></h2>
+                        <p>
+                            <?php esc_html_e('Recent plugin activities and events.', 'we-spamfighter'); ?>
+                        </p>
+                        <?php if (! empty($log_entries)) : ?>
+                            <table class="wp-list-table widefat fixed striped">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 160px;"><?php esc_html_e('Date/Time', 'we-spamfighter'); ?></th>
+                                        <th style="width: 200px;"><?php esc_html_e('Event', 'we-spamfighter'); ?></th>
+                                        <th><?php esc_html_e('Message', 'we-spamfighter'); ?></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach ($log_entries as $entry) : ?>
+                                        <tr>
+                                            <td><?php echo esc_html(date_i18n(get_option('date_format') . ' ' . get_option('time_format'), strtotime($entry['timestamp']))); ?></td>
+                                            <td><code><?php echo esc_html($entry['event_type']); ?></code></td>
+                                            <td><?php echo esc_html($entry['message']); ?></td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        <?php else : ?>
+                            <div class="notice notice-info inline">
+                                <p>
+                                    <strong><?php esc_html_e('No activity log entries yet.', 'we-spamfighter'); ?></strong>
+                                </p>
+                                <p>
+                                    <?php esc_html_e('Activity log entries will appear here once plugin events occur, such as:', 'we-spamfighter'); ?>
+                                </p>
+                                <ul style="list-style-type: disc; margin-left: 20px;">
+                                    <li><?php esc_html_e('Weekly spam summary emails sent', 'we-spamfighter'); ?></li>
+                                    <li><?php esc_html_e('Daily spam summary emails sent', 'we-spamfighter'); ?></li>
+                                    <li><?php esc_html_e('Table maintenance completed', 'we-spamfighter'); ?></li>
+                                    <li><?php esc_html_e('Old logs cleaned', 'we-spamfighter'); ?></li>
+                                </ul>
+                                <p>
+                                    <?php esc_html_e('The log will start recording events after the next scheduled task runs.', 'we-spamfighter'); ?>
+                                </p>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                <?php endif; ?>
+            <?php endif; ?>
         </div>
 <?php
     }
@@ -807,6 +874,7 @@ class Settings
             'disable_email_check',
             'keep_data_on_uninstall',
             'github_updates_enabled',
+            'activity_log_enabled',
         );
 
         foreach ($boolean_fields as $field) {
