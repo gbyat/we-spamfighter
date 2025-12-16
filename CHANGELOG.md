@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2025-12-16
+
+- Implement activity log feature with management options
+  - Added an optional activity log to track significant plugin events, including weekly summaries and table maintenance.
+  - Introduced settings to enable/disable the activity log and manage log retention.
+  - Implemented AJAX functionality for clearing the activity log entries.
+  - Updated documentation in README.md and README.txt to reflect new features and usage instructions.
+  - Enhanced database maintenance routines to include activity log management.
+- Add activity logging feature to track plugin events
+  - Introduced an activity log to record significant plugin events such as daily and weekly spam summaries sent, table maintenance, and old logs cleaned.
+  - Added a new setting to enable or disable the activity log in the plugin settings.
+  - Updated the admin interface to display recent activity log entries.
+  - Enhanced email notifications to confirm the sending of daily and weekly summaries even when no spam is detected.
+  - Updated language files to include new strings for the activity log feature.
+
+
 ## [1.2.1] - 2025-12-15
 
 - Enhance database management features with automatic table repair and maintenance
@@ -226,3 +242,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [1.1.10]: https://github.com/gbyat/we-spamfighter/releases/tag/v1.1.10
 [1.2.0]: https://github.com/gbyat/we-spamfighter/releases/tag/v1.2.0
 [1.2.1]: https://github.com/gbyat/we-spamfighter/releases/tag/v1.2.1
+[1.3.0]: https://github.com/gbyat/we-spamfighter/releases/tag/v1.3.0
