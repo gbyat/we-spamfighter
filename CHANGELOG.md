@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.1] - 2025-12-16
+
+- Enhance activity log feature with improved documentation and admin interface
+  - Updated README.md and README.txt to clarify the functionality and access of the Activity Log, including the addition of a new menu item in the admin interface.
+  - Improved the settings page to conditionally display the Activity Log submenu based on its enabled status.
+  - Added functionality to clear the activity log directly from the Maintenance tab and provided user feedback upon clearing.
+  - Enhanced the Activity Log page to display recent entries and a clear button, improving user experience.
+
+
 ## [1.3.0] - 2025-12-16
 
 - Implement activity log feature with management options
@@ -243,3 +252,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [1.2.0]: https://github.com/gbyat/we-spamfighter/releases/tag/v1.2.0
 [1.2.1]: https://github.com/gbyat/we-spamfighter/releases/tag/v1.2.1
 [1.3.0]: https://github.com/gbyat/we-spamfighter/releases/tag/v1.3.0
+[1.3.1]: https://github.com/gbyat/we-spamfighter/releases/tag/v1.3.1
