@@ -33,6 +33,45 @@
             });
         });
 
+        // Clear activity log button handler.
+        $('#we-clear-activity-log-btn').on('click', function () {
+            var button = $(this);
+            var resultSpan = $('#we-clear-activity-log-result');
+
+            if (!confirm('Are you sure you want to clear the activity log? This action cannot be undone.')) {
+                return;
+            }
+
+            button.prop('disabled', true).text('Clearing...');
+            resultSpan.text('').removeClass('error success');
+
+            $.ajax({
+                url: weSpamfighterAdmin.ajax_url,
+                type: 'POST',
+                data: {
+                    action: 'we_spamfighter_clear_activity_log',
+                    nonce: weSpamfighterAdmin.nonce
+                },
+                success: function (response) {
+                    button.prop('disabled', false).text('Clear Activity Log');
+
+                    if (response.success) {
+                        resultSpan.text(response.data.message).addClass('success');
+                        // Reload page after 1 second to show empty state.
+                        setTimeout(function () {
+                            location.reload();
+                        }, 1000);
+                    } else {
+                        resultSpan.text(response.data.message).addClass('error');
+                    }
+                },
+                error: function () {
+                    button.prop('disabled', false).text('Clear Activity Log');
+                    resultSpan.text('An error occurred. Please try again.').addClass('error');
+                }
+            });
+        });
+
         // Show/hide pingback option based on comments_enabled checkbox.
         function togglePingbackOption() {
             var commentsEnabled = $('input[name="we_spamfighter_settings[comments_enabled]"]').is(':checked');

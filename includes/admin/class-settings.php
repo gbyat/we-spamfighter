@@ -50,6 +50,7 @@ class Settings
         add_action('admin_init', array($this, 'register_settings'));
         add_action('admin_enqueue_scripts', array($this, 'enqueue_scripts'));
         add_action('wp_ajax_we_spamfighter_test_api', array($this, 'ajax_test_connection'));
+        add_action('wp_ajax_we_spamfighter_clear_activity_log', array($this, 'ajax_clear_activity_log'));
     }
 
     /**
@@ -792,6 +793,39 @@ class Settings
             <?php endif; ?>
         </div>
 <?php
+    }
+
+    /**
+     * AJAX handler for clearing activity log.
+     */
+    public function ajax_clear_activity_log()
+    {
+        check_ajax_referer('we_spamfighter_nonce', 'nonce');
+
+        if (! current_user_can('manage_options')) {
+            wp_send_json_error(array('message' => __('Unauthorized', 'we-spamfighter')));
+        }
+
+        if (! class_exists('\WeSpamfighter\Core\ActivityLog')) {
+            wp_send_json_error(array('message' => __('Activity Log class not found', 'we-spamfighter')));
+        }
+
+        $activity_log = \WeSpamfighter\Core\ActivityLog::get_instance();
+        $count_before = $activity_log->get_count();
+        $result = $activity_log->clear();
+
+        if ($result) {
+            wp_send_json_success(array(
+                'message' => sprintf(
+                    /* translators: %d: Number of entries deleted */
+                    __('Activity log cleared successfully. %d entries deleted.', 'we-spamfighter'),
+                    $count_before
+                ),
+                'deleted_count' => $count_before,
+            ));
+        } else {
+            wp_send_json_error(array('message' => __('Failed to clear activity log', 'we-spamfighter')));
+        }
     }
 
     /**

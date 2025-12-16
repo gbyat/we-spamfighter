@@ -324,16 +324,25 @@ class Plugin
 
         $deleted = Core\Database::get_instance()->clean_old_logs($days);
 
-        // Log activity.
+        // Also clean old activity log entries.
+        $activity_log_deleted = 0;
         if (class_exists('\WeSpamfighter\Core\ActivityLog')) {
-            \WeSpamfighter\Core\ActivityLog::get_instance()->log(
-                'logs_cleaned',
-                __('Old logs cleaned', 'we-spamfighter'),
-                array(
-                    'retention_days' => $days,
-                    'deleted_rows' => (int) $deleted,
-                )
-            );
+            $activity_log = \WeSpamfighter\Core\ActivityLog::get_instance();
+            $activity_log_deleted = $activity_log->clean_old_entries($days);
+
+            // Log activity (but only if activity log is enabled to avoid recursion).
+            $settings = get_option('we_spamfighter_settings', array());
+            if (isset($settings['activity_log_enabled']) && $settings['activity_log_enabled']) {
+                $activity_log->log(
+                    'logs_cleaned',
+                    __('Old logs cleaned', 'we-spamfighter'),
+                    array(
+                        'retention_days' => $days,
+                        'deleted_rows' => (int) $deleted,
+                        'activity_log_entries_deleted' => $activity_log_deleted,
+                    )
+                );
+            }
         }
     }
 

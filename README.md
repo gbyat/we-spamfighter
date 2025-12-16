@@ -56,6 +56,11 @@ Protects Contact Form 7 forms and WordPress comments from spam submissions with 
 - **Filtering**: Filter submissions by spam status, form ID, date range
 - **Export**: Export submission data for analysis
 - **Submission Details**: View full submission data, spam scores, and detection reasoning
+- **Activity Log** (Optional): Track important plugin events and operations
+  - View recent activities (weekly summaries, table maintenance, etc.)
+  - Automatic cleanup (max 100 entries, respects log retention days)
+  - Manual clear option
+  - Only shows when enabled in settings
 
 ### 🎨 User Experience
 
@@ -162,6 +167,7 @@ Navigate to **WE Spamfighter → Settings** (organized in tabs) to configure:
 
 - **Log Retention**: Days to keep logs (default: 30)
 - **Keep Data on Uninstall**: Option to preserve data when uninstalling
+- **Enable Activity Log**: Optional activity logging to track important plugin events (e.g., weekly summaries sent, table maintenance). When enabled, displays activity log in the Maintenance tab showing recent events.
 - **Enable GitHub Updates**: Optional automatic updates from GitHub releases. **⚠️ Activate at your own risk** - Updates will be installed automatically without additional confirmation. Disabled by default for security.
 
 ### 3. Contact Form 7 Integration
@@ -219,6 +225,16 @@ WordPress comment spam protection works when:
 - **Manage in WordPress**: Spam comments are managed in **Comments → Spam** in WordPress admin
 - **Spam Count**: View spam comment count in the plugin dashboard statistics
 - **Direct Link**: Click on spam comment count to go to WordPress comment management
+
+### Viewing Activity Log
+
+1. Go to **WE Spamfighter → Settings → Maintenance** tab
+2. Enable **Enable Activity Log** option
+3. The Activity Log section will appear below the settings
+4. View recent plugin events (weekly summaries sent, table maintenance, etc.)
+5. Use **Clear Log** button to manually clear all activity log entries
+
+**Note**: Activity log is optional and disabled by default. The log automatically cleans old entries based on the "Log Retention" setting and keeps a maximum of 100 entries. If no events have occurred yet, a helpful message will be displayed.
 
 ### Custom Messages
 
@@ -391,6 +407,14 @@ The plugin creates a custom table `wp_we_spamfighter_submissions`:
   - Weekly maintenance: Runs every Sunday at 3 AM to check table integrity and optimize performance
 - **Manual Repair**: You can also manually repair by deactivating and reactivating the plugin (this runs table creation)
 
+### Activity Log Not Showing
+
+**Problem**: Activity log section not visible in Maintenance tab
+
+- **Solution**: Enable "Enable Activity Log" in Settings → Maintenance tab
+- **Note**: Activity log is optional and disabled by default
+- **Empty Log**: If the log is enabled but empty, a message will be displayed indicating that no events have occurred yet. Events will appear as they happen (e.g., weekly summary emails sent, table maintenance performed)
+
 ### Plugin Updates
 
 **Q: How do I update the plugin?**
@@ -449,6 +473,23 @@ To add your own translation:
 5. Place in `languages/` directory
 
 ## Changelog
+
+### Version 1.2.2+
+
+- **Activity Log**: Optional activity logging to track important plugin events
+  - View recent activities (weekly summaries, table maintenance, etc.)
+  - Automatic cleanup (max 100 entries, respects log retention days)
+  - Manual clear option
+  - Only active when enabled in settings
+- **Optional GitHub Updates**: GitHub update functionality is now optional and disabled by default
+  - Enable in Settings → Maintenance tab
+  - Warning displayed when enabling automatic updates
+- **Enhanced Database Maintenance**: Improved database consistency and auto-repair
+  - Automatic detection and repair of missing tables or columns
+  - Weekly maintenance runs CHECK TABLE and OPTIMIZE TABLE
+  - Multisite compatible table name handling
+- **Improved Email Notifications**: Weekly summary emails now sent even when no spam is detected (shows "all clear" message)
+  - Settings are dynamically reloaded for cron jobs to reflect latest changes
 
 ### Version 1.0.8+
 

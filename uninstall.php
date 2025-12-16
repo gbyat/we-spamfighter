@@ -29,6 +29,8 @@ global $wpdb;
 
 // Delete options.
 delete_option('we_spamfighter_settings');
+delete_option('we_spamfighter_activity_log');
+delete_option('we_spamfighter_github_token');
 
 // Delete database table.
 $table_name = $wpdb->prefix . 'we_spamfighter_submissions';
@@ -54,6 +56,7 @@ if (function_exists('wp_cache_flush_group')) {
 wp_clear_scheduled_hook('we_spamfighter_clean_logs');
 wp_clear_scheduled_hook('we_spamfighter_daily_summary');
 wp_clear_scheduled_hook('we_spamfighter_weekly_summary');
+wp_clear_scheduled_hook('we_spamfighter_maintain_tables');
 
 // Delete log files (if they exist).
 $upload_dir = wp_upload_dir();
@@ -110,6 +113,8 @@ if (is_multisite()) {
 
         // Delete site-specific options.
         delete_option('we_spamfighter_settings');
+        delete_option('we_spamfighter_activity_log');
+        delete_option('we_spamfighter_github_token');
 
         // Delete site-specific database table.
         $table_name = $wpdb->prefix . 'we_spamfighter_submissions';

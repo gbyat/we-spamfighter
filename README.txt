@@ -51,6 +51,11 @@ Protects Contact Form 7 forms and WordPress comments from spam submissions with 
 * Filtering: Filter submissions by spam status, form ID, date range
 * Export: Export submission data for analysis
 * Submission Details: View full submission data, spam scores, and detection reasoning
+* Activity Log (Optional): Track important plugin events and operations
+  * View recent activities (weekly summaries, table maintenance, etc.)
+  * Automatic cleanup (max 100 entries, respects log retention days)
+  * Manual clear option
+  * Only shows when enabled in settings
 
 == Installation ==
 
@@ -106,6 +111,10 @@ The plugin automatically detects and repairs missing tables or columns:
 - Missing columns: Automatically added without data loss
 - Weekly maintenance: Runs every Sunday at 3 AM to check table integrity and optimize performance (CHECK TABLE, OPTIMIZE TABLE)
 
+= What is the Activity Log? =
+
+The Activity Log is an optional feature that tracks important plugin events (e.g., weekly summaries sent, table maintenance performed). It is disabled by default and can be enabled in Settings -> Maintenance tab. When enabled, the log displays in the Maintenance tab showing recent events. The log automatically cleans old entries based on the log retention setting and keeps a maximum of 100 entries. You can manually clear the log using the "Clear Log" button.
+
 == Screenshots ==
 
 1. Dashboard with submission list
@@ -114,6 +123,22 @@ The plugin automatically detects and repairs missing tables or columns:
 4. Spam analytics
 
 == Changelog ==
+
+= 1.2.2 =
+* Added Activity Log: Optional activity logging to track important plugin events
+  * View recent activities (weekly summaries, table maintenance, etc.)
+  * Automatic cleanup (max 100 entries, respects log retention days)
+  * Manual clear option
+  * Only active when enabled in settings
+* GitHub Updates: Update functionality is now optional and disabled by default
+  * Enable in Settings -> Maintenance tab
+  * Warning displayed when enabling automatic updates
+* Enhanced Database Maintenance: Improved database consistency and auto-repair
+  * Automatic detection and repair of missing tables or columns
+  * Weekly maintenance runs CHECK TABLE and OPTIMIZE TABLE
+  * Multisite compatible table name handling
+* Improved Email Notifications: Weekly summary emails now sent even when no spam is detected (shows "all clear" message)
+  * Settings are dynamically reloaded for cron jobs to reflect latest changes
 
 = 1.1.4 =
 * Multi-layer spam detection improvements
@@ -135,6 +160,9 @@ The plugin automatically detects and repairs missing tables or columns:
 * Dashboard with submission management
 
 == Upgrade Notice ==
+
+= 1.2.2 =
+Recommended update: Added optional Activity Log for tracking plugin events, improved database maintenance, and enhanced email notifications. GitHub updates are now optional and disabled by default for security.
 
 = 1.1.4 =
 Recommended update for improved spam detection and performance.

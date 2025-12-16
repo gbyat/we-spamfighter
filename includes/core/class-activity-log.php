@@ -117,13 +117,64 @@ class ActivityLog
     }
 
     /**
-     * Clear activity log.
+     * Clear activity log (all entries).
      *
      * @return bool
      */
     public function clear()
     {
         return delete_option($this->option_name);
+    }
+
+    /**
+     * Clean old activity log entries based on retention days.
+     *
+     * @param int $days Number of days to keep (default: uses log_retention_days setting).
+     * @return int Number of deleted entries.
+     */
+    public function clean_old_entries($days = null)
+    {
+        // Use retention days from settings if not specified.
+        if (null === $days) {
+            $settings = get_option('we_spamfighter_settings', array());
+            $days = isset($settings['log_retention_days']) ? absint($settings['log_retention_days']) : 30;
+        }
+
+        $days = absint($days);
+        if ($days < 1) {
+            $days = 30;
+        }
+
+        $log = get_option($this->option_name, array());
+        if (empty($log)) {
+            return 0;
+        }
+
+        $cutoff_date = strtotime("-{$days} days");
+        $original_count = count($log);
+        $cleaned_log = array();
+
+        // Keep only entries newer than cutoff date.
+        foreach ($log as $entry) {
+            $entry_timestamp = strtotime($entry['timestamp']);
+            if ($entry_timestamp >= $cutoff_date) {
+                $cleaned_log[] = $entry;
+            }
+        }
+
+        // Also enforce max_entries limit.
+        if (count($cleaned_log) > $this->max_entries) {
+            $cleaned_log = array_slice($cleaned_log, 0, $this->max_entries);
+        }
+
+        // Update option.
+        if (empty($cleaned_log)) {
+            delete_option($this->option_name);
+        } else {
+            update_option($this->option_name, $cleaned_log, false);
+        }
+
+        return $original_count - count($cleaned_log);
     }
 
     /**
