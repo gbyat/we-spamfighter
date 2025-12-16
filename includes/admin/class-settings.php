@@ -66,6 +66,21 @@ class Settings
             'we-spamfighter-settings',
             array($this, 'render_settings_page')
         );
+
+        // Add Activity Log submenu only if enabled.
+        $settings = get_option('we_spamfighter_settings', array());
+        $activity_log_enabled = isset($settings['activity_log_enabled']) && $settings['activity_log_enabled'];
+
+        if ($activity_log_enabled && class_exists('\WeSpamfighter\Core\ActivityLog')) {
+            add_submenu_page(
+                'we-spamfighter',
+                __('Activity Log', 'we-spamfighter'),
+                __('Activity Log', 'we-spamfighter'),
+                'manage_options',
+                'we-spamfighter-activity-log',
+                array($this, 'render_activity_log_page')
+            );
+        }
     }
 
     /**
@@ -75,8 +90,8 @@ class Settings
      */
     public function enqueue_scripts($hook)
     {
-        // Check if we're on the settings page.
-        if (strpos($hook, 'we-spamfighter-settings') === false && strpos($hook, 'we-spamfighter') === false) {
+        // Check if we're on the settings page or activity log page.
+        if (strpos($hook, 'we-spamfighter-settings') === false && strpos($hook, 'we-spamfighter-activity-log') === false) {
             return;
         }
 
@@ -679,6 +694,12 @@ class Settings
                 ?>
 
                 <?php foreach ($tabs as $tab_id => $tab) : ?>
+                    <?php
+                    // Skip activity-log tab in form - it's rendered separately below.
+                    if ($tab_id === 'activity-log') {
+                        continue;
+                    }
+                    ?>
                     <div class="we-settings-tab-content <?php echo $active_tab === $tab_id ? 'active' : ''; ?>" id="tab-<?php echo esc_attr($tab_id); ?>">
                         <?php
                         global $wp_settings_sections, $wp_settings_fields;
@@ -737,60 +758,153 @@ class Settings
                 </div>
             <?php endif; ?>
 
-            <?php if ($active_tab === 'maintenance') : ?>
-                <?php
-                $settings = get_option('we_spamfighter_settings', array());
-                $activity_log_enabled = isset($settings['activity_log_enabled']) && $settings['activity_log_enabled'];
-                if ($activity_log_enabled && class_exists('\WeSpamfighter\Core\ActivityLog')) :
-                    $activity_log = \WeSpamfighter\Core\ActivityLog::get_instance();
-                    $log_entries = $activity_log->get_entries(20);
-                ?>
-                    <div class="we-activity-log-section" style="margin-top: 30px;">
-                        <h2><?php esc_html_e('Activity Log', 'we-spamfighter'); ?></h2>
-                        <p>
+            <?php
+            // Show Clear Activity Log button in Maintenance tab if activity log is enabled.
+            $settings = get_option('we_spamfighter_settings', array());
+            $activity_log_enabled = isset($settings['activity_log_enabled']) && $settings['activity_log_enabled'];
+            if ($active_tab === 'maintenance' && $activity_log_enabled && class_exists('\WeSpamfighter\Core\ActivityLog')) :
+                $activity_log = \WeSpamfighter\Core\ActivityLog::get_instance();
+                $log_count = $activity_log->get_count();
+
+                // Handle clear action if requested.
+                if (isset($_GET['clear_activity_log']) && isset($_GET['_wpnonce']) && wp_verify_nonce($_GET['_wpnonce'], 'clear_activity_log')) {
+                    $activity_log->clear();
+                    wp_redirect(add_query_arg(array('page' => 'we-spamfighter-settings', 'tab' => 'maintenance', 'activity_log_cleared' => '1'), admin_url('admin.php')));
+                    exit;
+                }
+            ?>
+                <div class="we-clear-activity-log-section" style="margin-top: 30px;">
+                    <h2><?php esc_html_e('Activity Log', 'we-spamfighter'); ?></h2>
+                    <?php if (isset($_GET['activity_log_cleared'])) : ?>
+                        <div class="notice notice-success inline is-dismissible">
+                            <p><?php esc_html_e('Activity log cleared successfully.', 'we-spamfighter'); ?></p>
+                        </div>
+                    <?php endif; ?>
+                    <p>
+                        <?php
+                        printf(
+                            /* translators: %d: Number of log entries */
+                            esc_html__('Currently %d entries in the activity log.', 'we-spamfighter'),
+                            $log_count
+                        );
+                        ?>
+                    </p>
+                    <?php if ($log_count > 0) : ?>
+                        <a href="<?php echo esc_url(wp_nonce_url(add_query_arg(array('page' => 'we-spamfighter-settings', 'tab' => 'maintenance', 'clear_activity_log' => '1'), admin_url('admin.php')), 'clear_activity_log')); ?>"
+                            class="button button-secondary"
+                            onclick="return confirm('<?php echo esc_js(__('Are you sure you want to clear the activity log? This action cannot be undone.', 'we-spamfighter')); ?>');">
+                            <?php esc_html_e('Clear Activity Log', 'we-spamfighter'); ?>
+                        </a>
+                    <?php endif; ?>
+                </div>
+            <?php endif; ?>
+        </div>
+        <?php
+    }
+
+    /**
+     * Render Activity Log page.
+     */
+    public function render_activity_log_page()
+    {
+        if (! current_user_can('manage_options')) {
+            return;
+        }
+
+        $settings = get_option('we_spamfighter_settings', array());
+        $activity_log_enabled = isset($settings['activity_log_enabled']) && $settings['activity_log_enabled'];
+
+        // If activity log is disabled, show message.
+        if (! $activity_log_enabled || ! class_exists('\WeSpamfighter\Core\ActivityLog')) {
+        ?>
+            <div class="wrap">
+                <h1><?php esc_html_e('Activity Log', 'we-spamfighter'); ?></h1>
+                <div class="notice notice-warning inline">
+                    <p>
+                        <?php esc_html_e('Activity Log is not enabled. Please enable it in Settings → Maintenance tab.', 'we-spamfighter'); ?>
+                    </p>
+                </div>
+            </div>
+        <?php
+            return;
+        }
+
+        $activity_log = \WeSpamfighter\Core\ActivityLog::get_instance();
+
+        // Handle clear action if requested.
+        if (isset($_GET['clear_activity_log']) && isset($_GET['_wpnonce']) && wp_verify_nonce($_GET['_wpnonce'], 'clear_activity_log')) {
+            $activity_log->clear();
+            wp_redirect(add_query_arg(array('page' => 'we-spamfighter-activity-log', 'activity_log_cleared' => '1'), admin_url('admin.php')));
+            exit;
+        }
+
+        $log_entries = $activity_log->get_entries(50);
+        ?>
+        <div class="wrap">
+            <h1><?php esc_html_e('Activity Log', 'we-spamfighter'); ?></h1>
+
+            <?php if (isset($_GET['activity_log_cleared'])) : ?>
+                <div class="notice notice-success inline is-dismissible">
+                    <p><?php esc_html_e('Activity log cleared successfully.', 'we-spamfighter'); ?></p>
+                </div>
+            <?php endif; ?>
+
+            <div class="we-activity-log-section" style="margin-top: 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <div>
+                        <p class="description">
                             <?php esc_html_e('Recent plugin activities and events.', 'we-spamfighter'); ?>
                         </p>
-                        <?php if (! empty($log_entries)) : ?>
-                            <table class="wp-list-table widefat fixed striped">
-                                <thead>
-                                    <tr>
-                                        <th style="width: 160px;"><?php esc_html_e('Date/Time', 'we-spamfighter'); ?></th>
-                                        <th style="width: 200px;"><?php esc_html_e('Event', 'we-spamfighter'); ?></th>
-                                        <th><?php esc_html_e('Message', 'we-spamfighter'); ?></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php foreach ($log_entries as $entry) : ?>
-                                        <tr>
-                                            <td><?php echo esc_html(date_i18n(get_option('date_format') . ' ' . get_option('time_format'), strtotime($entry['timestamp']))); ?></td>
-                                            <td><code><?php echo esc_html($entry['event_type']); ?></code></td>
-                                            <td><?php echo esc_html($entry['message']); ?></td>
-                                        </tr>
-                                    <?php endforeach; ?>
-                                </tbody>
-                            </table>
-                        <?php else : ?>
-                            <div class="notice notice-info inline">
-                                <p>
-                                    <strong><?php esc_html_e('No activity log entries yet.', 'we-spamfighter'); ?></strong>
-                                </p>
-                                <p>
-                                    <?php esc_html_e('Activity log entries will appear here once plugin events occur, such as:', 'we-spamfighter'); ?>
-                                </p>
-                                <ul style="list-style-type: disc; margin-left: 20px;">
-                                    <li><?php esc_html_e('Weekly spam summary emails sent', 'we-spamfighter'); ?></li>
-                                    <li><?php esc_html_e('Daily spam summary emails sent', 'we-spamfighter'); ?></li>
-                                    <li><?php esc_html_e('Table maintenance completed', 'we-spamfighter'); ?></li>
-                                    <li><?php esc_html_e('Old logs cleaned', 'we-spamfighter'); ?></li>
-                                </ul>
-                                <p>
-                                    <?php esc_html_e('The log will start recording events after the next scheduled task runs.', 'we-spamfighter'); ?>
-                                </p>
-                            </div>
-                        <?php endif; ?>
+                    </div>
+                    <?php if (! empty($log_entries)) : ?>
+                        <div>
+                            <a href="<?php echo esc_url(wp_nonce_url(add_query_arg(array('page' => 'we-spamfighter-activity-log', 'clear_activity_log' => '1'), admin_url('admin.php')), 'clear_activity_log')); ?>"
+                                class="button button-secondary"
+                                onclick="return confirm('<?php echo esc_js(__('Are you sure you want to clear the activity log? This action cannot be undone.', 'we-spamfighter')); ?>');">
+                                <?php esc_html_e('Clear Activity Log', 'we-spamfighter'); ?>
+                            </a>
+                        </div>
+                    <?php endif; ?>
+                </div>
+                <?php if (! empty($log_entries)) : ?>
+                    <table class="wp-list-table widefat fixed striped">
+                        <thead>
+                            <tr>
+                                <th style="width: 160px;"><?php esc_html_e('Date/Time', 'we-spamfighter'); ?></th>
+                                <th style="width: 200px;"><?php esc_html_e('Event', 'we-spamfighter'); ?></th>
+                                <th><?php esc_html_e('Message', 'we-spamfighter'); ?></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($log_entries as $entry) : ?>
+                                <tr>
+                                    <td><?php echo esc_html(date_i18n(get_option('date_format') . ' ' . get_option('time_format'), strtotime($entry['timestamp']))); ?></td>
+                                    <td><code><?php echo esc_html($entry['event_type']); ?></code></td>
+                                    <td><?php echo esc_html($entry['message']); ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                <?php else : ?>
+                    <div class="notice notice-info inline">
+                        <p>
+                            <strong><?php esc_html_e('No activity log entries yet.', 'we-spamfighter'); ?></strong>
+                        </p>
+                        <p>
+                            <?php esc_html_e('Activity log entries will appear here once plugin events occur, such as:', 'we-spamfighter'); ?>
+                        </p>
+                        <ul style="list-style-type: disc; margin-left: 20px;">
+                            <li><?php esc_html_e('Weekly spam summary emails sent', 'we-spamfighter'); ?></li>
+                            <li><?php esc_html_e('Daily spam summary emails sent', 'we-spamfighter'); ?></li>
+                            <li><?php esc_html_e('Table maintenance completed', 'we-spamfighter'); ?></li>
+                            <li><?php esc_html_e('Old logs cleaned', 'we-spamfighter'); ?></li>
+                        </ul>
+                        <p>
+                            <?php esc_html_e('The log will start recording events after the next scheduled task runs.', 'we-spamfighter'); ?>
+                        </p>
                     </div>
                 <?php endif; ?>
-            <?php endif; ?>
+            </div>
         </div>
 <?php
     }

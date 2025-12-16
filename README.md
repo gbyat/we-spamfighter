@@ -167,7 +167,7 @@ Navigate to **WE Spamfighter → Settings** (organized in tabs) to configure:
 
 - **Log Retention**: Days to keep logs (default: 30)
 - **Keep Data on Uninstall**: Option to preserve data when uninstalling
-- **Enable Activity Log**: Optional activity logging to track important plugin events (e.g., weekly summaries sent, table maintenance). When enabled, displays activity log in the Maintenance tab showing recent events.
+- **Enable Activity Log**: Optional activity logging to track important plugin events (e.g., weekly summaries sent, table maintenance). When enabled, adds an "Activity Log" menu item under WE Spamfighter for viewing events and provides a clear button in the Maintenance tab.
 - **Enable GitHub Updates**: Optional automatic updates from GitHub releases. **⚠️ Activate at your own risk** - Updates will be installed automatically without additional confirmation. Disabled by default for security.
 
 ### 3. Contact Form 7 Integration
@@ -229,12 +229,12 @@ WordPress comment spam protection works when:
 ### Viewing Activity Log
 
 1. Go to **WE Spamfighter → Settings → Maintenance** tab
-2. Enable **Enable Activity Log** option
-3. The Activity Log section will appear below the settings
-4. View recent plugin events (weekly summaries sent, table maintenance, etc.)
-5. Use **Clear Log** button to manually clear all activity log entries
+2. Enable **Enable Activity Log** option and save changes
+3. A new **Activity Log** menu item will appear under **WE Spamfighter** in the admin menu
+4. Click on **WE Spamfighter → Activity Log** to view recent plugin events (weekly summaries sent, table maintenance, etc.)
+5. Use **Clear Activity Log** button to manually clear all activity log entries
 
-**Note**: Activity log is optional and disabled by default. The log automatically cleans old entries based on the "Log Retention" setting and keeps a maximum of 100 entries. If no events have occurred yet, a helpful message will be displayed.
+**Note**: Activity log is optional and disabled by default. The log automatically cleans old entries based on the "Log Retention" setting and keeps a maximum of 100 entries. You can also clear the log directly from the **Maintenance** tab in Settings (button appears when entries exist). If no events have occurred yet, a helpful message will be displayed.
 
 ### Custom Messages
 
@@ -409,11 +409,12 @@ The plugin creates a custom table `wp_we_spamfighter_submissions`:
 
 ### Activity Log Not Showing
 
-**Problem**: Activity log section not visible in Maintenance tab
+**Problem**: Activity Log menu item not visible in admin menu
 
-- **Solution**: Enable "Enable Activity Log" in Settings → Maintenance tab
+- **Solution**: Enable "Enable Activity Log" in Settings → Maintenance tab and save changes
 - **Note**: Activity log is optional and disabled by default
 - **Empty Log**: If the log is enabled but empty, a message will be displayed indicating that no events have occurred yet. Events will appear as they happen (e.g., weekly summary emails sent, table maintenance performed)
+- **Clear Button**: The clear button in the Maintenance tab only appears when there are entries to clear
 
 ### Plugin Updates
 

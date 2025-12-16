@@ -113,7 +113,7 @@ The plugin automatically detects and repairs missing tables or columns:
 
 = What is the Activity Log? =
 
-The Activity Log is an optional feature that tracks important plugin events (e.g., weekly summaries sent, table maintenance performed). It is disabled by default and can be enabled in Settings -> Maintenance tab. When enabled, the log displays in the Maintenance tab showing recent events. The log automatically cleans old entries based on the log retention setting and keeps a maximum of 100 entries. You can manually clear the log using the "Clear Log" button.
+The Activity Log is an optional feature that tracks important plugin events (e.g., weekly summaries sent, table maintenance performed). It is disabled by default and can be enabled in Settings -> Maintenance tab. When enabled, a new "Activity Log" menu item appears under WE Spamfighter in the admin menu. You can view all recent events there and manually clear the log using the "Clear Activity Log" button. You can also clear the log directly from the Maintenance tab in Settings (button appears when entries exist). The log automatically cleans old entries based on the log retention setting and keeps a maximum of 100 entries.
 
 == Screenshots ==
 
