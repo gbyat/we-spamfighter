@@ -31,6 +31,7 @@ global $wpdb;
 delete_option('we_spamfighter_settings');
 delete_option('we_spamfighter_activity_log');
 delete_option('we_spamfighter_github_token');
+delete_option('we_spamfighter_total_spam_count');
 
 // Delete database table.
 $table_name = $wpdb->prefix . 'we_spamfighter_submissions';
@@ -115,6 +116,7 @@ if (is_multisite()) {
         delete_option('we_spamfighter_settings');
         delete_option('we_spamfighter_activity_log');
         delete_option('we_spamfighter_github_token');
+        delete_option('we_spamfighter_total_spam_count');
 
         // Delete site-specific database table.
         $table_name = $wpdb->prefix . 'we_spamfighter_submissions';

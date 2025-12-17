@@ -221,6 +221,14 @@ class Dashboard
                         </div>
                     </div>
                 <?php endif; ?>
+                <?php
+                // Get total spam count (all time, including deleted).
+                $total_all_time_spam_count = \WeSpamfighter\Plugin::get_total_spam_count();
+                ?>
+                <div class="we-stat-box">
+                    <div class="we-stat-value"><?php echo esc_html(number_format_i18n($total_all_time_spam_count)); ?></div>
+                    <div class="we-stat-label"><?php esc_html_e('Total Spam Blocked', 'we-spamfighter'); ?></div>
+                </div>
             </div>
 
             <h2 class="nav-tab-wrapper">

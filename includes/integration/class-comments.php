@@ -83,6 +83,9 @@ class Comments
                 // Automatically mark as spam without OpenAI check.
                 $approved = 'spam';
 
+                // Increment total spam counter.
+                \WeSpamfighter\Plugin::increment_total_spam_count();
+
                 // Send immediate notification if enabled.
                 if (! empty($this->settings['notification_type']) && 'immediate' === $this->settings['notification_type']) {
                     $this->send_comment_spam_notification($commentdata, 1.0, array('reason' => 'Automatically marked as spam (pingback/trackback)'));
@@ -194,6 +197,9 @@ class Comments
         // If spam, mark as spam (WordPress will handle it).
         if ($is_spam) {
             $approved = 'spam';
+
+            // Increment total spam counter.
+            \WeSpamfighter\Plugin::increment_total_spam_count();
 
             // Send immediate notification if spam detected.
             if (! empty($this->settings['notification_type']) && 'immediate' === $this->settings['notification_type']) {

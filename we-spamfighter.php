@@ -4,7 +4,7 @@
  * Plugin Name: WE Spamfighter
  * Plugin URI: https://github.com/gbyat/we-spamfighter
  * Description: Advanced spam protection for Contact Form 7 and Comments using AI-powered and heuristic detection. Works with or without OpenAI - includes local spam detection for cost-effective filtering.
- * Version: 1.3.1
+ * Version: 1.3.2
  * Author: webentwicklerin, Gabriele Laesser
  * Author URI: https://webentwicklerin.at
  * Text Domain: we-spamfighter
@@ -26,7 +26,7 @@ if (! defined('ABSPATH')) {
 }
 
 // Define plugin constants.
-define('WE_SPAMFIGHTER_VERSION', '1.3.1');
+define('WE_SPAMFIGHTER_VERSION', '1.3.2');
 define('WE_SPAMFIGHTER_PLUGIN_FILE', __FILE__);
 define('WE_SPAMFIGHTER_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('WE_SPAMFIGHTER_PLUGIN_URL', plugin_dir_url(__FILE__));
@@ -102,6 +102,28 @@ class Plugin
     private function __construct()
     {
         $this->init_hooks();
+    }
+
+    /**
+     * Increment total spam counter.
+     *
+     * @return void
+     */
+    public static function increment_total_spam_count()
+    {
+        $option_name = 'we_spamfighter_total_spam_count';
+        $current_count = get_option($option_name, 0);
+        update_option($option_name, (int) $current_count + 1, false);
+    }
+
+    /**
+     * Get total spam count (all time, including deleted).
+     *
+     * @return int
+     */
+    public static function get_total_spam_count()
+    {
+        return (int) get_option('we_spamfighter_total_spam_count', 0);
     }
 
     /**
@@ -183,6 +205,57 @@ class Plugin
         Core\Logger::get_instance();
         Core\Database::get_instance();
         Core\ActivityLog::get_instance();
+
+        // Initialize total spam counter if not already set (for existing installations).
+        $total_spam_count = get_option('we_spamfighter_total_spam_count', null);
+        // If option doesn't exist (null), or exists but is 0 while there is actual spam, initialize it.
+        if (null === $total_spam_count || (0 === (int) $total_spam_count && $this->has_existing_spam())) {
+            $this->initialize_total_spam_counter();
+        }
+    }
+
+    /**
+     * Check if there is existing spam in the system.
+     *
+     * @return bool
+     */
+    private function has_existing_spam()
+    {
+        try {
+            $db = Core\Database::get_instance();
+            $cf7_spam_count = $db->get_total_count(1); // CF7 spam count.
+        } catch (\Exception $e) {
+            $cf7_spam_count = 0;
+        }
+
+        // Get WordPress spam comments count.
+        $wp_spam_comments_count = wp_count_comments();
+        $spam_comments_count = isset($wp_spam_comments_count->spam) ? (int) $wp_spam_comments_count->spam : 0;
+
+        return ($cf7_spam_count + $spam_comments_count) > 0;
+    }
+
+    /**
+     * Initialize total spam counter with current counts.
+     *
+     * @return void
+     */
+    private function initialize_total_spam_counter()
+    {
+        try {
+            $db = Core\Database::get_instance();
+            $cf7_spam_count = $db->get_total_count(1); // CF7 spam count.
+        } catch (\Exception $e) {
+            // If database query fails, default to 0.
+            $cf7_spam_count = 0;
+        }
+
+        // Get WordPress spam comments count.
+        $wp_spam_comments_count = wp_count_comments();
+        $spam_comments_count = isset($wp_spam_comments_count->spam) ? (int) $wp_spam_comments_count->spam : 0;
+
+        $initial_count = $cf7_spam_count + $spam_comments_count;
+        update_option('we_spamfighter_total_spam_count', $initial_count, false);
     }
 
     /**
@@ -256,6 +329,9 @@ class Plugin
         );
 
         add_option('we_spamfighter_settings', $defaults);
+
+        // Initialize total spam counter with current counts (if not already set).
+        $this->initialize_total_spam_counter();
 
         flush_rewrite_rules();
 

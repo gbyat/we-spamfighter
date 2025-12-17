@@ -315,6 +315,9 @@ class ContactForm7
 
                 // Send immediate notification if spam detected.
                 if ($is_spam) {
+                    // Increment total spam counter.
+                    \WeSpamfighter\Plugin::increment_total_spam_count();
+
                     $submission_data = Database::get_instance()->get_submission($submission_id);
                     if ($submission_data) {
                         \WeSpamfighter\Core\Notifications::get_instance()->send_immediate_notification($submission_id, $submission_data);
