@@ -8,7 +8,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Language-Team: webentwicklerin, Gabriele Laesser\n"
 "Last-Translator: webentwicklerin, Gabriele Laesser <info@webentwicklerin.at>\n"
-"POT-Creation-Date: 2025-12-17 09:35+0000\n"
+"POT-Creation-Date: 2025-12-17 10:19+0000\n"
 "Report-Msgid-Bugs-To: https://github.com/gbyat/we-spamfighter/issues\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: __;_e;_ex:1,2c;_n:1,2;_n_noop:1,2;_nx:1,2,4c;_nx_noop:1,2,3c;_x:1,2c;esc_attr__;esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c\n"
@@ -165,7 +165,7 @@ msgstr ""
 msgid "Next"
 msgstr ""
 
-#: includes/admin/class-dashboard.php:438, includes/admin/class-dashboard.php:465, includes/admin/class-dashboard.php:492, includes/admin/class-dashboard.php:519, includes/admin/class-dashboard.php:555, includes/admin/class-settings.php:920
+#: includes/admin/class-dashboard.php:438, includes/admin/class-dashboard.php:465, includes/admin/class-dashboard.php:492, includes/admin/class-dashboard.php:519, includes/admin/class-dashboard.php:555, includes/admin/class-settings.php:959
 msgid "Unauthorized"
 msgstr ""
 
@@ -215,7 +215,7 @@ msgstr ""
 msgid "Settings"
 msgstr ""
 
-#: includes/admin/class-settings.php:77, includes/admin/class-settings.php:78, includes/admin/class-settings.php:777, includes/admin/class-settings.php:821, includes/admin/class-settings.php:844
+#: includes/admin/class-settings.php:77, includes/admin/class-settings.php:78, includes/admin/class-settings.php:816, includes/admin/class-settings.php:860, includes/admin/class-settings.php:883
 msgid "Activity Log"
 msgstr ""
 
@@ -263,290 +263,302 @@ msgstr ""
 msgid "Amount to increase spam score when language doesn't match (0.1 - 1.0). Default: 0.3"
 msgstr ""
 
-#: includes/admin/class-settings.php:237
-msgid "OpenAI Integration"
+#: includes/admin/class-settings.php:236
+msgid "Spam Blocked Message"
 msgstr ""
 
-#: includes/admin/class-settings.php:244
-msgid "Enable OpenAI Detection"
+#: includes/admin/class-settings.php:243
+msgid "Message displayed to users when spam is detected and submission is blocked. Default: \"Thank you for your message.\""
 msgstr ""
 
 #: includes/admin/class-settings.php:250
+msgid "OpenAI Integration"
+msgstr ""
+
+#: includes/admin/class-settings.php:257
+msgid "Enable OpenAI Detection"
+msgstr ""
+
+#: includes/admin/class-settings.php:263
 msgid "Use OpenAI to detect spam"
 msgstr ""
 
-#: includes/admin/class-settings.php:256
+#: includes/admin/class-settings.php:269
 msgid "OpenAI API Key"
 msgstr ""
 
 #. translators: %s: OpenAI API URL
-#: includes/admin/class-settings.php:265
+#: includes/admin/class-settings.php:278
 msgid "Get your API key from <a href=\"%s\" target=\"_blank\">OpenAI Platform</a>"
 msgstr ""
 
-#: includes/admin/class-settings.php:273
+#: includes/admin/class-settings.php:286
 msgid "OpenAI Model"
 msgstr ""
 
-#: includes/admin/class-settings.php:287
+#: includes/admin/class-settings.php:300
 msgid "Which AI model to use for spam detection"
 msgstr ""
 
-#: includes/admin/class-settings.php:293
+#: includes/admin/class-settings.php:306
 msgid "AI Spam Threshold"
 msgstr ""
 
-#: includes/admin/class-settings.php:302
+#: includes/admin/class-settings.php:315
 msgid "Spam score threshold (0.0 - 1.0). Higher values mean fewer submissions are flagged as spam (less strict). Lower values mean more submissions are flagged as spam (more strict). Default: 0.7"
 msgstr ""
 
-#: includes/admin/class-settings.php:309, includes/admin/class-settings.php:653
+#: includes/admin/class-settings.php:322, includes/admin/class-settings.php:692
 msgid "Heuristic Detection"
 msgstr ""
 
-#: includes/admin/class-settings.php:316
+#: includes/admin/class-settings.php:329
 msgid "Enable Heuristic Detection"
 msgstr ""
 
-#: includes/admin/class-settings.php:322
+#: includes/admin/class-settings.php:335
 msgid "Use local heuristics to detect spam patterns (works without OpenAI)"
 msgstr ""
 
-#: includes/admin/class-settings.php:328
+#: includes/admin/class-settings.php:341
 msgid "Heuristic Spam Threshold"
 msgstr ""
 
-#: includes/admin/class-settings.php:337
+#: includes/admin/class-settings.php:350
 msgid "Spam score threshold for heuristic detection (0.0 - 1.0). Default: 0.6"
 msgstr ""
 
-#: includes/admin/class-settings.php:343
+#: includes/admin/class-settings.php:356
 msgid "Disable Link Check"
 msgstr ""
 
-#: includes/admin/class-settings.php:349
+#: includes/admin/class-settings.php:362
 msgid "Disable suspicious link detection"
 msgstr ""
 
-#: includes/admin/class-settings.php:355
+#: includes/admin/class-settings.php:368
 msgid "Disable Character Pattern Check"
 msgstr ""
 
-#: includes/admin/class-settings.php:361
+#: includes/admin/class-settings.php:374
 msgid "Disable suspicious character pattern detection (e.g., ALL CAPS, repeated characters)"
 msgstr ""
 
-#: includes/admin/class-settings.php:367
+#: includes/admin/class-settings.php:380
 msgid "Disable Spam Phrase Check"
 msgstr ""
 
-#: includes/admin/class-settings.php:373
+#: includes/admin/class-settings.php:386
 msgid "Disable known spam phrase detection"
 msgstr ""
 
-#: includes/admin/class-settings.php:379
+#: includes/admin/class-settings.php:392
 msgid "Disable Email Pattern Check"
 msgstr ""
 
-#: includes/admin/class-settings.php:385
+#: includes/admin/class-settings.php:398
 msgid "Disable suspicious email pattern detection"
 msgstr ""
 
-#: includes/admin/class-settings.php:392
+#: includes/admin/class-settings.php:405
 msgid "Email Notifications"
 msgstr ""
 
-#: includes/admin/class-settings.php:399
+#: includes/admin/class-settings.php:412
 msgid "Notification Email"
 msgstr ""
 
-#: includes/admin/class-settings.php:406
+#: includes/admin/class-settings.php:419
 msgid "Email address to receive spam notifications. If empty, admin email will be used."
 msgstr ""
 
-#: includes/admin/class-settings.php:412
+#: includes/admin/class-settings.php:425
 msgid "Notification Type"
 msgstr ""
 
-#: includes/admin/class-settings.php:419
+#: includes/admin/class-settings.php:432
 msgid "No notifications"
 msgstr ""
 
-#: includes/admin/class-settings.php:420
+#: includes/admin/class-settings.php:433
 msgid "Immediate (on each spam detection)"
 msgstr ""
 
-#: includes/admin/class-settings.php:421
+#: includes/admin/class-settings.php:434
 msgid "Daily summary"
 msgstr ""
 
-#: includes/admin/class-settings.php:422
+#: includes/admin/class-settings.php:435
 msgid "Weekly summary"
 msgstr ""
 
-#: includes/admin/class-settings.php:424
+#: includes/admin/class-settings.php:437
 msgid "How often to receive spam notifications."
 msgstr ""
 
-#: includes/admin/class-settings.php:431, includes/admin/class-settings.php:665
+#: includes/admin/class-settings.php:444, includes/admin/class-settings.php:704
 msgid "Maintenance"
 msgstr ""
 
-#: includes/admin/class-settings.php:438
+#: includes/admin/class-settings.php:451
 msgid "Log Retention"
 msgstr ""
 
-#: includes/admin/class-settings.php:447
+#: includes/admin/class-settings.php:460
 msgid "Days to keep logs (default: 30)"
 msgstr ""
 
-#: includes/admin/class-settings.php:453
+#: includes/admin/class-settings.php:466
 msgid "Keep Data on Uninstall"
 msgstr ""
 
-#: includes/admin/class-settings.php:459
+#: includes/admin/class-settings.php:472
 msgid "If enabled, all plugin data (options, submissions, statistics) will be kept when the plugin is deleted. If disabled, all data will be permanently deleted."
 msgstr ""
 
-#: includes/admin/class-settings.php:465
+#: includes/admin/class-settings.php:478
 msgid "Enable GitHub Updates"
 msgstr ""
 
-#: includes/admin/class-settings.php:471
+#: includes/admin/class-settings.php:484
 msgid "Enable automatic updates from GitHub releases. <strong>Activate at your own risk.</strong> Updates will be installed automatically without additional confirmation."
 msgstr ""
 
-#: includes/admin/class-settings.php:477
+#: includes/admin/class-settings.php:490
 msgid "Enable Activity Log"
 msgstr ""
 
-#: includes/admin/class-settings.php:483
+#: includes/admin/class-settings.php:496
 msgid "Enable activity logging to track important plugin events (e.g., weekly summaries sent, table maintenance)."
 msgstr ""
 
-#: includes/admin/class-settings.php:493
+#: includes/admin/class-settings.php:506
 msgid "Configure general spam protection settings."
 msgstr ""
 
-#: includes/admin/class-settings.php:501
+#: includes/admin/class-settings.php:514
 msgid "Configure OpenAI integration for spam detection."
 msgstr ""
 
-#: includes/admin/class-settings.php:509
+#: includes/admin/class-settings.php:522
 msgid "Configure local heuristic spam detection (works without OpenAI)."
 msgstr ""
 
-#: includes/admin/class-settings.php:517
+#: includes/admin/class-settings.php:530
 msgid "Configure email notifications for spam detections."
 msgstr ""
 
-#: includes/admin/class-settings.php:525
+#: includes/admin/class-settings.php:538
 msgid "Configure maintenance and cleanup settings."
 msgstr ""
 
-#: includes/admin/class-settings.php:649
+#: includes/admin/class-settings.php:688
 msgid "General"
 msgstr ""
 
-#: includes/admin/class-settings.php:657
+#: includes/admin/class-settings.php:696
 msgid "OpenAI"
 msgstr ""
 
-#: includes/admin/class-settings.php:661
+#: includes/admin/class-settings.php:700
 msgid "Notifications"
 msgstr ""
 
-#: includes/admin/class-settings.php:678
+#: includes/admin/class-settings.php:717
 msgid "WE Spamfighter Settings"
 msgstr ""
 
-#: includes/admin/class-settings.php:750
+#: includes/admin/class-settings.php:789
 msgid "Test OpenAI Connection"
 msgstr ""
 
-#: includes/admin/class-settings.php:752
+#: includes/admin/class-settings.php:791
 msgid "Test your OpenAI API connection and configuration."
 msgstr ""
 
-#: includes/admin/class-settings.php:755
+#: includes/admin/class-settings.php:794
 msgid "Test Connection"
 msgstr ""
 
-#: includes/admin/class-settings.php:780, includes/admin/class-settings.php:848
+#: includes/admin/class-settings.php:819, includes/admin/class-settings.php:887
 msgid "Activity log cleared successfully."
 msgstr ""
 
 #. translators: %d: Number of log entries
-#: includes/admin/class-settings.php:787
+#: includes/admin/class-settings.php:826
 msgid "Currently %d entries in the activity log."
 msgstr ""
 
-#: includes/admin/class-settings.php:795, includes/admin/class-settings.php:863
+#: includes/admin/class-settings.php:834, includes/admin/class-settings.php:902
 msgid "Are you sure you want to clear the activity log? This action cannot be undone."
 msgstr ""
 
-#: includes/admin/class-settings.php:796, includes/admin/class-settings.php:864
+#: includes/admin/class-settings.php:835, includes/admin/class-settings.php:903
 msgid "Clear Activity Log"
 msgstr ""
 
-#: includes/admin/class-settings.php:824
+#: includes/admin/class-settings.php:863
 msgid "Activity Log is not enabled. Please enable it in Settings → Maintenance tab."
 msgstr ""
 
-#: includes/admin/class-settings.php:856
+#: includes/admin/class-settings.php:895
 msgid "Recent plugin activities and events."
 msgstr ""
 
-#: includes/admin/class-settings.php:891
+#: includes/admin/class-settings.php:930
 msgid "No activity log entries yet."
 msgstr ""
 
-#: includes/admin/class-settings.php:894
+#: includes/admin/class-settings.php:933
 msgid "Activity log entries will appear here once plugin events occur, such as:"
 msgstr ""
 
-#: includes/admin/class-settings.php:897
+#: includes/admin/class-settings.php:936
 msgid "Weekly spam summary emails sent"
 msgstr ""
 
-#: includes/admin/class-settings.php:898
+#: includes/admin/class-settings.php:937
 msgid "Daily spam summary emails sent"
 msgstr ""
 
-#: includes/admin/class-settings.php:899, we-spamfighter.php:442
+#: includes/admin/class-settings.php:938, we-spamfighter.php:443
 msgid "Table maintenance completed"
 msgstr ""
 
-#: includes/admin/class-settings.php:900, we-spamfighter.php:414
+#: includes/admin/class-settings.php:939, we-spamfighter.php:415
 msgid "Old logs cleaned"
 msgstr ""
 
-#: includes/admin/class-settings.php:903
+#: includes/admin/class-settings.php:942
 msgid "The log will start recording events after the next scheduled task runs."
 msgstr ""
 
-#: includes/admin/class-settings.php:873
+#: includes/admin/class-settings.php:912
 msgid "Date/Time"
 msgstr ""
 
-#: includes/admin/class-settings.php:874
+#: includes/admin/class-settings.php:913
 msgid "Event"
 msgstr ""
 
-#: includes/admin/class-settings.php:875
+#: includes/admin/class-settings.php:914
 msgid "Message"
 msgstr ""
 
-#: includes/admin/class-settings.php:924
+#: includes/admin/class-settings.php:963
 msgid "Activity Log class not found"
 msgstr ""
 
-#: includes/admin/class-settings.php:941
+#: includes/admin/class-settings.php:980
 msgid "Failed to clear activity log"
 msgstr ""
 
-#: includes/admin/class-settings.php:935
+#: includes/admin/class-settings.php:974
 msgid "Activity log cleared successfully. %d entries deleted."
+msgstr ""
+
+#: includes/admin/class-settings.php:1125, includes/integration/class-contact-form-7.php:519, we-spamfighter.php:329
+msgid "Thank you for your message."
 msgstr ""
 
 #: includes/core/class-database.php:781
@@ -833,14 +845,10 @@ msgstr ""
 msgid "Link detected in foreign language content (strong spam indicator)"
 msgstr ""
 
-#: includes/integration/class-contact-form-7.php:516
-msgid "Thank you for your message."
-msgstr ""
-
-#: we-spamfighter.php:463
+#: we-spamfighter.php:464
 msgid "Daily spam summary sent"
 msgstr ""
 
-#: we-spamfighter.php:484
+#: we-spamfighter.php:485
 msgid "Weekly spam summary sent"
 msgstr ""

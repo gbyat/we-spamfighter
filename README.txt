@@ -4,7 +4,7 @@ Tags: spam, contact-form-7, comments, ai, openai, spam-protection, security, for
 Requires at least: 6.0
 Tested up to: 6.9
 Requires PHP: 8.0
-Stable tag: 1.3.2
+Stable tag: 1.3.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -40,7 +40,7 @@ Protects Contact Form 7 forms and WordPress comments from spam submissions with 
   * Spam Protection: Blocks spam submissions before they reach your inbox
 * WordPress Comments: Native WordPress comment spam protection
 * Automatic Blocking: Blocks spam submissions before they reach your inbox
-* Custom Messages: Configurable "Thank you" message for blocked spam submissions
+* Custom Messages: Configurable "Thank you" message for blocked spam submissions (default: "Thank you for your message.")
 
 = Dashboard & Analytics =
 
@@ -48,8 +48,7 @@ Protects Contact Form 7 forms and WordPress comments from spam submissions with 
   * Unique Feature: CF7 doesn't store submissions by default - this plugin adds submission logging as a bonus feature
 * Spam Analytics: Track spam detection statistics for CF7 forms
 * Comment Spam Stats: View spam comment count from WordPress (with link to comment management)
-* Filtering: Filter submissions by spam status, form ID, date range
-* Export: Export submission data for analysis
+* Filtering: Filter submissions by spam status (via tabs)
 * Submission Details: View full submission data, spam scores, and detection reasoning
 * Activity Log (Optional): Track important plugin events and operations
   * View recent activities (weekly summaries, table maintenance, etc.)

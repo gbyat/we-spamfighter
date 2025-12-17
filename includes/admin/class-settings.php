@@ -231,6 +231,19 @@ class Settings
             )
         );
 
+        add_settings_field(
+            'spam_blocked_message',
+            __('Spam Blocked Message', 'we-spamfighter'),
+            array($this, 'render_textarea_field'),
+            'we-spamfighter',
+            'we_spamfighter_general',
+            array(
+                'field_id'    => 'spam_blocked_message',
+                'rows'        => 3,
+                'description' => __('Message displayed to users when spam is detected and submission is blocked. Default: "Thank you for your message."', 'we-spamfighter'),
+            )
+        );
+
         // OpenAI section.
         add_settings_section(
             'we_spamfighter_openai',
@@ -599,6 +612,32 @@ class Settings
 
         if (isset($args['description'])) {
             printf('<p class="description">%s</p>', esc_html($args['description']));
+        }
+    }
+
+    /**
+     * Render textarea field.
+     *
+     * @param array $args Field arguments.
+     */
+    public function render_textarea_field($args)
+    {
+        $settings = get_option($this->option_name, array());
+        $value    = isset($settings[$args['field_id']]) ? $settings[$args['field_id']] : '';
+        $rows     = isset($args['rows']) ? absint($args['rows']) : 3;
+        $cols     = isset($args['cols']) ? absint($args['cols']) : 50;
+
+        printf(
+            '<textarea name="%s[%s]" rows="%d" cols="%d" class="large-text">%s</textarea>',
+            esc_attr($this->option_name),
+            esc_attr($args['field_id']),
+            esc_attr($rows),
+            esc_attr($cols),
+            esc_textarea($value)
+        );
+
+        if (isset($args['description'])) {
+            printf('<p class="description">%s</p>', wp_kses_post($args['description']));
         }
     }
 
@@ -1077,6 +1116,13 @@ class Settings
             $sanitized['notification_email'] = ! empty($email) ? $email : get_option('admin_email');
         } else {
             $sanitized['notification_email'] = isset($existing['notification_email']) ? $existing['notification_email'] : get_option('admin_email');
+        }
+
+        // Spam blocked message.
+        if (isset($input['spam_blocked_message'])) {
+            $sanitized['spam_blocked_message'] = sanitize_textarea_field($input['spam_blocked_message']);
+        } else {
+            $sanitized['spam_blocked_message'] = isset($existing['spam_blocked_message']) ? $existing['spam_blocked_message'] : __('Thank you for your message.', 'we-spamfighter');
         }
 
         // Notification type.

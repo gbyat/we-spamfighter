@@ -5,7 +5,7 @@
 **Requires at least:** 6.0  
 **Tested up to:** 6.9  
 **Requires PHP:** 8.0  
-**Stable tag:** 1.3.2  
+**Stable tag:** 1.3.3  
 **License:** GPLv2 or later  
 **License URI:** https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -45,7 +45,7 @@ Protects Contact Form 7 forms and WordPress comments from spam submissions with 
   - **Spam Protection**: Blocks spam submissions before they reach your inbox
 - **WordPress Comments**: Native WordPress comment spam protection
 - **Automatic Blocking**: Blocks spam submissions before they reach your inbox
-- **Custom Messages**: Configurable "Thank you" message for blocked spam submissions
+- **Custom Messages**: Configurable "Thank you" message for blocked spam submissions (default: "Thank you for your message.")
 
 ### 📊 Dashboard & Analytics
 
@@ -53,8 +53,7 @@ Protects Contact Form 7 forms and WordPress comments from spam submissions with 
   - **Unique Feature**: CF7 doesn't store submissions by default - this plugin adds submission logging as a bonus feature
 - **Spam Analytics**: Track spam detection statistics for CF7 forms
 - **Comment Spam Stats**: View spam comment count from WordPress (with link to comment management)
-- **Filtering**: Filter submissions by spam status, form ID, date range
-- **Export**: Export submission data for analysis
+- **Filtering**: Filter submissions by spam status (via tabs)
 - **Submission Details**: View full submission data, spam scores, and detection reasoning
 - **Activity Log** (Optional): Track important plugin events and operations
   - View recent activities (weekly summaries, table maintenance, etc.)
@@ -141,6 +140,7 @@ Navigate to **WE Spamfighter → Settings** (organized in tabs) to configure:
 - **Auto-Mark Pingbacks/Trackbacks**: Automatically mark pingbacks/trackbacks as spam
 - **Mark Different Language as Spam**: Automatically flag submissions in different languages
 - **Language Mismatch Score Boost**: Amount to increase spam score when language doesn't match (0.1 - 1.0, default: 0.3)
+- **Spam Blocked Message**: Custom message displayed to users when spam is detected (default: "Thank you for your message.")
 
 #### Heuristic Detection Tab
 
@@ -203,11 +203,7 @@ WordPress comment spam protection works when:
 1. Go to **WE Spamfighter → Dashboard**
 2. View all Contact Form 7 submissions in the main table (comments are managed by WordPress)
    - **Note**: CF7 doesn't store submissions by default - this plugin logs them for you
-3. Use filters to find specific submissions:
-   - Filter by spam status
-   - Filter by form ID
-   - Search by content
-   - Filter by date range
+3. Use tabs to filter submissions by spam status (Normal Mails / Spam)
 4. Click on a submission to view detailed information
 5. View spam comment count in statistics (with link to WordPress comment management)
 
@@ -218,7 +214,6 @@ WordPress comment spam protection works when:
 - **Mark as Spam**: Manually mark a CF7 submission as spam
 - **Mark as Not Spam**: Mark a false positive as legitimate
 - **Delete Submissions**: Remove unwanted submissions from the database
-- **Export Data**: Export submissions for external analysis
 
 #### WordPress Comments
 
@@ -243,6 +238,7 @@ When a spam submission is detected:
 - The form submission is blocked before sending
 - A customizable "Thank you" message is displayed to the user
 - Default message: "Thank you for your message."
+- The message can be configured in **Settings → General** tab under "Spam Blocked Message"
 - The form is automatically disabled after submission
 
 ## Frontend Behavior

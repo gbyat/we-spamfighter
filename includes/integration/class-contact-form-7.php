@@ -512,8 +512,13 @@ class ContactForm7
                         $created_time = strtotime($latest['created_at']);
                         // Only override if submission was created within last minute and is spam.
                         if (time() - $created_time < 60 && !empty($latest['is_spam'])) {
-                            // Return custom thank you message (translatable with .pot file).
-                            return __('Thank you for your message.', 'we-spamfighter');
+                            // Get custom message from settings, fallback to default.
+                            $settings = get_option('we_spamfighter_settings', array());
+                            $custom_message = isset($settings['spam_blocked_message']) && !empty($settings['spam_blocked_message'])
+                                ? $settings['spam_blocked_message']
+                                : __('Thank you for your message.', 'we-spamfighter');
+
+                            return sanitize_text_field($custom_message);
                         }
                     }
                 }
