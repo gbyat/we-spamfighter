@@ -21,6 +21,13 @@ Protects Contact Form 7 forms and WordPress comments from spam submissions with 
   * Character pattern detection (repeated characters, ALL CAPS, mixed case spam)
   * Known spam phrase detection (multi-language)
   * Email pattern analysis (suspicious providers, random patterns)
+  * Referrer analysis (missing referrer, suspicious referrer domains, URL shorteners)
+  * User agent analysis (bot detection, missing user agent, suspicious patterns)
+  * Content length analysis (very short or extremely long content detection)
+  * Mixed script detection (different character sets like Cyrillic + Latin)
+  * Unicode anomalies (zero-width characters, control characters, homoglyphs)
+  * Numbers/letters only detection (content containing only numbers or letters)
+  * IP address in content (IP addresses found in text, not URLs)
 * Language Detection (Local, Free): Automatically detects and flags submissions in different languages
   * Works without OpenAI using heuristic language detection
   * Configurable score boost for language mismatches
@@ -112,7 +119,7 @@ The plugin automatically detects and repairs missing tables or columns:
 
 = What is the Activity Log? =
 
-The Activity Log is an optional feature that tracks important plugin events (e.g., weekly summaries sent, table maintenance performed). It is disabled by default and can be enabled in Settings -> Maintenance tab. When enabled, a new "Activity Log" menu item appears under WE Spamfighter in the admin menu. You can view all recent events there and manually clear the log using the "Clear Activity Log" button. You can also clear the log directly from the Maintenance tab in Settings (button appears when entries exist). The log automatically cleans old entries based on the log retention setting and keeps a maximum of 100 entries.
+The Activity Log is an optional feature that tracks important plugin events (e.g., weekly summaries sent, table maintenance performed, email notifications). It is disabled by default and can be enabled in Settings -> Maintenance tab. When enabled, a new "Activity Log" menu item appears under WE Spamfighter in the admin menu. You can view all recent events there and manually clear the log using the "Clear Activity Log" button. You can also clear the log directly from the Maintenance tab in Settings (button appears when entries exist). The log automatically cleans old entries based on the log retention setting and keeps a maximum of 100 entries. Email notifications (daily/weekly summaries) are automatically logged with success/failure status for debugging.
 
 == Screenshots ==
 
@@ -122,6 +129,23 @@ The Activity Log is an optional feature that tracks important plugin events (e.g
 4. Spam analytics
 
 == Changelog ==
+
+= 1.3.3 =
+* Enhanced Heuristic Detection: Added multiple new spam detection methods
+  * Referrer analysis: Detects missing referrers (direct access/bots), suspicious referrer domains, URL shorteners in referrers
+  * User agent analysis: Detects bots, missing user agents, suspicious user agent patterns
+  * Content length analysis: Detects very short (< 10 chars) or extremely long (> 5000 chars) content
+  * Mixed script detection: Detects mixed character sets (e.g., Cyrillic + Latin), especially effective against spam using Cyrillic characters
+  * Unicode anomalies: Detects zero-width characters, control characters, and homoglyph attacks
+  * Numbers/letters only: Detects content containing only numbers or only letters (common bot pattern)
+  * IP address in content: Detects IP addresses in text (not URLs), often used by spammers
+  * All checks are enabled by default when Heuristic Detection is activated
+  * Individual checks can be disabled in Settings -> Heuristic Detection tab if needed
+  * When Heuristic Detection is disabled, all checks are automatically deactivated
+* Improved Email Notification Debugging: Email notifications now logged in Activity Log
+  * Daily and weekly summary emails are logged with success/failure status
+  * Helps diagnose email delivery issues
+  * Only active when Activity Log is enabled
 
 = 1.2.2 =
 * Added Activity Log: Optional activity logging to track important plugin events
@@ -138,6 +162,7 @@ The Activity Log is an optional feature that tracks important plugin events (e.g
   * Multisite compatible table name handling
 * Improved Email Notifications: Weekly summary emails now sent even when no spam is detected (shows "all clear" message)
   * Settings are dynamically reloaded for cron jobs to reflect latest changes
+  * Fixed timezone handling for daily and weekly summary calculations
 
 = 1.1.4 =
 * Multi-layer spam detection improvements
@@ -159,6 +184,9 @@ The Activity Log is an optional feature that tracks important plugin events (e.g
 * Dashboard with submission management
 
 == Upgrade Notice ==
+
+= 1.3.3 =
+Recommended update: Enhanced heuristic spam detection with referrer and user agent analysis for better bot and spam detection. Improved email notification debugging in Activity Log.
 
 = 1.2.2 =
 Recommended update: Added optional Activity Log for tracking plugin events, improved database maintenance, and enhanced email notifications. GitHub updates are now optional and disabled by default for security.

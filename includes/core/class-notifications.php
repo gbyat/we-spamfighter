@@ -105,23 +105,45 @@ class Notifications
 
         // Only send if daily notifications are enabled.
         if ('daily' !== $notification_type) {
+            // Don't log anything if daily notifications are not enabled to avoid confusion.
             return false;
         }
 
         $email = $this->get_notification_email();
         if (empty($email)) {
+            // Log missing email.
+            if (class_exists('\WeSpamfighter\Core\ActivityLog')) {
+                $settings = get_option('we_spamfighter_settings', array());
+                $activity_log_enabled = isset($settings['activity_log_enabled']) && $settings['activity_log_enabled'];
+                if ($activity_log_enabled) {
+                    $activity_log = \WeSpamfighter\Core\ActivityLog::get_instance();
+                    $activity_log->log(
+                        'daily_summary_error',
+                        __('Daily summary failed: No email address configured', 'we-spamfighter'),
+                        array('email' => $email)
+                    );
+                }
+            }
             return false;
         }
 
         $db = Database::get_instance();
-        $yesterday = gmdate('Y-m-d', strtotime('-1 day'));
-        $today = gmdate('Y-m-d');
+
+        // Use WordPress timezone to calculate dates correctly.
+        // current_time('timestamp') returns Unix timestamp in WordPress timezone.
+        $now_timestamp = current_time('timestamp');
+        $yesterday_start_timestamp = strtotime('yesterday midnight', $now_timestamp);
+        $today_start_timestamp = strtotime('today midnight', $now_timestamp);
+
+        // Convert to MySQL datetime format using date() with WordPress timezone timestamp.
+        $yesterday_start = date('Y-m-d H:i:s', $yesterday_start_timestamp);
+        $today_start = date('Y-m-d H:i:s', $today_start_timestamp);
 
         // Get spam submissions from yesterday.
         $spam_submissions = $db->get_submissions(array(
             'is_spam'   => 1,
-            'date_from' => $yesterday . ' 00:00:00',
-            'date_to'   => $today . ' 00:00:00',
+            'date_from' => $yesterday_start,
+            'date_to'   => $today_start,
             'limit'     => 1000, // Get all from yesterday.
         ));
 
@@ -146,7 +168,39 @@ class Notifications
             $message = $this->build_summary_message($spam_submissions, 'daily');
         }
 
-        return wp_mail($email, $subject, $message, $this->get_email_headers());
+        $result = wp_mail($email, $subject, $message, $this->get_email_headers());
+
+        // Log result for debugging.
+        if (class_exists('\WeSpamfighter\Core\ActivityLog')) {
+            $settings = get_option('we_spamfighter_settings', array());
+            $activity_log_enabled = isset($settings['activity_log_enabled']) && $settings['activity_log_enabled'];
+            if ($activity_log_enabled) {
+                $activity_log = \WeSpamfighter\Core\ActivityLog::get_instance();
+                $activity_log->log(
+                    'daily_summary_email',
+                    $result ? __('Daily summary email sent successfully', 'we-spamfighter') : __('Daily summary email failed to send', 'we-spamfighter'),
+                    array(
+                        'email' => $email,
+                        'success' => $result,
+                        'spam_count' => count($spam_submissions),
+                        'date_range' => array(
+                            'from' => $yesterday_start,
+                            'to' => $today_start,
+                        ),
+                        'wp_mail_result' => $result,
+                    )
+                );
+            }
+        }
+
+        // Also log to error log if wp_mail failed (if WP_DEBUG_LOG is enabled).
+        // Note: WP_DEBUG_LOG is a WordPress constant that may be set in wp-config.php.
+        if (!$result) {
+            // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+            @error_log('WE Spamfighter: Daily summary email failed. Email: ' . $email . ', Spam count: ' . count($spam_submissions));
+        }
+
+        return $result;
     }
 
     /**
@@ -162,23 +216,45 @@ class Notifications
 
         // Only send if weekly notifications are enabled.
         if ('weekly' !== $notification_type) {
+            // Don't log anything if weekly notifications are not enabled to avoid confusion.
             return false;
         }
 
         $email = $this->get_notification_email();
         if (empty($email)) {
+            // Log missing email.
+            if (class_exists('\WeSpamfighter\Core\ActivityLog')) {
+                $settings = get_option('we_spamfighter_settings', array());
+                $activity_log_enabled = isset($settings['activity_log_enabled']) && $settings['activity_log_enabled'];
+                if ($activity_log_enabled) {
+                    $activity_log = \WeSpamfighter\Core\ActivityLog::get_instance();
+                    $activity_log->log(
+                        'weekly_summary_error',
+                        __('Weekly summary failed: No email address configured', 'we-spamfighter'),
+                        array('email' => $email)
+                    );
+                }
+            }
             return false;
         }
 
         $db = Database::get_instance();
-        $week_ago = gmdate('Y-m-d', strtotime('-7 days'));
-        $today = gmdate('Y-m-d');
+
+        // Use WordPress timezone to calculate dates correctly.
+        // current_time('timestamp') returns Unix timestamp in WordPress timezone.
+        $now_timestamp = current_time('timestamp');
+        $week_ago_start_timestamp = strtotime('-7 days midnight', $now_timestamp);
+        $today_start_timestamp = strtotime('today midnight', $now_timestamp);
+
+        // Convert to MySQL datetime format using date() with WordPress timezone timestamp.
+        $week_ago_start = date('Y-m-d H:i:s', $week_ago_start_timestamp);
+        $today_start = date('Y-m-d H:i:s', $today_start_timestamp);
 
         // Get spam submissions from last week.
         $spam_submissions = $db->get_submissions(array(
             'is_spam'   => 1,
-            'date_from' => $week_ago . ' 00:00:00',
-            'date_to'   => $today . ' 00:00:00',
+            'date_from' => $week_ago_start,
+            'date_to'   => $today_start,
             'limit'     => 1000, // Get all from last week.
         ));
 
@@ -203,7 +279,39 @@ class Notifications
             $message = $this->build_summary_message($spam_submissions, 'weekly');
         }
 
-        return wp_mail($email, $subject, $message, $this->get_email_headers());
+        $result = wp_mail($email, $subject, $message, $this->get_email_headers());
+
+        // Log result for debugging.
+        if (class_exists('\WeSpamfighter\Core\ActivityLog')) {
+            $settings = get_option('we_spamfighter_settings', array());
+            $activity_log_enabled = isset($settings['activity_log_enabled']) && $settings['activity_log_enabled'];
+            if ($activity_log_enabled) {
+                $activity_log = \WeSpamfighter\Core\ActivityLog::get_instance();
+                $activity_log->log(
+                    'weekly_summary_email',
+                    $result ? __('Weekly summary email sent successfully', 'we-spamfighter') : __('Weekly summary email failed to send', 'we-spamfighter'),
+                    array(
+                        'email' => $email,
+                        'success' => $result,
+                        'spam_count' => count($spam_submissions),
+                        'date_range' => array(
+                            'from' => $week_ago_start,
+                            'to' => $today_start,
+                        ),
+                        'wp_mail_result' => $result,
+                    )
+                );
+            }
+        }
+
+        // Also log to error log if wp_mail failed (if WP_DEBUG_LOG is enabled).
+        // Note: WP_DEBUG_LOG is a WordPress constant that may be set in wp-config.php.
+        if (!$result) {
+            // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+            @error_log('WE Spamfighter: Weekly summary email failed. Email: ' . $email . ', Spam count: ' . count($spam_submissions));
+        }
+
+        return $result;
     }
 
     /**

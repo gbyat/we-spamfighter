@@ -24,6 +24,13 @@ Protects Contact Form 7 forms and WordPress comments from spam submissions with 
   - Character pattern detection (repeated characters, ALL CAPS, mixed case spam)
   - Known spam phrase detection (multi-language)
   - Email pattern analysis (suspicious providers, random patterns)
+  - Referrer analysis (missing referrer, suspicious referrer domains, URL shorteners)
+  - User agent analysis (bot detection, missing user agent, suspicious patterns)
+  - Content length analysis (very short or extremely long content detection)
+  - Mixed script detection (different character sets like Cyrillic + Latin)
+  - Unicode anomalies (zero-width characters, control characters, homoglyphs)
+  - Numbers/letters only detection (content containing only numbers or letters)
+  - IP address in content (IP addresses found in text, not URLs)
 - **Language Detection** (Local, Free): Automatically detects and flags submissions in different languages
   - Works without OpenAI using heuristic language detection
   - Can use OpenAI's language detection when available
@@ -56,10 +63,11 @@ Protects Contact Form 7 forms and WordPress comments from spam submissions with 
 - **Filtering**: Filter submissions by spam status (via tabs)
 - **Submission Details**: View full submission data, spam scores, and detection reasoning
 - **Activity Log** (Optional): Track important plugin events and operations
-  - View recent activities (weekly summaries, table maintenance, etc.)
+  - View recent activities (weekly summaries, table maintenance, email notifications, etc.)
   - Automatic cleanup (max 100 entries, respects log retention days)
   - Manual clear option
   - Only shows when enabled in settings
+  - Email notification tracking (daily/weekly summary emails sent/failed)
 
 ### 🎨 User Experience
 
@@ -146,10 +154,19 @@ Navigate to **WE Spamfighter → Settings** (organized in tabs) to configure:
 
 - **Enable Heuristic Detection**: Use local spam detection (works without OpenAI)
 - **Heuristic Spam Threshold**: Threshold for heuristic detection (0.0 - 1.0, default: 0.6)
-- **Disable Link Check**: Option to disable suspicious link detection
-- **Disable Character Pattern Check**: Option to disable character pattern detection
-- **Disable Spam Phrase Check**: Option to disable known spam phrase detection
-- **Disable Email Pattern Check**: Option to disable email pattern detection
+- **Enable Link Check**: Enable suspicious link detection (enabled by default when heuristic detection is active)
+- **Enable Character Pattern Check**: Enable character pattern detection (enabled by default when heuristic detection is active)
+- **Enable Spam Phrase Check**: Enable known spam phrase detection (enabled by default when heuristic detection is active)
+- **Enable Email Pattern Check**: Enable email pattern detection (enabled by default when heuristic detection is active)
+- **Enable Referrer Check**: Enable referrer analysis (missing or suspicious referrer detection, enabled by default when heuristic detection is active)
+- **Enable User Agent Check**: Enable user agent analysis (bot and suspicious user agent detection, enabled by default when heuristic detection is active)
+- **Enable Content Length Check**: Enable content length analysis (very short or extremely long content, enabled by default when heuristic detection is active)
+- **Enable Mixed Script Check**: Enable mixed script detection (different character sets like Cyrillic + Latin, enabled by default when heuristic detection is active)
+- **Enable Unicode Anomalies Check**: Enable Unicode anomalies detection (zero-width characters, control characters, homoglyphs, enabled by default when heuristic detection is active)
+- **Enable Numbers/Letters Only Check**: Enable detection of content containing only numbers or only letters (enabled by default when heuristic detection is active)
+- **Enable IP Address in Content Check**: Enable detection of IP addresses in content (not in URLs, enabled by default when heuristic detection is active)
+
+**Note**: When you enable Heuristic Detection, all individual checks are automatically activated by default. You can disable specific checks if needed. When Heuristic Detection is disabled, all checks are automatically deactivated as well.
 
 #### OpenAI Tab
 
@@ -471,6 +488,23 @@ To add your own translation:
 
 ## Changelog
 
+### Version 1.3.3+
+
+- **Enhanced Heuristic Detection**: Added multiple new spam detection methods
+  - Referrer analysis: Detects missing referrers (direct access/bots), suspicious referrer domains, URL shorteners in referrers
+  - User agent analysis: Detects bots, missing user agents, suspicious user agent patterns
+  - Content length analysis: Detects very short (< 10 chars) or extremely long (> 5000 chars) content
+  - Mixed script detection: Detects mixed character sets (e.g., Cyrillic + Latin), especially effective against spam using Cyrillic characters
+  - Unicode anomalies: Detects zero-width characters, control characters, and homoglyph attacks
+  - Numbers/letters only: Detects content containing only numbers or only letters (common bot pattern)
+  - IP address in content: Detects IP addresses in text (not URLs), often used by spammers
+  - All checks are enabled by default when Heuristic Detection is activated
+  - Individual checks can be disabled in Settings → Heuristic Detection tab if needed
+- **Improved Email Notification Debugging**: Email notifications now logged in Activity Log
+  - Daily and weekly summary emails are logged with success/failure status
+  - Helps diagnose email delivery issues
+  - Only active when Activity Log is enabled
+
 ### Version 1.2.2+
 
 - **Activity Log**: Optional activity logging to track important plugin events
@@ -487,6 +521,7 @@ To add your own translation:
   - Multisite compatible table name handling
 - **Improved Email Notifications**: Weekly summary emails now sent even when no spam is detected (shows "all clear" message)
   - Settings are dynamically reloaded for cron jobs to reflect latest changes
+  - Fixed timezone handling for daily and weekly summary calculations
 
 ### Version 1.0.8+
 

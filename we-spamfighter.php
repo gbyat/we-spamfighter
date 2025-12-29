@@ -206,11 +206,58 @@ class Plugin
         Core\Database::get_instance();
         Core\ActivityLog::get_instance();
 
+        // Migrate disable_* settings to enable_* settings (one-time migration).
+        $this->migrate_heuristic_check_settings();
+
         // Initialize total spam counter if not already set (for existing installations).
         $total_spam_count = get_option('we_spamfighter_total_spam_count', null);
         // If option doesn't exist (null), or exists but is 0 while there is actual spam, initialize it.
         if (null === $total_spam_count || (0 === (int) $total_spam_count && $this->has_existing_spam())) {
             $this->initialize_total_spam_counter();
+        }
+    }
+
+    /**
+     * Migrate disable_* settings to enable_* settings.
+     * This is a one-time migration for existing installations.
+     */
+    private function migrate_heuristic_check_settings()
+    {
+        $settings = get_option('we_spamfighter_settings', array());
+        $needs_migration = false;
+
+        // List of checks to migrate.
+        $checks = array(
+            'link_check',
+            'character_check',
+            'phrase_check',
+            'email_check',
+            'referrer_check',
+            'user_agent_check',
+            'content_length_check',
+            'mixed_script_check',
+            'unicode_check',
+            'numbers_letters_only_check',
+            'ip_in_content_check',
+        );
+
+        foreach ($checks as $check) {
+            $disable_key = 'disable_' . $check;
+            $enable_key = 'enable_' . $check;
+
+            // If enable_* key doesn't exist but disable_* key exists, migrate it.
+            if (!isset($settings[$enable_key]) && isset($settings[$disable_key])) {
+                // Convert: disable=false means enable=true, disable=true means enable=false.
+                $settings[$enable_key] = empty($settings[$disable_key]);
+                // Remove old disable_* key.
+                unset($settings[$disable_key]);
+                $needs_migration = true;
+            }
+        }
+
+        // Save migrated settings if any changes were made.
+        if ($needs_migration) {
+            update_option('we_spamfighter_settings', $settings);
         }
     }
 
@@ -316,10 +363,17 @@ class Plugin
             'language_spam_score_boost'    => 0.3,
             'heuristic_enabled'            => false,
             'heuristic_threshold'          => 0.6,
-            'disable_link_check'           => false,
-            'disable_character_check'      => false,
-            'disable_phrase_check'         => false,
-            'disable_email_check'          => false,
+            'enable_link_check'           => true,
+            'enable_character_check'      => true,
+            'enable_phrase_check'         => true,
+            'enable_email_check'          => true,
+            'enable_referrer_check'       => true,
+            'enable_user_agent_check'     => true,
+            'enable_content_length_check' => true,
+            'enable_mixed_script_check'   => true,
+            'enable_unicode_check'        => true,
+            'enable_numbers_letters_only_check' => true,
+            'enable_ip_in_content_check'  => true,
             'log_retention_days'           => 30,
             'keep_data_on_uninstall'       => false,
             'github_updates_enabled'       => false,
@@ -342,18 +396,8 @@ class Plugin
             wp_schedule_event(time() + $hour_in_seconds, 'daily', 'we_spamfighter_clean_logs');
         }
 
-        // Schedule daily summary (runs at 8 AM).
-        if (! wp_next_scheduled('we_spamfighter_daily_summary')) {
-            $next_daily = strtotime('tomorrow 8:00');
-            wp_schedule_event($next_daily, 'daily', 'we_spamfighter_daily_summary');
-        }
-
-        // Schedule weekly summary (runs on Monday at 8 AM).
-        if (! wp_next_scheduled('we_spamfighter_weekly_summary')) {
-            $next_monday = strtotime('next Monday 8:00');
-            // WordPress doesn't have a built-in 'weekly' schedule, so we schedule it as a one-time event and reschedule it.
-            wp_schedule_single_event($next_monday, 'we_spamfighter_weekly_summary');
-        }
+        // Schedule notification cron jobs.
+        $this->ensure_notification_cron_jobs();
 
         // Schedule weekly table maintenance (runs on Sunday at 3 AM).
         if (! wp_next_scheduled('we_spamfighter_maintain_tables')) {
@@ -455,16 +499,8 @@ class Plugin
      */
     public function send_daily_summary_cron()
     {
-        $result = Core\Notifications::get_instance()->send_daily_summary();
-
-        // Log activity.
-        if (class_exists('\WeSpamfighter\Core\ActivityLog')) {
-            \WeSpamfighter\Core\ActivityLog::get_instance()->log(
-                'daily_summary_sent',
-                __('Daily spam summary sent', 'we-spamfighter'),
-                array('success' => $result)
-            );
-        }
+        // send_daily_summary() handles logging internally.
+        Core\Notifications::get_instance()->send_daily_summary();
     }
 
     /**
@@ -474,20 +510,50 @@ class Plugin
     {
         $result = Core\Notifications::get_instance()->send_weekly_summary();
 
-        // Reschedule for next week (Monday at 8 AM).
-        $next_monday = strtotime('next Monday 8:00');
-        wp_schedule_single_event($next_monday, 'we_spamfighter_weekly_summary');
+        // Reschedule for next week (Monday at 8 AM) using WordPress timezone.
+        $timezone = wp_timezone();
+        $now = new \DateTime('now', $timezone);
+        $next_monday = (clone $now)->modify('next monday')->setTime(8, 0, 0);
+        $next_monday_timestamp = $next_monday->getTimestamp();
+        wp_schedule_single_event($next_monday_timestamp, 'we_spamfighter_weekly_summary');
 
-        // Log activity.
-        if (class_exists('\WeSpamfighter\Core\ActivityLog')) {
-            \WeSpamfighter\Core\ActivityLog::get_instance()->log(
-                'weekly_summary_sent',
-                __('Weekly spam summary sent', 'we-spamfighter'),
-                array(
-                    'success' => $result,
-                    'next_run' => date('Y-m-d H:i:s', $next_monday),
-                )
-            );
+        // send_weekly_summary() handles logging internally, no need to log here.
+    }
+
+    /**
+     * Ensure notification cron jobs are scheduled.
+     * 
+     * This method ensures that daily and weekly notification cron jobs are properly scheduled.
+     * Should be called on activation and after settings changes.
+     */
+    public function ensure_notification_cron_jobs()
+    {
+        // Use WordPress timezone for scheduling.
+        $timezone = wp_timezone();
+        $now = new \DateTime('now', $timezone);
+
+        // Schedule daily summary (runs at 8 AM).
+        if (! wp_next_scheduled('we_spamfighter_daily_summary')) {
+            // Calculate next 8 AM in WordPress timezone.
+            $next_daily = (clone $now)->modify('+1 day')->setTime(8, 0, 0);
+            // If it's already past 8 AM today, schedule for tomorrow, otherwise schedule for today at 8 AM.
+            if ($now->format('H:i') >= '08:00') {
+                $next_daily = (clone $now)->modify('tomorrow')->setTime(8, 0, 0);
+            } else {
+                $next_daily = (clone $now)->setTime(8, 0, 0);
+            }
+            wp_schedule_event($next_daily->getTimestamp(), 'daily', 'we_spamfighter_daily_summary');
+        }
+
+        // Schedule weekly summary (runs on Monday at 8 AM).
+        if (! wp_next_scheduled('we_spamfighter_weekly_summary')) {
+            // Calculate next Monday at 8 AM in WordPress timezone.
+            $next_monday = (clone $now)->modify('next monday')->setTime(8, 0, 0);
+            // If today is Monday and it's before 8 AM, schedule for today.
+            if ($now->format('w') == '1' && $now->format('H:i') < '08:00') {
+                $next_monday = (clone $now)->setTime(8, 0, 0);
+            }
+            wp_schedule_single_event($next_monday->getTimestamp(), 'we_spamfighter_weekly_summary');
         }
     }
 

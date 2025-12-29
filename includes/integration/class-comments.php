@@ -110,7 +110,12 @@ class Comments
 
         // STEP 1: Check with heuristic detector FIRST (local, fast, free).
         if (! empty($this->settings['heuristic_enabled']) && ! empty($entry_data)) {
-            $heuristic_result = HeuristicDetector::analyze($entry_data, $this->settings);
+            // Prepare context for heuristic detection (referrer, user agent).
+            $context = array(
+                'referrer' => isset($_SERVER['HTTP_REFERER']) ? sanitize_text_field(wp_unslash($_SERVER['HTTP_REFERER'])) : '',
+                'user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? sanitize_text_field(wp_unslash($_SERVER['HTTP_USER_AGENT'])) : '',
+            );
+            $heuristic_result = HeuristicDetector::analyze($entry_data, $this->settings, $context);
             $heuristic_score = isset($heuristic_result['score']) ? (float) $heuristic_result['score'] : 0.0;
 
             if ($heuristic_score > 0) {

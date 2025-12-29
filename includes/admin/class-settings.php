@@ -352,50 +352,134 @@ class Settings
         );
 
         add_settings_field(
-            'disable_link_check',
-            __('Disable Link Check', 'we-spamfighter'),
+            'enable_link_check',
+            __('Enable Link Check', 'we-spamfighter'),
             array($this, 'render_checkbox_field'),
             'we-spamfighter',
             'we_spamfighter_heuristic',
             array(
-                'field_id'    => 'disable_link_check',
-                'description' => __('Disable suspicious link detection', 'we-spamfighter'),
+                'field_id'    => 'enable_link_check',
+                'description' => __('Enable suspicious link detection', 'we-spamfighter'),
             )
         );
 
         add_settings_field(
-            'disable_character_check',
-            __('Disable Character Pattern Check', 'we-spamfighter'),
+            'enable_character_check',
+            __('Enable Character Pattern Check', 'we-spamfighter'),
             array($this, 'render_checkbox_field'),
             'we-spamfighter',
             'we_spamfighter_heuristic',
             array(
-                'field_id'    => 'disable_character_check',
-                'description' => __('Disable suspicious character pattern detection (e.g., ALL CAPS, repeated characters)', 'we-spamfighter'),
+                'field_id'    => 'enable_character_check',
+                'description' => __('Enable suspicious character pattern detection (e.g., ALL CAPS, repeated characters)', 'we-spamfighter'),
             )
         );
 
         add_settings_field(
-            'disable_phrase_check',
-            __('Disable Spam Phrase Check', 'we-spamfighter'),
+            'enable_phrase_check',
+            __('Enable Spam Phrase Check', 'we-spamfighter'),
             array($this, 'render_checkbox_field'),
             'we-spamfighter',
             'we_spamfighter_heuristic',
             array(
-                'field_id'    => 'disable_phrase_check',
-                'description' => __('Disable known spam phrase detection', 'we-spamfighter'),
+                'field_id'    => 'enable_phrase_check',
+                'description' => __('Enable known spam phrase detection', 'we-spamfighter'),
             )
         );
 
         add_settings_field(
-            'disable_email_check',
-            __('Disable Email Pattern Check', 'we-spamfighter'),
+            'enable_email_check',
+            __('Enable Email Pattern Check', 'we-spamfighter'),
             array($this, 'render_checkbox_field'),
             'we-spamfighter',
             'we_spamfighter_heuristic',
             array(
-                'field_id'    => 'disable_email_check',
-                'description' => __('Disable suspicious email pattern detection', 'we-spamfighter'),
+                'field_id'    => 'enable_email_check',
+                'description' => __('Enable suspicious email pattern detection', 'we-spamfighter'),
+            )
+        );
+
+        add_settings_field(
+            'enable_referrer_check',
+            __('Enable Referrer Check', 'we-spamfighter'),
+            array($this, 'render_checkbox_field'),
+            'we-spamfighter',
+            'we_spamfighter_heuristic',
+            array(
+                'field_id'    => 'enable_referrer_check',
+                'description' => __('Enable referrer analysis (missing or suspicious referrer detection)', 'we-spamfighter'),
+            )
+        );
+
+        add_settings_field(
+            'enable_user_agent_check',
+            __('Enable User Agent Check', 'we-spamfighter'),
+            array($this, 'render_checkbox_field'),
+            'we-spamfighter',
+            'we_spamfighter_heuristic',
+            array(
+                'field_id'    => 'enable_user_agent_check',
+                'description' => __('Enable user agent analysis (bot and suspicious user agent detection)', 'we-spamfighter'),
+            )
+        );
+
+        add_settings_field(
+            'enable_content_length_check',
+            __('Enable Content Length Check', 'we-spamfighter'),
+            array($this, 'render_checkbox_field'),
+            'we-spamfighter',
+            'we_spamfighter_heuristic',
+            array(
+                'field_id'    => 'enable_content_length_check',
+                'description' => __('Enable content length analysis (very short or extremely long content detection)', 'we-spamfighter'),
+            )
+        );
+
+        add_settings_field(
+            'enable_mixed_script_check',
+            __('Enable Mixed Script Check', 'we-spamfighter'),
+            array($this, 'render_checkbox_field'),
+            'we-spamfighter',
+            'we_spamfighter_heuristic',
+            array(
+                'field_id'    => 'enable_mixed_script_check',
+                'description' => __('Enable mixed script detection (different character sets like Cyrillic + Latin)', 'we-spamfighter'),
+            )
+        );
+
+        add_settings_field(
+            'enable_unicode_check',
+            __('Enable Unicode Anomalies Check', 'we-spamfighter'),
+            array($this, 'render_checkbox_field'),
+            'we-spamfighter',
+            'we_spamfighter_heuristic',
+            array(
+                'field_id'    => 'enable_unicode_check',
+                'description' => __('Enable Unicode anomalies detection (zero-width characters, control characters, homoglyphs)', 'we-spamfighter'),
+            )
+        );
+
+        add_settings_field(
+            'enable_numbers_letters_only_check',
+            __('Enable Numbers/Letters Only Check', 'we-spamfighter'),
+            array($this, 'render_checkbox_field'),
+            'we-spamfighter',
+            'we_spamfighter_heuristic',
+            array(
+                'field_id'    => 'enable_numbers_letters_only_check',
+                'description' => __('Enable detection of content containing only numbers or only letters', 'we-spamfighter'),
+            )
+        );
+
+        add_settings_field(
+            'enable_ip_in_content_check',
+            __('Enable IP Address in Content Check', 'we-spamfighter'),
+            array($this, 'render_checkbox_field'),
+            'we-spamfighter',
+            'we_spamfighter_heuristic',
+            array(
+                'field_id'    => 'enable_ip_in_content_check',
+                'description' => __('Enable detection of IP addresses in content (not in URLs)', 'we-spamfighter'),
             )
         );
 
@@ -536,6 +620,73 @@ class Settings
     public function render_maintenance_section()
     {
         echo esc_html__('Configure maintenance and cleanup settings.', 'we-spamfighter');
+
+        // Show cron job status for debugging email notifications.
+        $daily_next = wp_next_scheduled('we_spamfighter_daily_summary');
+        $weekly_next = wp_next_scheduled('we_spamfighter_weekly_summary');
+        $settings = get_option('we_spamfighter_settings', array());
+        $notification_type = $settings['notification_type'] ?? 'none';
+
+        if ('daily' === $notification_type || 'weekly' === $notification_type) {
+            echo '<div class="notice notice-info inline" style="margin-top: 15px; padding: 12px;">';
+            echo '<p><strong>' . esc_html__('Email Notification Status:', 'we-spamfighter') . '</strong></p>';
+
+            if ('daily' === $notification_type) {
+                if ($daily_next) {
+                    $timezone = wp_timezone();
+                    $next_run = new \DateTime('@' . $daily_next);
+                    $next_run->setTimezone($timezone);
+                    echo '<p>' . sprintf(
+                        /* translators: %s: Next scheduled time */
+                        esc_html__('Daily summary: Next scheduled for %s', 'we-spamfighter'),
+                        '<strong>' . esc_html($next_run->format(get_option('date_format') . ' ' . get_option('time_format'))) . '</strong>'
+                    ) . '</p>';
+                } else {
+                    echo '<p style="color: #d63638;"><strong>' . esc_html__('Daily summary: NOT SCHEDULED - Please save settings to schedule.', 'we-spamfighter') . '</strong></p>';
+                }
+            }
+
+            if ('weekly' === $notification_type) {
+                if ($weekly_next) {
+                    $timezone = wp_timezone();
+                    $next_run = new \DateTime('@' . $weekly_next);
+                    $next_run->setTimezone($timezone);
+                    echo '<p>' . sprintf(
+                        /* translators: %s: Next scheduled time */
+                        esc_html__('Weekly summary: Next scheduled for %s', 'we-spamfighter'),
+                        '<strong>' . esc_html($next_run->format(get_option('date_format') . ' ' . get_option('time_format'))) . '</strong>'
+                    ) . '</p>';
+                } else {
+                    echo '<p style="color: #d63638;"><strong>' . esc_html__('Weekly summary: NOT SCHEDULED - Please save settings to schedule.', 'we-spamfighter') . '</strong></p>';
+                }
+            }
+
+            // Check if WordPress cron is disabled.
+            // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound -- DISABLE_WP_CRON is a WordPress core constant.
+            $wp_cron_disabled = defined('DISABLE_WP_CRON') && constant('DISABLE_WP_CRON');
+            if ($wp_cron_disabled) {
+                echo '<p style="color: #d63638;"><strong>' . esc_html__('WARNING: WordPress cron is disabled. Email notifications will not work unless you use a real cron job.', 'we-spamfighter') . '</strong></p>';
+            }
+
+            // Show notification email.
+            $notification_email = $settings['notification_email'] ?? get_option('admin_email');
+            echo '<p>' . sprintf(
+                /* translators: %s: Email address */
+                esc_html__('Notification email: %s', 'we-spamfighter'),
+                '<strong>' . esc_html($notification_email) . '</strong>'
+            ) . '</p>';
+
+            // Suggest checking Activity Log if enabled.
+            if (!empty($settings['activity_log_enabled'])) {
+                echo '<p>' . sprintf(
+                    /* translators: %s: Link to Activity Log */
+                    esc_html__('Check the %s for email delivery logs and debug information.', 'we-spamfighter'),
+                    '<a href="' . esc_url(admin_url('admin.php?page=we-spamfighter-activity-log')) . '">' . esc_html__('Activity Log', 'we-spamfighter') . '</a>'
+                ) . '</p>';
+            }
+
+            echo '</div>';
+        }
     }
 
     /**
@@ -1055,17 +1206,70 @@ class Settings
             'auto_mark_pingbacks_spam',
             'mark_different_language_spam',
             'heuristic_enabled',
-            'disable_link_check',
-            'disable_character_check',
-            'disable_phrase_check',
-            'disable_email_check',
+            'enable_link_check',
+            'enable_character_check',
+            'enable_phrase_check',
+            'enable_email_check',
+            'enable_referrer_check',
+            'enable_user_agent_check',
+            'enable_content_length_check',
+            'enable_mixed_script_check',
+            'enable_unicode_check',
+            'enable_numbers_letters_only_check',
+            'enable_ip_in_content_check',
             'keep_data_on_uninstall',
             'github_updates_enabled',
             'activity_log_enabled',
         );
 
+        // Check if heuristic is being enabled (was disabled, now enabled).
+        $heuristic_was_disabled = empty($existing['heuristic_enabled']);
+        $heuristic_now_enabled = isset($input['heuristic_enabled']) && !empty($input['heuristic_enabled']);
+
         foreach ($boolean_fields as $field) {
-            $sanitized[$field] = isset($input[$field]) ? (bool) $input[$field] : false;
+            if ($field === 'heuristic_enabled') {
+                $sanitized[$field] = isset($input[$field]) ? (bool) $input[$field] : false;
+                continue;
+            }
+
+            // If this is a heuristic check field (enable_*_check).
+            if (strpos($field, 'enable_') === 0 && strpos($field, '_check') !== false) {
+                // If heuristic is being enabled for the first time, activate all checks by default.
+                if ($heuristic_was_disabled && $heuristic_now_enabled && !isset($input[$field])) {
+                    $sanitized[$field] = true;
+                } else {
+                    // Otherwise, use the input value or preserve existing value.
+                    if (isset($input[$field])) {
+                        $sanitized[$field] = (bool) $input[$field];
+                    } else {
+                        // Preserve existing value if heuristic is disabled, otherwise default to true.
+                        $sanitized[$field] = isset($existing[$field]) ? (bool) $existing[$field] : true;
+                    }
+                }
+            } else {
+                // For all other boolean fields, use standard logic.
+                $sanitized[$field] = isset($input[$field]) ? (bool) $input[$field] : false;
+            }
+        }
+
+        // If heuristic is disabled, disable all heuristic checks as well.
+        if (empty($sanitized['heuristic_enabled'])) {
+            $heuristic_check_fields = array(
+                'enable_link_check',
+                'enable_character_check',
+                'enable_phrase_check',
+                'enable_email_check',
+                'enable_referrer_check',
+                'enable_user_agent_check',
+                'enable_content_length_check',
+                'enable_mixed_script_check',
+                'enable_unicode_check',
+                'enable_numbers_letters_only_check',
+                'enable_ip_in_content_check',
+            );
+            foreach ($heuristic_check_fields as $check_field) {
+                $sanitized[$check_field] = false;
+            }
         }
 
         // Text fields - preserve existing value if not provided.
@@ -1148,7 +1352,13 @@ class Settings
         // Clear any existing integration instances by calling load_integrations.
         // This will reload the integrations with new settings.
         if (class_exists('\WeSpamfighter\Plugin')) {
-            \WeSpamfighter\Plugin::get_instance()->load_integrations();
+            $plugin = \WeSpamfighter\Plugin::get_instance();
+            $plugin->load_integrations();
+
+            // Ensure notification cron jobs are scheduled (in case notification_type changed).
+            if (method_exists($plugin, 'ensure_notification_cron_jobs')) {
+                $plugin->ensure_notification_cron_jobs();
+            }
         }
     }
 }
