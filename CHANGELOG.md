@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.0] - 2025-12-29
+
+- Enhance heuristic detection capabilities and improve email notification logging
+  - Added multiple new spam detection methods including referrer analysis, user agent analysis, content length analysis, mixed script detection, Unicode anomalies detection, numbers/letters only detection, and IP address detection in content.
+  - Migrated existing settings from disable_* to enable_* for heuristic checks, ensuring all checks are enabled by default when heuristic detection is activated.
+  - Improved email notification logging in the Activity Log to track success/failure status of daily and weekly summary emails.
+  - Updated documentation in README.md and README.txt to reflect new features and changes in settings.
+
+
 ## [1.3.3] - 2025-12-17
 
 - Version update
@@ -265,3 +274,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [1.3.1]: https://github.com/gbyat/we-spamfighter/releases/tag/v1.3.1
 [1.3.2]: https://github.com/gbyat/we-spamfighter/releases/tag/v1.3.2
 [1.3.3]: https://github.com/gbyat/we-spamfighter/releases/tag/v1.3.3
+[1.4.0]: https://github.com/gbyat/we-spamfighter/releases/tag/v1.4.0

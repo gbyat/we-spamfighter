@@ -8,7 +8,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Language-Team: webentwicklerin, Gabriele Laesser\n"
 "Last-Translator: webentwicklerin, Gabriele Laesser <info@webentwicklerin.at>\n"
-"POT-Creation-Date: 2025-12-28 11:11+0000\n"
+"POT-Creation-Date: 2025-12-29 09:30+0000\n"
 "Report-Msgid-Bugs-To: https://github.com/gbyat/we-spamfighter/issues\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: __;_e;_ex:1,2c;_n:1,2;_n_noop:1,2;_nx:1,2,4c;_nx_noop:1,2,3c;_x:1,2c;esc_attr__;esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c\n"
@@ -676,137 +676,129 @@ msgstr ""
 msgid "[%s] Spam Detected"
 msgstr ""
 
-#: includes/core/class-notifications.php:114
-msgid "Daily summary cron executed"
-msgstr ""
-
-#: includes/core/class-notifications.php:139
+#: includes/core/class-notifications.php:122
 msgid "Daily summary failed: No email address configured"
 msgstr ""
 
 #. translators: %s: Site name
-#: includes/core/class-notifications.php:170
+#: includes/core/class-notifications.php:153
 msgid "[%s] Daily Spam Summary"
 msgstr ""
 
 #. translators: %s: Site name
-#: includes/core/class-notifications.php:177
+#: includes/core/class-notifications.php:160
 msgid "No spam submissions were detected on %s yesterday."
 msgstr ""
 
-#: includes/core/class-notifications.php:180, includes/core/class-notifications.php:308
+#: includes/core/class-notifications.php:163, includes/core/class-notifications.php:274
 msgid "Great job keeping your site clean!"
 msgstr ""
 
-#: includes/core/class-notifications.php:182, includes/core/class-notifications.php:310
+#: includes/core/class-notifications.php:165, includes/core/class-notifications.php:276
 msgid "View Dashboard:"
 msgstr ""
 
-#: includes/core/class-notifications.php:198
+#: includes/core/class-notifications.php:181
 msgid "Daily summary email sent successfully"
 msgstr ""
 
-#: includes/core/class-notifications.php:198
+#: includes/core/class-notifications.php:181
 msgid "Daily summary email failed to send"
 msgstr ""
 
-#: includes/core/class-notifications.php:242
-msgid "Weekly summary cron executed"
-msgstr ""
-
-#: includes/core/class-notifications.php:267
+#: includes/core/class-notifications.php:233
 msgid "Weekly summary failed: No email address configured"
 msgstr ""
 
 #. translators: %s: Site name
-#: includes/core/class-notifications.php:297
+#: includes/core/class-notifications.php:263
 msgid "[%s] Weekly Spam Summary"
 msgstr ""
 
 #. translators: %s: Site name
-#: includes/core/class-notifications.php:305
+#: includes/core/class-notifications.php:271
 msgid "No spam submissions were detected on %s in the last week."
 msgstr ""
 
-#: includes/core/class-notifications.php:326
+#: includes/core/class-notifications.php:292
 msgid "Weekly summary email sent successfully"
 msgstr ""
 
-#: includes/core/class-notifications.php:326
+#: includes/core/class-notifications.php:292
 msgid "Weekly summary email failed to send"
 msgstr ""
 
 #. translators: %s: Site name
-#: includes/core/class-notifications.php:364
+#: includes/core/class-notifications.php:330
 msgid "A spam submission was detected on %s."
 msgstr ""
 
-#: includes/core/class-notifications.php:368
+#: includes/core/class-notifications.php:334
 msgid "Submission Details:"
 msgstr ""
 
-#: includes/core/class-notifications.php:369
+#: includes/core/class-notifications.php:335
 msgid "ID:"
 msgstr ""
 
-#: includes/core/class-notifications.php:370
+#: includes/core/class-notifications.php:336
 msgid "Type:"
 msgstr ""
 
-#: includes/core/class-notifications.php:371
+#: includes/core/class-notifications.php:337
 msgid "Form/Post ID:"
 msgstr ""
 
-#: includes/core/class-notifications.php:372, includes/integration/class-comments.php:341
+#: includes/core/class-notifications.php:338, includes/integration/class-comments.php:341
 msgid "Spam Score:"
 msgstr ""
 
-#: includes/core/class-notifications.php:373
+#: includes/core/class-notifications.php:339
 msgid "Date:"
 msgstr ""
 
-#: includes/core/class-notifications.php:376
+#: includes/core/class-notifications.php:342
 msgid "Submission Data:"
 msgstr ""
 
-#: includes/core/class-notifications.php:390, includes/integration/class-comments.php:344
+#: includes/core/class-notifications.php:356, includes/integration/class-comments.php:344
 msgid "Detection Details:"
 msgstr ""
 
-#: includes/core/class-notifications.php:398
+#: includes/core/class-notifications.php:364
 msgid "View in Dashboard:"
 msgstr ""
 
-#: includes/core/class-notifications.php:413
+#: includes/core/class-notifications.php:379
 msgid "last week"
 msgstr ""
 
-#: includes/core/class-notifications.php:413
+#: includes/core/class-notifications.php:379
 msgid "yesterday"
 msgstr ""
 
 #. translators: %1$d: Count, %2$s: Period, %3$s: Site name
-#: includes/core/class-notifications.php:418
+#: includes/core/class-notifications.php:384
 msgid "%1$d spam submission(s) were detected on %3$s %2$s."
 msgstr ""
 
-#: includes/core/class-notifications.php:424
+#: includes/core/class-notifications.php:390
 msgid "Summary:"
 msgstr ""
 
-#: includes/core/class-notifications.php:425
+#: includes/core/class-notifications.php:391
 msgid "Total Spam:"
 msgstr ""
 
-#: includes/core/class-notifications.php:444
+#: includes/core/class-notifications.php:410
 msgid "By Form/Type:"
 msgstr ""
 
-#: includes/core/class-notifications.php:454
+#: includes/core/class-notifications.php:420
 msgid "Top Spam Submissions:"
 msgstr ""
 
-#: includes/core/class-notifications.php:483
+#: includes/core/class-notifications.php:449
 msgid "View All in Dashboard:"
 msgstr ""
 
@@ -1073,12 +1065,4 @@ msgstr ""
 
 #: includes/integration/class-contact-form-7.php:256
 msgid "Link detected in foreign language content (strong spam indicator)"
-msgstr ""
-
-#: we-spamfighter.php:508
-msgid "Daily spam summary sent"
-msgstr ""
-
-#: we-spamfighter.php:532
-msgid "Weekly spam summary sent"
 msgstr ""
