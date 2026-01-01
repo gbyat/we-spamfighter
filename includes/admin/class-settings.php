@@ -604,6 +604,44 @@ class Settings
     public function render_heuristic_section()
     {
         echo esc_html__('Configure local heuristic spam detection (works without OpenAI).', 'we-spamfighter');
+?>
+        <div style="margin-top: 15px;">
+            <button type="button" id="we-spamfighter-enable-all-checks" class="button button-secondary" style="margin-right: 10px;">
+                <?php esc_html_e('Enable All Checks', 'we-spamfighter'); ?>
+            </button>
+            <button type="button" id="we-spamfighter-disable-all-checks" class="button button-secondary">
+                <?php esc_html_e('Disable All Checks', 'we-spamfighter'); ?>
+            </button>
+        </div>
+        <script>
+            (function() {
+                var enableAllBtn = document.getElementById('we-spamfighter-enable-all-checks');
+                var disableAllBtn = document.getElementById('we-spamfighter-disable-all-checks');
+
+                if (enableAllBtn && disableAllBtn) {
+                    // Find all heuristic check checkboxes by their name attribute.
+                    var getHeuristicCheckboxes = function() {
+                        var checkboxes = document.querySelectorAll('input[type="checkbox"][name^="we_spamfighter_settings[enable_"][name$="_check]"]');
+                        return Array.prototype.slice.call(checkboxes);
+                    };
+
+                    enableAllBtn.addEventListener('click', function() {
+                        var checkboxes = getHeuristicCheckboxes();
+                        checkboxes.forEach(function(checkbox) {
+                            checkbox.checked = true;
+                        });
+                    });
+
+                    disableAllBtn.addEventListener('click', function() {
+                        var checkboxes = getHeuristicCheckboxes();
+                        checkboxes.forEach(function(checkbox) {
+                            checkbox.checked = false;
+                        });
+                    });
+                }
+            })();
+        </script>
+    <?php
     }
 
     /**
@@ -704,7 +742,7 @@ class Settings
         $checked = checked($value, true, false);
         $label_text = isset($args['description']) ? wp_kses_post($args['description']) : '';
 
-?>
+    ?>
         <div class="we-toggle-wrapper <?php echo $class; ?>">
             <label class="we-toggle-switch">
                 <input type="checkbox" name="<?php echo $field_name; ?>" value="1" <?php echo $checked; ?> />
@@ -1226,24 +1264,57 @@ class Settings
         $heuristic_was_disabled = empty($existing['heuristic_enabled']);
         $heuristic_now_enabled = isset($input['heuristic_enabled']) && !empty($input['heuristic_enabled']);
 
+        // Define heuristic check fields.
+        $heuristic_check_fields = array(
+            'enable_link_check',
+            'enable_character_check',
+            'enable_phrase_check',
+            'enable_email_check',
+            'enable_referrer_check',
+            'enable_user_agent_check',
+            'enable_content_length_check',
+            'enable_mixed_script_check',
+            'enable_unicode_check',
+            'enable_numbers_letters_only_check',
+            'enable_ip_in_content_check',
+        );
+
+        // First, process heuristic_enabled to know its final state.
+        $heuristic_final_state = isset($input['heuristic_enabled']) ? (bool) $input['heuristic_enabled'] : false;
+
         foreach ($boolean_fields as $field) {
             if ($field === 'heuristic_enabled') {
-                $sanitized[$field] = isset($input[$field]) ? (bool) $input[$field] : false;
+                $sanitized[$field] = $heuristic_final_state;
                 continue;
             }
 
             // If this is a heuristic check field (enable_*_check).
-            if (strpos($field, 'enable_') === 0 && strpos($field, '_check') !== false) {
+            if (in_array($field, $heuristic_check_fields, true)) {
                 // If heuristic is being enabled for the first time, activate all checks by default.
-                if ($heuristic_was_disabled && $heuristic_now_enabled && !isset($input[$field])) {
-                    $sanitized[$field] = true;
-                } else {
-                    // Otherwise, use the input value or preserve existing value.
+                if ($heuristic_was_disabled && $heuristic_now_enabled) {
+                    // Only set to true if not explicitly provided in input (first activation).
+                    // If provided in input, use that value (allows user to customize on first activation).
                     if (isset($input[$field])) {
                         $sanitized[$field] = (bool) $input[$field];
                     } else {
-                        // Preserve existing value if heuristic is disabled, otherwise default to true.
-                        $sanitized[$field] = isset($existing[$field]) ? (bool) $existing[$field] : true;
+                        // First activation: default to true.
+                        $sanitized[$field] = true;
+                    }
+                } else {
+                    // Heuristic was already enabled or is being disabled.
+                    // Use the input value if provided, otherwise unchecked = false (if heuristic enabled).
+                    if (isset($input[$field])) {
+                        $sanitized[$field] = (bool) $input[$field];
+                    } else {
+                        // Checkbox not in form = unchecked = false (only if heuristic is enabled).
+                        // If heuristic is disabled, this will be handled below.
+                        if ($heuristic_final_state) {
+                            // Heuristic is enabled: unchecked checkbox means false.
+                            $sanitized[$field] = false;
+                        } else {
+                            // Heuristic is disabled: preserve existing (will be set to false below anyway).
+                            $sanitized[$field] = isset($existing[$field]) ? (bool) $existing[$field] : false;
+                        }
                     }
                 }
             } else {
@@ -1254,19 +1325,6 @@ class Settings
 
         // If heuristic is disabled, disable all heuristic checks as well.
         if (empty($sanitized['heuristic_enabled'])) {
-            $heuristic_check_fields = array(
-                'enable_link_check',
-                'enable_character_check',
-                'enable_phrase_check',
-                'enable_email_check',
-                'enable_referrer_check',
-                'enable_user_agent_check',
-                'enable_content_length_check',
-                'enable_mixed_script_check',
-                'enable_unicode_check',
-                'enable_numbers_letters_only_check',
-                'enable_ip_in_content_check',
-            );
             foreach ($heuristic_check_fields as $check_field) {
                 $sanitized[$check_field] = false;
             }
