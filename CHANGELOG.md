@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.1] - 2026-01-01
+
+- Add heuristic check management buttons and refine settings processing
+  - Introduced "Enable All Checks" and "Disable All Checks" buttons in the heuristic settings section for easier management of individual heuristic checks.
+  - Updated the settings processing logic to ensure proper handling of heuristic check states during activation and deactivation.
+  - Enhanced user experience by allowing customization of heuristic checks upon first activation while preserving existing settings when disabling the heuristic feature.
+
+
 ## [1.4.0] - 2025-12-29
 
 - Enhance heuristic detection capabilities and improve email notification logging
@@ -275,3 +283,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [1.3.2]: https://github.com/gbyat/we-spamfighter/releases/tag/v1.3.2
 [1.3.3]: https://github.com/gbyat/we-spamfighter/releases/tag/v1.3.3
 [1.4.0]: https://github.com/gbyat/we-spamfighter/releases/tag/v1.4.0
+[1.4.1]: https://github.com/gbyat/we-spamfighter/releases/tag/v1.4.1
