@@ -374,6 +374,7 @@ class Plugin
             'enable_unicode_check'        => true,
             'enable_numbers_letters_only_check' => true,
             'enable_ip_in_content_check'  => true,
+            'enable_repeated_multilingual_check' => true,
             'log_retention_days'           => 30,
             'keep_data_on_uninstall'       => false,
             'github_updates_enabled'       => false,

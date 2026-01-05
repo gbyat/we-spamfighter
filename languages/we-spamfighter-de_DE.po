@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WE Spamfighter\n"
 "Report-Msgid-Bugs-To: https://github.com/gbyat/we-spamfighter/issues\n"
-"POT-Creation-Date: 2025-12-28 11:11+0000\n"
-"PO-Revision-Date: 2025-12-28 12:18+0100\n"
+"POT-Creation-Date: 2026-01-05 21:26+0000\n"
+"PO-Revision-Date: 2026-01-05 22:30+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: de_DE\n"
@@ -195,7 +195,7 @@ msgstr "weiter"
 #: includes/admin/class-dashboard.php:492,
 #: includes/admin/class-dashboard.php:519,
 #: includes/admin/class-dashboard.php:555,
-#: includes/admin/class-settings.php:1110
+#: includes/admin/class-settings.php:1160
 msgid "Unauthorized"
 msgstr "Nicht autorisiert"
 
@@ -250,10 +250,10 @@ msgid "Settings"
 msgstr "Einstellungen"
 
 #: includes/admin/class-settings.php:77, includes/admin/class-settings.php:78,
-#: includes/admin/class-settings.php:684,
-#: includes/admin/class-settings.php:967,
-#: includes/admin/class-settings.php:1011,
-#: includes/admin/class-settings.php:1034
+#: includes/admin/class-settings.php:734,
+#: includes/admin/class-settings.php:1017,
+#: includes/admin/class-settings.php:1061,
+#: includes/admin/class-settings.php:1084
 msgid "Activity Log"
 msgstr "Aktivitätsprotokoll"
 
@@ -370,7 +370,7 @@ msgstr ""
 "bedeuten, dass mehr Beiträge als Spam markiert werden (strenger). "
 "Standardwert: 0,7"
 
-#: includes/admin/class-settings.php:322, includes/admin/class-settings.php:843
+#: includes/admin/class-settings.php:322, includes/admin/class-settings.php:893
 msgid "Heuristic Detection"
 msgstr "Heuristische Erkennung"
 
@@ -501,15 +501,27 @@ msgstr "Prüfung auf IP-Adressen im Inhalt aktivieren"
 msgid "Enable detection of IP addresses in content (not in URLs)"
 msgstr "Erkennung von IP-Adressen in Inhalten (nicht in URLs) aktivieren"
 
-#: includes/admin/class-settings.php:489
+#: includes/admin/class-settings.php:488
+msgid "Enable Repeated Multilingual Content Check"
+msgstr "Prüfung auf IP-Adressen im Inhalt aktivieren"
+
+#: includes/admin/class-settings.php:494
+msgid ""
+"Enable detection of repeated multilingual content (same message in multiple "
+"languages separated by markers like ***)"
+msgstr ""
+"Erkennung von wiederholten mehrsprachigen Inhalten aktivieren (gleiche "
+"Nachricht in mehreren Sprachen, getrennt durch Markierungen wie ***)"
+
+#: includes/admin/class-settings.php:501
 msgid "Email Notifications"
 msgstr "E-Mail Benachrichtigungen"
 
-#: includes/admin/class-settings.php:496
+#: includes/admin/class-settings.php:508
 msgid "Notification Email"
 msgstr "Benachrichtigungsemail"
 
-#: includes/admin/class-settings.php:503
+#: includes/admin/class-settings.php:515
 msgid ""
 "Email address to receive spam notifications. If empty, admin email will be "
 "used."
@@ -517,47 +529,47 @@ msgstr ""
 "E-Mail-Adresse für den Empfang von Spam-Benachrichtigungen. Wenn dieses Feld "
 "leer ist, wird die E-Mail-Adresse des Administrators verwendet."
 
-#: includes/admin/class-settings.php:509
+#: includes/admin/class-settings.php:521
 msgid "Notification Type"
 msgstr "Benachrichtigungsart"
 
-#: includes/admin/class-settings.php:516
+#: includes/admin/class-settings.php:528
 msgid "No notifications"
 msgstr "Keine Benachrichtigungen"
 
-#: includes/admin/class-settings.php:517
+#: includes/admin/class-settings.php:529
 msgid "Immediate (on each spam detection)"
 msgstr "Sofort (bei jeder Spam-Erkennung)"
 
-#: includes/admin/class-settings.php:518
+#: includes/admin/class-settings.php:530
 msgid "Daily summary"
 msgstr "Tägliche Zusammenfassung"
 
-#: includes/admin/class-settings.php:519
+#: includes/admin/class-settings.php:531
 msgid "Weekly summary"
 msgstr "Wöchentliche Zusammenfassung"
 
-#: includes/admin/class-settings.php:521
+#: includes/admin/class-settings.php:533
 msgid "How often to receive spam notifications."
 msgstr "Wie oft Spam-Benachrichtigungen empfangen werden sollen."
 
-#: includes/admin/class-settings.php:528, includes/admin/class-settings.php:855
+#: includes/admin/class-settings.php:540, includes/admin/class-settings.php:905
 msgid "Maintenance"
 msgstr "Wartung"
 
-#: includes/admin/class-settings.php:535
+#: includes/admin/class-settings.php:547
 msgid "Log Retention"
 msgstr "Dauer der Protokollspeicherung"
 
-#: includes/admin/class-settings.php:544
+#: includes/admin/class-settings.php:556
 msgid "Days to keep logs (default: 30)"
 msgstr "Tage, an denen Protokolle aufbewahrt werden (Standard: 30)"
 
-#: includes/admin/class-settings.php:550
+#: includes/admin/class-settings.php:562
 msgid "Keep Data on Uninstall"
 msgstr "Daten bei Deinstallation behalten"
 
-#: includes/admin/class-settings.php:556
+#: includes/admin/class-settings.php:568
 msgid ""
 "If enabled, all plugin data (options, submissions, statistics) will be kept "
 "when the plugin is deleted. If disabled, all data will be permanently "
@@ -567,11 +579,11 @@ msgstr ""
 "Übermittlungen, Statistiken) beim Löschen des Plugins erhalten. Wenn diese "
 "Option deaktiviert ist, werden alle Daten dauerhaft gelöscht."
 
-#: includes/admin/class-settings.php:562
+#: includes/admin/class-settings.php:574
 msgid "Enable GitHub Updates"
 msgstr "Updates via Github aktivieren"
 
-#: includes/admin/class-settings.php:568
+#: includes/admin/class-settings.php:580
 msgid ""
 "Enable automatic updates from GitHub releases. <strong>Activate at your own "
 "risk.</strong> Updates will be installed automatically without additional "
@@ -581,11 +593,11 @@ msgstr ""
 "Aktivierung erfolgt auf eigene Gefahr.</strong> Updates werden automatisch "
 "und ohne zusätzliche Bestätigung installiert."
 
-#: includes/admin/class-settings.php:574
+#: includes/admin/class-settings.php:586
 msgid "Enable Activity Log"
 msgstr "Aktivitätsprotokoll aktivieren"
 
-#: includes/admin/class-settings.php:580
+#: includes/admin/class-settings.php:592
 msgid ""
 "Enable activity logging to track important plugin events (e.g., weekly "
 "summaries sent, table maintenance)."
@@ -594,52 +606,60 @@ msgstr ""
 "zu verfolgen (z. B. versendete wöchentliche Zusammenfassungen, "
 "Tabellenpflege)."
 
-#: includes/admin/class-settings.php:590
+#: includes/admin/class-settings.php:602
 msgid "Configure general spam protection settings."
 msgstr "Konfiguriere allgemeine Spam-Schutzeinstellungen."
 
-#: includes/admin/class-settings.php:598
+#: includes/admin/class-settings.php:610
 msgid "Configure OpenAI integration for spam detection."
 msgstr "OpenAI-Integration für die Spam-Erkennung."
 
-#: includes/admin/class-settings.php:606
+#: includes/admin/class-settings.php:618
 msgid "Configure local heuristic spam detection (works without OpenAI)."
 msgstr ""
 "Lokale heuristische Spam-Erkennung konfigurieren (funktioniert ohne OpenAI)."
 
-#: includes/admin/class-settings.php:614
+#: includes/admin/class-settings.php:622
+msgid "Enable All Checks"
+msgstr "Alle Prüfungen aktivieren"
+
+#: includes/admin/class-settings.php:625
+msgid "Disable All Checks"
+msgstr "Alle Prüfungen deaktivieren"
+
+#: includes/admin/class-settings.php:664
 msgid "Configure email notifications for spam detections."
 msgstr "E-Mail-Benachrichtigungen für Spam-Erkennungen."
 
-#: includes/admin/class-settings.php:622
+#: includes/admin/class-settings.php:672
 msgid "Configure maintenance and cleanup settings."
 msgstr "Einstellungen für Wartung und Bereinigung."
 
-#: includes/admin/class-settings.php:632
+#: includes/admin/class-settings.php:682
 msgid "Email Notification Status:"
 msgstr "E-Mail Benachrichtigungsstatus:"
 
-#: includes/admin/class-settings.php:645
+#: includes/admin/class-settings.php:695
 msgid "Daily summary: NOT SCHEDULED - Please save settings to schedule."
 msgstr ""
 "Tägliche Zusammenfassung: NICHT GEPLANT – Bitte speichern Sie die "
 "Einstellungen, um einen Zeitplan zu erstellen."
 
-#: includes/admin/class-settings.php:641
+#: includes/admin/class-settings.php:691
 msgid "Daily summary: Next scheduled for %s"
 msgstr "Tägliche E-Mail-Zusammenfassung geplant für %s"
 
-#: includes/admin/class-settings.php:660
+#: includes/admin/class-settings.php:710
 msgid "Weekly summary: NOT SCHEDULED - Please save settings to schedule."
 msgstr ""
 "Wöchentliche Zusammenfassung: NICHT GEPLANT – Bitte Einstellungen speichern, "
 "um zu planen."
 
-#: includes/admin/class-settings.php:656
+#: includes/admin/class-settings.php:706
 msgid "Weekly summary: Next scheduled for %s"
 msgstr "Wöchentliche E-Mail-Zusammenfassung: die nächste ist geplant für %s"
 
-#: includes/admin/class-settings.php:668
+#: includes/admin/class-settings.php:718
 msgid ""
 "WARNING: WordPress cron is disabled. Email notifications will not work "
 "unless you use a real cron job."
@@ -648,57 +668,57 @@ msgstr ""
 "funktionieren nur, wenn Sie einen echten Cron-Job verwenden."
 
 #. translators: %s: Email address
-#: includes/admin/class-settings.php:675
+#: includes/admin/class-settings.php:725
 msgid "Notification email: %s"
 msgstr "Benachrichtigungsemail: %s"
 
 #. translators: %s: Link to Activity Log
-#: includes/admin/class-settings.php:683
+#: includes/admin/class-settings.php:733
 msgid "Check the %s for email delivery logs and debug information."
 msgstr ""
 "Überprüfen Sie die %s für E-Mail-Zustellungsprotokolle und Debug-"
 "Informationen."
 
-#: includes/admin/class-settings.php:839
+#: includes/admin/class-settings.php:889
 msgid "General"
 msgstr "Allgemein"
 
-#: includes/admin/class-settings.php:847
+#: includes/admin/class-settings.php:897
 msgid "OpenAI"
 msgstr "OpenAI"
 
-#: includes/admin/class-settings.php:851
+#: includes/admin/class-settings.php:901
 msgid "Notifications"
 msgstr "Benachrichtigungen"
 
-#: includes/admin/class-settings.php:868
+#: includes/admin/class-settings.php:918
 msgid "WE Spamfighter Settings"
 msgstr "WE Spamfighter-Einstellungen"
 
-#: includes/admin/class-settings.php:940
+#: includes/admin/class-settings.php:990
 msgid "Test OpenAI Connection"
 msgstr "OpenAI-Verbindung testen"
 
-#: includes/admin/class-settings.php:942
+#: includes/admin/class-settings.php:992
 msgid "Test your OpenAI API connection and configuration."
 msgstr "Testen Sie Ihre OpenAI-API-Verbindung und -Konfiguration."
 
-#: includes/admin/class-settings.php:945
+#: includes/admin/class-settings.php:995
 msgid "Test Connection"
 msgstr "Verbindung testen"
 
-#: includes/admin/class-settings.php:970,
-#: includes/admin/class-settings.php:1038
+#: includes/admin/class-settings.php:1020,
+#: includes/admin/class-settings.php:1088
 msgid "Activity log cleared successfully."
 msgstr "Aktivitätsprotokoll erfolgreich gelöscht."
 
 #. translators: %d: Number of log entries
-#: includes/admin/class-settings.php:977
+#: includes/admin/class-settings.php:1027
 msgid "Currently %d entries in the activity log."
 msgstr "Derzeit %d Einträge im Aktivitätsprotokoll."
 
-#: includes/admin/class-settings.php:985,
-#: includes/admin/class-settings.php:1053
+#: includes/admin/class-settings.php:1035,
+#: includes/admin/class-settings.php:1103
 msgid ""
 "Are you sure you want to clear the activity log? This action cannot be "
 "undone."
@@ -706,81 +726,81 @@ msgstr ""
 "Sicher, dass du die Nachricht löschen möchtest? - Die Aktion kann nicht "
 "rückgängig gemacht werden."
 
-#: includes/admin/class-settings.php:986,
-#: includes/admin/class-settings.php:1054
+#: includes/admin/class-settings.php:1036,
+#: includes/admin/class-settings.php:1104
 msgid "Clear Activity Log"
 msgstr "Aktivitätsprotokoll löschen"
 
-#: includes/admin/class-settings.php:1014
+#: includes/admin/class-settings.php:1064
 msgid ""
 "Activity Log is not enabled. Please enable it in Settings → Maintenance tab."
 msgstr ""
 "Das Aktivitätsprotokoll ist nicht aktiviert. Bitte aktivieren Sie es unter "
 "„Einstellungen“ → Registerkarte „Wartung“."
 
-#: includes/admin/class-settings.php:1046
+#: includes/admin/class-settings.php:1096
 msgid "Recent plugin activities and events."
 msgstr "Aktuelle Plugin-Aktivitäten und Ereignisse."
 
-#: includes/admin/class-settings.php:1081
+#: includes/admin/class-settings.php:1131
 msgid "No activity log entries yet."
 msgstr "Noch keine Aktivitätsprotokolleinträge."
 
-#: includes/admin/class-settings.php:1084
+#: includes/admin/class-settings.php:1134
 msgid ""
 "Activity log entries will appear here once plugin events occur, such as:"
 msgstr ""
 "Aktivitätsprotokolleinträge werden hier angezeigt, sobald Plugin-Ereignisse "
 "auftreten, wie z. B.:"
 
-#: includes/admin/class-settings.php:1087
+#: includes/admin/class-settings.php:1137
 msgid "Weekly spam summary emails sent"
 msgstr "Wöchentliche E-Mail-Zusammenfassung gesendet"
 
-#: includes/admin/class-settings.php:1088
+#: includes/admin/class-settings.php:1138
 msgid "Daily spam summary emails sent"
 msgstr "Tägliche E-Mail-Zusammenfassung gesendet"
 
-#: includes/admin/class-settings.php:1089, we-spamfighter.php:487
+#: includes/admin/class-settings.php:1139, we-spamfighter.php:488
 msgid "Table maintenance completed"
 msgstr "Tabellenpflege abgeschlossen"
 
-#: includes/admin/class-settings.php:1090, we-spamfighter.php:459
+#: includes/admin/class-settings.php:1140, we-spamfighter.php:460
 msgid "Old logs cleaned"
 msgstr "Alte Logs gereinigt"
 
-#: includes/admin/class-settings.php:1093
+#: includes/admin/class-settings.php:1143
 msgid "The log will start recording events after the next scheduled task runs."
 msgstr ""
 "Das Protokoll beginnt mit der Aufzeichnung von Ereignissen, nachdem die "
 "nächste geplante Aufgabe ausgeführt wurde."
 
-#: includes/admin/class-settings.php:1063
+#: includes/admin/class-settings.php:1113
 msgid "Date/Time"
 msgstr "Datum/Uhrzeit"
 
-#: includes/admin/class-settings.php:1064
+#: includes/admin/class-settings.php:1114
 msgid "Event"
 msgstr "Ereignis"
 
-#: includes/admin/class-settings.php:1065
+#: includes/admin/class-settings.php:1115
 msgid "Message"
 msgstr "Nachricht"
 
-#: includes/admin/class-settings.php:1114
+#: includes/admin/class-settings.php:1164
 msgid "Activity Log class not found"
 msgstr "Aktivitätsprotokollklasse nicht gefunden"
 
-#: includes/admin/class-settings.php:1131
+#: includes/admin/class-settings.php:1181
 msgid "Failed to clear activity log"
 msgstr "Löschen des Aktivitätsprotokolls fehlgeschlagen"
 
-#: includes/admin/class-settings.php:1125
+#: includes/admin/class-settings.php:1175
 msgid "Activity log cleared successfully. %d entries deleted."
 msgstr "Aktivitätsprotokoll erfolgreich gelöscht. %d Einträge gelöscht."
 
-#: includes/admin/class-settings.php:1329,
-#: includes/integration/class-contact-form-7.php:524, we-spamfighter.php:383
+#: includes/admin/class-settings.php:1400,
+#: includes/integration/class-contact-form-7.php:524, we-spamfighter.php:384
 msgid "Thank you for your message."
 msgstr "Vielen Dank für Ihre Nachricht."
 
@@ -810,142 +830,134 @@ msgstr "Optimierung der Tabelle fehlgeschlagen"
 msgid "[%s] Spam Detected"
 msgstr "[%s] Spam erkannt"
 
-#: includes/core/class-notifications.php:114
-msgid "Daily summary cron executed"
-msgstr "Zeitplan für die tägliche Zusammenfassung ausgeführt"
-
-#: includes/core/class-notifications.php:139
+#: includes/core/class-notifications.php:122
 msgid "Daily summary failed: No email address configured"
 msgstr "E-Mail für die tägliche E-Mail-Zusammenfassung wurde nicht festgelegt"
 
 #. translators: %s: Site name
-#: includes/core/class-notifications.php:170
+#: includes/core/class-notifications.php:153
 msgid "[%s] Daily Spam Summary"
 msgstr "[%s] Tägliche Spam-Zusammenfassung"
 
 #. translators: %s: Site name
-#: includes/core/class-notifications.php:177
+#: includes/core/class-notifications.php:160
 msgid "No spam submissions were detected on %s yesterday."
 msgstr "Keine Spam-Beiträge wurden seit gestern auf %s entdeckt."
 
-#: includes/core/class-notifications.php:180,
-#: includes/core/class-notifications.php:308
+#: includes/core/class-notifications.php:163,
+#: includes/core/class-notifications.php:274
 msgid "Great job keeping your site clean!"
 msgstr "Tolle Arbeit, Ihre Website sauber zu halten!"
 
-#: includes/core/class-notifications.php:182,
-#: includes/core/class-notifications.php:310
+#: includes/core/class-notifications.php:165,
+#: includes/core/class-notifications.php:276
 msgid "View Dashboard:"
 msgstr "zum Dashboard"
 
-#: includes/core/class-notifications.php:198
+#: includes/core/class-notifications.php:181
 msgid "Daily summary email sent successfully"
 msgstr "Tägliche E-Mail-Zusammenfassung gesendet"
 
-#: includes/core/class-notifications.php:198
+#: includes/core/class-notifications.php:181
 msgid "Daily summary email failed to send"
 msgstr "Tägliche E-Mail-Zusammenfassung konnte nicht gesendet werden."
 
-#: includes/core/class-notifications.php:242
-msgid "Weekly summary cron executed"
-msgstr "Zeitplan für die wöchentliche Zusammenfassung ausgeführt"
-
-#: includes/core/class-notifications.php:267
+#: includes/core/class-notifications.php:233
 msgid "Weekly summary failed: No email address configured"
 msgstr ""
 "E-Mail für die wöchentliche E-Mail-Zusammenfassung wurde nicht festgelegt"
 
 #. translators: %s: Site name
-#: includes/core/class-notifications.php:297
+#: includes/core/class-notifications.php:263
 msgid "[%s] Weekly Spam Summary"
 msgstr "[%s] Wöchentliche Spam-Zusammenfassung"
 
 #. translators: %s: Site name
-#: includes/core/class-notifications.php:305
+#: includes/core/class-notifications.php:271
 msgid "No spam submissions were detected on %s in the last week."
 msgstr "Keine Spam-Beiträge wurden letzte Woche auf %s entdeckt."
 
-#: includes/core/class-notifications.php:326
+#: includes/core/class-notifications.php:292
 msgid "Weekly summary email sent successfully"
 msgstr "Wöchentliche E-Mail-Zusammenfassung erfolgreich gesendet"
 
-#: includes/core/class-notifications.php:326
+#: includes/core/class-notifications.php:292
 msgid "Weekly summary email failed to send"
 msgstr "Wöchentliche E-Mail-Zusammenfassung konnte nicht gesendet werden"
 
 #. translators: %s: Site name
-#: includes/core/class-notifications.php:364
+#: includes/core/class-notifications.php:330
 msgid "A spam submission was detected on %s."
 msgstr "Auf %s wurde eine Spam-Einreichung entdeckt."
 
-#: includes/core/class-notifications.php:368
+#: includes/core/class-notifications.php:334
 msgid "Submission Details:"
 msgstr "Einreichungsdetails:"
 
-#: includes/core/class-notifications.php:369
+#: includes/core/class-notifications.php:335
 msgid "ID:"
 msgstr "ID:"
 
-#: includes/core/class-notifications.php:370
+#: includes/core/class-notifications.php:336
 msgid "Type:"
 msgstr "Typ:"
 
-#: includes/core/class-notifications.php:371
+#: includes/core/class-notifications.php:337
 msgid "Form/Post ID:"
 msgstr "Formular-/Beitrags-ID:"
 
-#: includes/core/class-notifications.php:372,
+#: includes/core/class-notifications.php:338,
 #: includes/integration/class-comments.php:341
 msgid "Spam Score:"
 msgstr "Spam-Bewertung"
 
-#: includes/core/class-notifications.php:373
+#: includes/core/class-notifications.php:339
 msgid "Date:"
 msgstr "Datum:"
 
-#: includes/core/class-notifications.php:376
+#: includes/core/class-notifications.php:342
 msgid "Submission Data:"
 msgstr "Einreichungsdaten:"
 
-#: includes/core/class-notifications.php:390,
+#: includes/core/class-notifications.php:356,
 #: includes/integration/class-comments.php:344
 msgid "Detection Details:"
 msgstr "Details zur Spam-Erkennung:"
 
-#: includes/core/class-notifications.php:398
+#: includes/core/class-notifications.php:364
 msgid "View in Dashboard:"
 msgstr "Im Dashboard anzeigen:"
 
-#: includes/core/class-notifications.php:413
+#: includes/core/class-notifications.php:379
 msgid "last week"
 msgstr "Letzte Woche"
 
-#: includes/core/class-notifications.php:413
+#: includes/core/class-notifications.php:379
 msgid "yesterday"
 msgstr "gestern"
 
 #. translators: %1$d: Count, %2$s: Period, %3$s: Site name
-#: includes/core/class-notifications.php:418
+#: includes/core/class-notifications.php:384
 msgid "%1$d spam submission(s) were detected on %3$s %2$s."
 msgstr "%1$d Spam-Beiträge wurden auf %3$s %2$s entdeckt."
 
-#: includes/core/class-notifications.php:424
+#: includes/core/class-notifications.php:390
 msgid "Summary:"
 msgstr "Zusammenfassung:"
 
-#: includes/core/class-notifications.php:425
+#: includes/core/class-notifications.php:391
 msgid "Total Spam:"
 msgstr "Gesamt-Spam:"
 
-#: includes/core/class-notifications.php:444
+#: includes/core/class-notifications.php:410
 msgid "By Form/Type:"
 msgstr "Nach Formular/Typ"
 
-#: includes/core/class-notifications.php:454
+#: includes/core/class-notifications.php:420
 msgid "Top Spam Submissions:"
 msgstr "Top-Spam-Einsendungen:"
 
-#: includes/core/class-notifications.php:483
+#: includes/core/class-notifications.php:449
 msgid "View All in Dashboard:"
 msgstr "Alle im Dashboard anzeigen:"
 
@@ -978,210 +990,286 @@ msgstr "Aktivieren Sie das Plugin."
 msgid "Configure settings under WE Spamfighter → Settings"
 msgstr "WE Spamfighter-Einstellungen unter WE-Spamfighter → Einstellungen"
 
-#: includes/detection/class-heuristic-detector.php:207
+#: includes/detection/class-heuristic-detector.php:218
 msgid "Multiple suspicious patterns detected (%d checks)"
 msgstr "Mehrere verdächtige Muster entdeckt (%d checks)"
 
-#: includes/detection/class-heuristic-detector.php:248
+#: includes/detection/class-heuristic-detector.php:259
 msgid "Multiple links (%d)"
 msgstr "Mehrere Links (%d)"
 
-#: includes/detection/class-heuristic-detector.php:245
+#: includes/detection/class-heuristic-detector.php:256
 msgid "Too many links (%d)"
 msgstr "Zu viele Links (%d)"
 
-#: includes/detection/class-heuristic-detector.php:260
+#: includes/detection/class-heuristic-detector.php:271
 msgid "High link-to-text ratio"
 msgstr "Hohe Link-zu-Text-Verhältnis"
 
-#: includes/detection/class-heuristic-detector.php:257
+#: includes/detection/class-heuristic-detector.php:268
 msgid "Very high link-to-text ratio"
 msgstr "Sehr hohes Verhältnis von Links zu Text"
 
-#: includes/detection/class-heuristic-detector.php:318
+#: includes/detection/class-heuristic-detector.php:331
 msgid "URL shortener detected: %s"
 msgstr "URL-Kürzer erkannt: %s"
 
-#: includes/detection/class-heuristic-detector.php:332
+#: includes/detection/class-heuristic-detector.php:345
 msgid "Suspicious TLD: %s"
 msgstr "Verdächtige TLD: %s"
 
-#: includes/detection/class-heuristic-detector.php:343
+#: includes/detection/class-heuristic-detector.php:356
 msgid "Suspicious domain pattern detected"
 msgstr "Verdächtiges Domain-Muster erkannt"
 
-#: includes/detection/class-heuristic-detector.php:350
+#: includes/detection/class-heuristic-detector.php:363
 msgid "IP address used as URL"
 msgstr "Als URL verwendete IP-Adresse"
 
-#: includes/detection/class-heuristic-detector.php:374
+#: includes/detection/class-heuristic-detector.php:387
 msgid "Repeated characters detected"
 msgstr "Wiederholte Zeichen erkannt"
 
-#: includes/detection/class-heuristic-detector.php:387
+#: includes/detection/class-heuristic-detector.php:400
 msgid "High percentage of uppercase text"
 msgstr "Hoher Anteil an Großbuchstaben"
 
-#: includes/detection/class-heuristic-detector.php:384
+#: includes/detection/class-heuristic-detector.php:397
 msgid "Text is mostly in uppercase"
 msgstr "Der Text ist größtenteils in Großbuchstaben geschrieben."
 
-#: includes/detection/class-heuristic-detector.php:394
+#: includes/detection/class-heuristic-detector.php:407
 msgid "Suspicious mixed case pattern"
 msgstr "Verdächtiges gemischtes Fallmuster"
 
-#: includes/detection/class-heuristic-detector.php:403
+#: includes/detection/class-heuristic-detector.php:416
 msgid "Too many special characters"
 msgstr "Zu viele Sonderzeichen"
 
-#: includes/detection/class-heuristic-detector.php:413
+#: includes/detection/class-heuristic-detector.php:426
 msgid "Very long sentence without punctuation"
 msgstr "Sehr langer Satz ohne Zeichensetzung"
 
-#: includes/detection/class-heuristic-detector.php:422
+#: includes/detection/class-heuristic-detector.php:435
 msgid "Too many emojis (%d)"
 msgstr "Zu viele Emojis (%d)"
 
-#: includes/detection/class-heuristic-detector.php:512
+#: includes/detection/class-heuristic-detector.php:525
 msgid "Spam phrase detected: \"%s\""
 msgstr "Spam-Phrase erkannt: „%s“"
 
-#: includes/detection/class-heuristic-detector.php:535
+#: includes/detection/class-heuristic-detector.php:548
 msgid "Keyword stuffing: \"%s\" repeated %d times"
 msgstr "Keyword-Spamming: „%s“ %d Mal wiederholt"
 
-#: includes/detection/class-heuristic-detector.php:564
+#: includes/detection/class-heuristic-detector.php:577
 msgid "Multiple email addresses (%d)"
 msgstr "Mehrere E-Mail-Adressen (%d)"
 
-#: includes/detection/class-heuristic-detector.php:591
+#: includes/detection/class-heuristic-detector.php:613
 msgid "Suspicious email provider: %s"
 msgstr "Verdächtiger E-Mail-Anbieter: %s"
 
-#: includes/detection/class-heuristic-detector.php:602
+#: includes/detection/class-heuristic-detector.php:607
+msgid "Free email provider: %s"
+msgstr "Freier E-Mail-Anbieter: %s"
+
+#: includes/detection/class-heuristic-detector.php:625
 msgid "Very suspicious email pattern (numbers only)"
 msgstr "Sehr verdächtige E-Mail-Muster (nur Nummern)"
 
-#: includes/detection/class-heuristic-detector.php:608
+#: includes/detection/class-heuristic-detector.php:631
 msgid "Suspicious random email pattern"
 msgstr "Verdächtiges zufälliges E-Mail-Muster"
 
-#: includes/detection/class-heuristic-detector.php:621
+#: includes/detection/class-heuristic-detector.php:638
+msgid "Suspicious email pattern (name with trailing numbers)"
+msgstr "Verdächtige E-Mail-Muster mit Nummern"
+
+#: includes/detection/class-heuristic-detector.php:645
+msgid "Suspicious email pattern (%d digits in local part)"
+msgstr "Verdächtiges E-Mail-Muster erkannt"
+
+#: includes/detection/class-heuristic-detector.php:680
 msgid "Suspicious email domain TLD: %s"
 msgstr "Verdächtige E-Mail-Domain: %s"
 
-#: includes/detection/class-heuristic-detector.php:630
+#: includes/detection/class-heuristic-detector.php:689
 msgid "Suspicious email domain with numbers"
 msgstr "Verdächtige E-Mail-Domain mit Nummern"
 
-#: includes/detection/class-heuristic-detector.php:722
+#: includes/detection/class-heuristic-detector.php:781
 msgid "Missing referrer (direct access or bot)"
 msgstr "Fehlender Referrer (direkter Zugriff oder Bot)"
 
-#: includes/detection/class-heuristic-detector.php:759
+#: includes/detection/class-heuristic-detector.php:818
 msgid "Suspicious referrer URL pattern"
 msgstr "Verdächtiges Referrer-Domainmuster"
 
-#: includes/detection/class-heuristic-detector.php:780
+#: includes/detection/class-heuristic-detector.php:839
 msgid "Referrer from URL shortener: %s"
 msgstr "Referrer URL aus URL-Kürzer: %s"
 
-#: includes/detection/class-heuristic-detector.php:790
+#: includes/detection/class-heuristic-detector.php:849
 msgid "Referrer from suspicious TLD: %s"
 msgstr "Referrer von verdächtiger TLD: %s"
 
-#: includes/detection/class-heuristic-detector.php:798
+#: includes/detection/class-heuristic-detector.php:857
 msgid "Referrer is an IP address"
 msgstr "Der Referrer ist eine IP-Adresse."
 
-#: includes/detection/class-heuristic-detector.php:821
+#: includes/detection/class-heuristic-detector.php:880
 msgid "Missing user agent (bot or script)"
 msgstr "Fehlender User-Agent (Bot oder Skript)"
 
-#: includes/detection/class-heuristic-detector.php:850
+#: includes/detection/class-heuristic-detector.php:909
 msgid "Known bot detected: %s"
 msgstr "Bot erkannt: %s"
 
-#: includes/detection/class-heuristic-detector.php:882
+#: includes/detection/class-heuristic-detector.php:941
 msgid "Suspicious bot pattern: %s"
 msgstr "Verdächtiges Bot-Muster: %s"
 
-#: includes/detection/class-heuristic-detector.php:891
+#: includes/detection/class-heuristic-detector.php:950
 msgid "Very short user agent string"
 msgstr "Sehr kurze User-Agent-Zeichenfolge"
 
-#: includes/detection/class-heuristic-detector.php:908
+#: includes/detection/class-heuristic-detector.php:967
 msgid "Suspicious pattern in user agent: %s"
 msgstr "Verdächtiges User-Agent-Muster erkannt"
 
-#: includes/detection/class-heuristic-detector.php:926
+#: includes/detection/class-heuristic-detector.php:985
 msgid "Missing browser identification in user agent"
 msgstr "Fehlende Browseridentifikation im User-Agent"
 
-#: includes/detection/class-heuristic-detector.php:932
+#: includes/detection/class-heuristic-detector.php:991
 msgid "Suspicious version pattern in user agent"
 msgstr "Verdächtiges Versionsmuster im User-Agent String erkannt"
 
-#: includes/detection/class-heuristic-detector.php:956
+#: includes/detection/class-heuristic-detector.php:1015
 msgid "Very short content (%d characters)"
 msgstr "Sehr kurzer Inhalt (%d Zeichen)"
 
-#: includes/detection/class-heuristic-detector.php:962
+#: includes/detection/class-heuristic-detector.php:1021
 msgid "Extremely long content (%d characters)"
 msgstr "Extrem langer Inhalt (%d Zeichen)"
 
-#: includes/detection/class-heuristic-detector.php:969
+#: includes/detection/class-heuristic-detector.php:1028
 msgid "Suspicious content length (common bot pattern)"
 msgstr "Verdächtig Inhaltslänge (allgemeines Bot-Muster)"
 
-#: includes/detection/class-heuristic-detector.php:1072
+#: includes/detection/class-heuristic-detector.php:1131
 msgid "Mixed scripts detected (%s)"
 msgstr "Mehrere Zeichensätze entdeckt (%d)"
 
-#: includes/detection/class-heuristic-detector.php:1069
+#: includes/detection/class-heuristic-detector.php:1128
 msgid "Multiple scripts detected (%s) - strong spam indicator"
 msgstr "Mehrere Zeichensätze  erkannt (%s) – starker Spam-Indikator"
 
-#: includes/detection/class-heuristic-detector.php:1084
+#: includes/detection/class-heuristic-detector.php:1143
 msgid "Cyrillic mixed with Latin characters (common spam pattern)"
 msgstr ""
 "Kyrillische Zeichen gemischt mit lateinischen Zeichen (häufiges Spam-Muster)"
 
-#: includes/detection/class-heuristic-detector.php:1130
+#: includes/detection/class-heuristic-detector.php:1189
 msgid "Zero-width characters detected (obfuscation attempt)"
 msgstr "Zeichen ohne Breite erkannt (Verschleierungsversuch)"
 
-#: includes/detection/class-heuristic-detector.php:1150
+#: includes/detection/class-heuristic-detector.php:1209
 msgid "Control characters detected (%d)"
 msgstr "Steuerzeichen erkannt (%d)"
 
-#: includes/detection/class-heuristic-detector.php:1163
+#: includes/detection/class-heuristic-detector.php:1222
 msgid "Suspicious character lookalikes detected (homoglyph attack)"
 msgstr "Verdächtige Zeichenähnlichkeiten erkannt (Homoglyphenangriff)"
 
-#: includes/detection/class-heuristic-detector.php:1198
+#: includes/detection/class-heuristic-detector.php:1257
 msgid "Content contains only numbers (%d digits)"
 msgstr "Der Inhalt enthält nur Zahlen (%d Ziffern)."
 
-#: includes/detection/class-heuristic-detector.php:1206
+#: includes/detection/class-heuristic-detector.php:1265
 msgid "Content contains only letters (no numbers or punctuation)"
 msgstr "Der Inhalt enthält nur Buchstaben (keine Zahlen oder Satzzeichen)."
 
-#: includes/detection/class-heuristic-detector.php:1215
+#: includes/detection/class-heuristic-detector.php:1274
 msgid "Content is only repeating characters"
 msgstr "Text besteht nur aus sich wiederholenden Zeichen"
 
-#: includes/detection/class-heuristic-detector.php:1259
+#: includes/detection/class-heuristic-detector.php:1318
 msgid "IP address found in content (not in URL)"
 msgstr "IP-Adresse im Inhalt gefunden (nicht in der URL)"
 
-#: includes/detection/class-heuristic-detector.php:1256
+#: includes/detection/class-heuristic-detector.php:1315
 msgid "Multiple IP addresses in content (%d)"
 msgstr "Mehrere E-Mail-Adressen im Inhalt (%d)"
 
-#: includes/detection/class-heuristic-detector.php:1273
+#: includes/detection/class-heuristic-detector.php:1332
 msgid "Private IP address in content"
 msgstr "Private IP-Adresse im Inhalt"
+
+#: includes/detection/class-heuristic-detector.php:1377
+msgid "Separator pattern detected (\"%s\") - possible multilingual spam"
+msgstr "Separator-Muster erkannt („%s“) – möglicherweise mehrsprachiger Spam"
+
+#: includes/detection/class-heuristic-detector.php:1374
+msgid ""
+"Repeated separators detected (%d instances of \"%s\") - common in "
+"multilingual spam"
+msgstr ""
+"Wiederholte Trennzeichen erkannt (%d Instanzen von „%s“) – häufig bei "
+"mehrsprachigen Spam-Mails"
+
+#: includes/detection/class-heuristic-detector.php:1393
+msgid "Same URL repeated %d times - strong multilingual spam indicator"
+msgstr ""
+"Gleiche URL %d Mal wiederholt – starker Indikator für mehrsprachigen Spam"
+
+#: includes/detection/class-heuristic-detector.php:1390
+msgid ""
+"Repeated URLs detected (%d total, %d unique) - common in multilingual spam"
+msgstr ""
+"Wiederholte URLs erkannt (insgesamt %d, davon %d eindeutig) – häufig bei "
+"mehrsprachigem Spam"
+
+#: includes/detection/class-heuristic-detector.php:1422
+msgid ""
+"Multiple sections with similar structure (%d sections) - multilingual spam "
+"pattern"
+msgstr ""
+"Mehrere Abschnitte mit ähnlicher Struktur (%d Abschnitte) – mehrsprachiges "
+"Spam-Muster"
+
+#: includes/detection/class-heuristic-detector.php:1452
+msgid ""
+"Sections have similar sentence structure (%d sections) - suggests "
+"multilingual repetition"
+msgstr ""
+"Abschnitte haben eine ähnliche Satzstruktur (%d Abschnitte) – deutet auf "
+"mehrsprachige Wiederholungen hin"
+
+#: includes/detection/class-heuristic-detector.php:1478
+msgid ""
+"Similar URLs across multiple sections (%d sections with URLs, %d unique "
+"URLs) - multilingual repetition"
+msgstr ""
+"Ähnliche URLs in mehreren Abschnitten (%d Abschnitte mit URLs, %d eindeutige "
+"URLs) – mehrsprachige Wiederholungen"
+
+#: includes/detection/class-heuristic-detector.php:1515
+msgid ""
+"Common keywords/brand names across sections (%d keywords) - suggests "
+"multilingual repetition"
+msgstr ""
+"Gemeinsame Schlüsselwörter/Markennamen in allen Abschnitten (%d "
+"Schlüsselwörter) – deutet auf mehrsprachige Wiederholungen hin"
+
+#: includes/detection/class-heuristic-detector.php:1545
+msgid ""
+"Multiple language greetings detected (%d) combined with repeated structure - "
+"multilingual spam"
+msgstr ""
+"Mehrsprachige Begrüßungen erkannt (%d) in Kombination mit wiederholter "
+"Struktur – mehrsprachiger Spam"
 
 #. translators: %s: Site name
 #: includes/integration/class-comments.php:315
@@ -1217,13 +1305,17 @@ msgstr "Spam-Kommentare anzeigen"
 msgid "Link detected in foreign language content (strong spam indicator)"
 msgstr "Link in fremdsprachigem Inhalt entdeckt (starker Spam-Indikator)"
 
-#: we-spamfighter.php:508
-msgid "Daily spam summary sent"
-msgstr "Tägliche Zusammenfassung gesendet"
+#~ msgid "Daily summary cron executed"
+#~ msgstr "Zeitplan für die tägliche Zusammenfassung ausgeführt"
 
-#: we-spamfighter.php:532
-msgid "Weekly spam summary sent"
-msgstr "Wöchentliche Zusammenfassung gesendet"
+#~ msgid "Weekly summary cron executed"
+#~ msgstr "Zeitplan für die wöchentliche Zusammenfassung ausgeführt"
+
+#~ msgid "Daily spam summary sent"
+#~ msgstr "Tägliche Zusammenfassung gesendet"
+
+#~ msgid "Weekly spam summary sent"
+#~ msgstr "Wöchentliche Zusammenfassung gesendet"
 
 #~ msgid "https://webentwicklerin.at"
 #~ msgstr "https://webentwicklerin.at"

@@ -483,6 +483,18 @@ class Settings
             )
         );
 
+        add_settings_field(
+            'enable_repeated_multilingual_check',
+            __('Enable Repeated Multilingual Content Check', 'we-spamfighter'),
+            array($this, 'render_checkbox_field'),
+            'we-spamfighter',
+            'we_spamfighter_heuristic',
+            array(
+                'field_id'    => 'enable_repeated_multilingual_check',
+                'description' => __('Enable detection of repeated multilingual content (same message in multiple languages separated by markers like ***)', 'we-spamfighter'),
+            )
+        );
+
         // Notifications section.
         add_settings_section(
             'we_spamfighter_notifications',
@@ -1255,6 +1267,7 @@ class Settings
             'enable_unicode_check',
             'enable_numbers_letters_only_check',
             'enable_ip_in_content_check',
+            'enable_repeated_multilingual_check',
             'keep_data_on_uninstall',
             'github_updates_enabled',
             'activity_log_enabled',

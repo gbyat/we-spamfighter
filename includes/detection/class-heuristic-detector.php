@@ -163,6 +163,17 @@ class HeuristicDetector
             }
         }
 
+        // Check 12: Repeated Multilingual Content.
+        $enable_repeated_multilingual = !empty($settings['enable_repeated_multilingual_check']) || (!isset($settings['enable_repeated_multilingual_check']) && empty($settings['disable_repeated_multilingual_check']));
+        if ($enable_repeated_multilingual) {
+            $repeated_check = self::check_repeated_multilingual($content_text);
+            if ($repeated_check['score'] > 0) {
+                $total_score += $repeated_check['score'];
+                $details['repeated_multilingual_check'] = $repeated_check;
+                $checks_performed++;
+            }
+        }
+
         // Apply combination bonus if multiple checks found issues.
         $checks_with_issues = 0;
         if (isset($details['link_check']) && $details['link_check']['score'] > 0) {
@@ -196,6 +207,9 @@ class HeuristicDetector
             $checks_with_issues++;
         }
         if (isset($details['ip_in_content_check']) && $details['ip_in_content_check']['score'] > 0) {
+            $checks_with_issues++;
+        }
+        if (isset($details['repeated_multilingual_check']) && $details['repeated_multilingual_check']['score'] > 0) {
             $checks_with_issues++;
         }
 
@@ -279,6 +293,7 @@ class HeuristicDetector
             'shorten.it',
             'tiny.cc',
             'shorturl.at',
+            'sho.cat', // Short domain, often used for spam
         );
 
         $suspicious_tlds = array(
@@ -301,6 +316,7 @@ class HeuristicDetector
             '.info', // Often used for spam
             '.biz', // Often used for spam
             '.cc', // Cocos Islands (often used for spam)
+            '.cat', // Catalan domain, sometimes used for spam
         );
 
         foreach ($urls[0] as $url) {
@@ -586,10 +602,20 @@ class HeuristicDetector
             $domain_lower = strtolower($domain);
 
             foreach ($suspicious_providers as $provider) {
-                if (strpos($domain_lower, $provider) !== false) {
-                    $score += 0.4;
-                    $reasons[] = sprintf(__('Suspicious email provider: %s', 'we-spamfighter'), $provider);
-                    break;
+                // Check if domain starts with or contains the provider pattern.
+                // For patterns ending with '.', check if domain starts with it.
+                if (substr($provider, -1) === '.') {
+                    if (strpos($domain_lower, $provider) === 0) {
+                        $score += 0.3; // Lower score for free providers (they can be legitimate)
+                        $reasons[] = sprintf(__('Free email provider: %s', 'we-spamfighter'), rtrim($provider, '.'));
+                        break;
+                    }
+                } else {
+                    if (strpos($domain_lower, $provider) !== false) {
+                        $score += 0.4;
+                        $reasons[] = sprintf(__('Suspicious email provider: %s', 'we-spamfighter'), $provider);
+                        break;
+                    }
                 }
             }
 
@@ -608,8 +634,44 @@ class HeuristicDetector
                 $reasons[] = __('Suspicious random email pattern', 'we-spamfighter');
             }
 
+            // Suspicious pattern: Name followed by numbers (e.g., "antonio.campanelli197")
+            // This is a common spam pattern where spammers add random numbers to legitimate-sounding names.
+            if (preg_match('/^[a-z]+\.[a-z]+\d{2,}$/i', $local_part) || preg_match('/^[a-z]+\d{3,}$/i', $local_part)) {
+                $score += 0.3;
+                $reasons[] = __('Suspicious email pattern (name with trailing numbers)', 'we-spamfighter');
+            }
+
+            // Suspicious: Many numbers in local part (more than 4 digits total).
+            $digit_count = preg_match_all('/\d/', $local_part);
+            if ($digit_count > 4 && mb_strlen($local_part) > 8) {
+                $score += 0.2;
+                $reasons[] = sprintf(__('Suspicious email pattern (%d digits in local part)', 'we-spamfighter'), $digit_count);
+            }
+
             // Suspicious TLDs in email domain (common spam domains).
-            $suspicious_tlds = array('.ru', '.tk', '.ml', '.ga', '.cf', '.gq', '.xyz', '.top', '.lv', '.su', '.info', '.biz', '.cc');
+            // Use the same list as in check_links() for consistency.
+            $suspicious_tlds = array(
+                '.ru',
+                '.tk',
+                '.ml',
+                '.ga',
+                '.cf',
+                '.gq',
+                '.xyz',
+                '.top',
+                '.lv',
+                '.su',
+                '.info',
+                '.biz',
+                '.cc',
+                '.click',
+                '.download',
+                '.stream',
+                '.online',
+                '.site',
+                '.website',
+                '.cat', // Include .cat as well
+            );
             foreach ($suspicious_tlds as $sus_tld) {
                 if (substr($domain_lower, -strlen($sus_tld)) === $sus_tld) {
                     // Higher score for very suspicious TLDs.
@@ -1274,6 +1336,216 @@ class HeuristicDetector
                     }
                 }
             }
+        }
+
+        return array(
+            'score'   => min(1.0, $score),
+            'reasons' => array_unique($reasons),
+        );
+    }
+
+    /**
+     * Check for repeated multilingual content (same message in multiple languages).
+     *
+     * @param string $text Text to analyze.
+     * @return array Check result.
+     */
+    private static function check_repeated_multilingual($text)
+    {
+        $score = 0.0;
+        $reasons = array();
+        $text_length = mb_strlen($text);
+
+        // Check for common separators used in multilingual spam (***, ---, ===, etc.).
+        $separators = array('***', '---', '===', '___', '###', '///');
+        $separator_count = 0;
+        $separator_found = '';
+
+        foreach ($separators as $sep) {
+            $count = substr_count($text, $sep);
+            if ($count > 0) {
+                $separator_count += $count;
+                if (empty($separator_found)) {
+                    $separator_found = $sep;
+                }
+            }
+        }
+
+        // If we find separator patterns, it's likely multilingual spam.
+        if ($separator_count >= 2) {
+            $score += 0.4;
+            $reasons[] = sprintf(__('Repeated separators detected (%d instances of "%s") - common in multilingual spam', 'we-spamfighter'), $separator_count, $separator_found);
+        } elseif ($separator_count >= 1) {
+            $score += 0.2;
+            $reasons[] = sprintf(__('Separator pattern detected ("%s") - possible multilingual spam', 'we-spamfighter'), $separator_found);
+        }
+
+        // Check for repeated URLs (same URL multiple times is suspicious for multilingual spam).
+        preg_match_all('/https?:\/\/[^\s<>"\'\]\[\)]+/i', $text, $urls);
+        $url_count = count($urls[0]);
+        if ($url_count > 1) {
+            $unique_urls = array_unique($urls[0]);
+            $unique_count = count($unique_urls);
+
+            // If we have multiple URLs but few unique ones, it's repeated (multilingual spam pattern).
+            if ($url_count >= 3 && $unique_count <= 2) {
+                $score += 0.3;
+                $reasons[] = sprintf(__('Repeated URLs detected (%d total, %d unique) - common in multilingual spam', 'we-spamfighter'), $url_count, $unique_count);
+            } elseif ($url_count >= 2 && $unique_count === 1) {
+                $score += 0.5;
+                $reasons[] = sprintf(__('Same URL repeated %d times - strong multilingual spam indicator', 'we-spamfighter'), $url_count);
+            }
+        }
+
+        // Check for suspiciously long content with repetitive structure (multilingual spam often has this).
+        $sections = array();
+        $section_count = 0;
+        if ($text_length > 500) {
+            // Split by common separators and check for similar length sections.
+            $sections = preg_split('/\*{3,}|\-{3,}|={3,}/', $text);
+            $sections = array_filter($sections, function ($section) {
+                return mb_strlen(trim($section)) > 50; // Only count substantial sections.
+            });
+            $section_count = count($sections);
+
+            if ($section_count >= 3) {
+                // Check if sections have similar lengths (multilingual spam often has similar structure).
+                $lengths = array_map('mb_strlen', $sections);
+                $avg_length = array_sum($lengths) / $section_count;
+                $variance = 0;
+                foreach ($lengths as $len) {
+                    $variance += pow($len - $avg_length, 2);
+                }
+                $variance = $variance / $section_count;
+                $std_dev = sqrt($variance);
+
+                // If sections have similar lengths (low variance), it's suspicious.
+                if ($std_dev < ($avg_length * 0.3) && $section_count >= 3) {
+                    $score += 0.3;
+                    $reasons[] = sprintf(__('Multiple sections with similar structure (%d sections) - multilingual spam pattern', 'we-spamfighter'), $section_count);
+                }
+
+                // Check for structural similarities (sentence count, paragraph count, etc.).
+                // Multilingual spam often has the same structure in each language.
+                $sentence_counts = array();
+                $paragraph_counts = array();
+                foreach ($sections as $section) {
+                    // Count sentences (rough estimate: periods, exclamation, question marks).
+                    $sentence_count = preg_match_all('/[.!?]+/', $section);
+                    $sentence_counts[] = $sentence_count;
+
+                    // Count paragraphs (double line breaks or single line breaks with empty lines).
+                    $paragraph_count = preg_match_all('/\n\s*\n|\r\n\s*\r\n/', $section) + 1;
+                    $paragraph_counts[] = $paragraph_count;
+                }
+
+                // If sentence counts are similar across sections (same structure), it's suspicious.
+                if (count($sentence_counts) >= 3) {
+                    $avg_sentences = array_sum($sentence_counts) / count($sentence_counts);
+                    $sentence_variance = 0;
+                    foreach ($sentence_counts as $count) {
+                        $sentence_variance += pow($count - $avg_sentences, 2);
+                    }
+                    $sentence_variance = $sentence_variance / count($sentence_counts);
+                    $sentence_std_dev = sqrt($sentence_variance);
+
+                    // If sentence counts are very similar (low variance), it suggests same structure.
+                    if ($avg_sentences > 3 && $sentence_std_dev < ($avg_sentences * 0.4)) {
+                        $score += 0.2;
+                        $reasons[] = sprintf(__('Sections have similar sentence structure (%d sections) - suggests multilingual repetition', 'we-spamfighter'), $section_count);
+                    }
+                }
+
+                // Check for common entities across sections (URLs, phone numbers, brand names, etc.).
+                // Extract URLs from each section.
+                $section_urls = array();
+                foreach ($sections as $idx => $section) {
+                    preg_match_all('/https?:\/\/[^\s<>"\'\]\[\)]+/i', $section, $matches);
+                    $section_urls[$idx] = $matches[0];
+                }
+
+                // If all sections contain URLs and they're similar/identical, it's very suspicious.
+                $sections_with_urls = 0;
+                $total_unique_urls = array();
+                foreach ($section_urls as $urls) {
+                    if (!empty($urls)) {
+                        $sections_with_urls++;
+                        $total_unique_urls = array_merge($total_unique_urls, $urls);
+                    }
+                }
+                $unique_url_count = count(array_unique($total_unique_urls));
+
+                // If most sections have URLs but there are few unique URLs, it's repeated content.
+                if ($sections_with_urls >= 2 && $section_count >= 3 && $unique_url_count <= 2) {
+                    $score += 0.3;
+                    $reasons[] = sprintf(__('Similar URLs across multiple sections (%d sections with URLs, %d unique URLs) - multilingual repetition', 'we-spamfighter'), $sections_with_urls, $unique_url_count);
+                }
+
+                // Extract potential brand/product names (capitalized words, might appear in multiple languages).
+                // This is a simple heuristic: look for capitalized words that appear in multiple sections.
+                $section_keywords = array();
+                foreach ($sections as $idx => $section) {
+                    // Extract capitalized words (likely brand/product names).
+                    preg_match_all('/\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+)*\b/', $section, $matches);
+                    $keywords = array_map('strtolower', $matches[0]);
+                    // Filter out common words and keep only substantial keywords.
+                    $common_words = array('der', 'die', 'das', 'the', 'and', 'or', 'but', 'for', 'with', 'from', 'this', 'that', 'these', 'those', 'have', 'has', 'had', 'was', 'were', 'will', 'would', 'could', 'should', 'may', 'might', 'must', 'can', 'le', 'la', 'les', 'un', 'une', 'des', 'de', 'du', 'et', 'ou', 'mais', 'pour', 'avec', 'sur', 'sous', 'dans', 'par');
+                    $keywords = array_filter($keywords, function ($kw) use ($common_words) {
+                        return mb_strlen($kw) > 3 && !in_array($kw, $common_words, true);
+                    });
+                    $section_keywords[$idx] = array_unique($keywords);
+                }
+
+                // Check if there are common keywords across sections (brand/product names).
+                if (count($section_keywords) >= 3) {
+                    $common_keywords = array();
+                    $all_keywords = array();
+                    foreach ($section_keywords as $keywords) {
+                        $all_keywords = array_merge($all_keywords, $keywords);
+                    }
+                    $keyword_counts = array_count_values($all_keywords);
+
+                    // Keywords that appear in at least 2 sections might be brand/product names.
+                    foreach ($keyword_counts as $keyword => $count) {
+                        if ($count >= 2) {
+                            $common_keywords[] = $keyword;
+                        }
+                    }
+
+                    // If we find common keywords across multiple sections, it suggests repeated content.
+                    if (count($common_keywords) >= 2) {
+                        $score += 0.2;
+                        $reasons[] = sprintf(__('Common keywords/brand names across sections (%d keywords) - suggests multilingual repetition', 'we-spamfighter'), count($common_keywords));
+                    }
+                }
+            }
+        }
+
+        // Check for common multilingual spam patterns (greetings in different languages).
+        $multilingual_greetings = array(
+            'guten tag',
+            'hello',
+            'hi',
+            'bonjour',
+            'hola',
+            'ciao',
+            'grüße',
+            'greetings',
+            'salutations',
+            'saludos',
+        );
+        $greeting_count = 0;
+        $text_lower = mb_strtolower($text);
+        foreach ($multilingual_greetings as $greeting) {
+            if (stripos($text_lower, $greeting) !== false) {
+                $greeting_count++;
+            }
+        }
+
+        // If we find multiple greetings in different languages, it's suspicious.
+        if ($greeting_count >= 3 && ($separator_count >= 1 || $section_count >= 3)) {
+            $score += 0.3;
+            $reasons[] = sprintf(__('Multiple language greetings detected (%d) combined with repeated structure - multilingual spam', 'we-spamfighter'), $greeting_count);
         }
 
         return array(
