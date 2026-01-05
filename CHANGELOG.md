@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.2] - 2026-01-05
+
+- Add repeated multilingual content check feature
+  - Introduced a new heuristic check for detecting repeated multilingual content, allowing the identification of the same message in multiple languages separated by specific markers.
+  - Updated settings to include an option for enabling this check, enhancing the plugin's spam detection capabilities.
+  - Enhanced the heuristic detection logic to incorporate this new check, improving overall spam analysis accuracy.
+
+
 ## [1.4.1] - 2026-01-01
 
 - Add heuristic check management buttons and refine settings processing
@@ -284,3 +292,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [1.3.3]: https://github.com/gbyat/we-spamfighter/releases/tag/v1.3.3
 [1.4.0]: https://github.com/gbyat/we-spamfighter/releases/tag/v1.4.0
 [1.4.1]: https://github.com/gbyat/we-spamfighter/releases/tag/v1.4.1
+[1.4.2]: https://github.com/gbyat/we-spamfighter/releases/tag/v1.4.2

@@ -8,7 +8,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Language-Team: webentwicklerin, Gabriele Laesser\n"
 "Last-Translator: webentwicklerin, Gabriele Laesser <info@webentwicklerin.at>\n"
-"POT-Creation-Date: 2026-01-05 21:26+0000\n"
+"POT-Creation-Date: 2026-01-05 21:58+0000\n"
 "Report-Msgid-Bugs-To: https://github.com/gbyat/we-spamfighter/issues\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: __;_e;_ex:1,2c;_n:1,2;_n_noop:1,2;_nx:1,2,4c;_nx_noop:1,2,3c;_x:1,2c;esc_attr__;esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c\n"
@@ -846,255 +846,255 @@ msgstr ""
 msgid "Configure settings under WE Spamfighter → Settings"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:218
+#: includes/detection/class-heuristic-detector.php:221
 msgid "Multiple suspicious patterns detected (%d checks)"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:259
+#: includes/detection/class-heuristic-detector.php:262
 msgid "Multiple links (%d)"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:256
+#: includes/detection/class-heuristic-detector.php:259
 msgid "Too many links (%d)"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:271
+#: includes/detection/class-heuristic-detector.php:274
 msgid "High link-to-text ratio"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:268
+#: includes/detection/class-heuristic-detector.php:271
 msgid "Very high link-to-text ratio"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:331
+#: includes/detection/class-heuristic-detector.php:334
 msgid "URL shortener detected: %s"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:345
+#: includes/detection/class-heuristic-detector.php:348
 msgid "Suspicious TLD: %s"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:356
+#: includes/detection/class-heuristic-detector.php:359
 msgid "Suspicious domain pattern detected"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:363
+#: includes/detection/class-heuristic-detector.php:366
 msgid "IP address used as URL"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:387
+#: includes/detection/class-heuristic-detector.php:390
 msgid "Repeated characters detected"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:400
+#: includes/detection/class-heuristic-detector.php:403
 msgid "High percentage of uppercase text"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:397
+#: includes/detection/class-heuristic-detector.php:400
 msgid "Text is mostly in uppercase"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:407
+#: includes/detection/class-heuristic-detector.php:410
 msgid "Suspicious mixed case pattern"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:416
+#: includes/detection/class-heuristic-detector.php:419
 msgid "Too many special characters"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:426
+#: includes/detection/class-heuristic-detector.php:429
 msgid "Very long sentence without punctuation"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:435
+#: includes/detection/class-heuristic-detector.php:438
 msgid "Too many emojis (%d)"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:525
+#: includes/detection/class-heuristic-detector.php:528
 msgid "Spam phrase detected: \"%s\""
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:548
+#: includes/detection/class-heuristic-detector.php:551
 msgid "Keyword stuffing: \"%s\" repeated %d times"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:577
+#: includes/detection/class-heuristic-detector.php:580
 msgid "Multiple email addresses (%d)"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:613
+#: includes/detection/class-heuristic-detector.php:616
 msgid "Suspicious email provider: %s"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:607
+#: includes/detection/class-heuristic-detector.php:610
 msgid "Free email provider: %s"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:625
+#: includes/detection/class-heuristic-detector.php:628
 msgid "Very suspicious email pattern (numbers only)"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:631
+#: includes/detection/class-heuristic-detector.php:634
 msgid "Suspicious random email pattern"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:638
+#: includes/detection/class-heuristic-detector.php:641
 msgid "Suspicious email pattern (name with trailing numbers)"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:645
+#: includes/detection/class-heuristic-detector.php:648
 msgid "Suspicious email pattern (%d digits in local part)"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:680
+#: includes/detection/class-heuristic-detector.php:683
 msgid "Suspicious email domain TLD: %s"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:689
+#: includes/detection/class-heuristic-detector.php:692
 msgid "Suspicious email domain with numbers"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:781
+#: includes/detection/class-heuristic-detector.php:784
 msgid "Missing referrer (direct access or bot)"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:818
+#: includes/detection/class-heuristic-detector.php:821
 msgid "Suspicious referrer URL pattern"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:839
+#: includes/detection/class-heuristic-detector.php:842
 msgid "Referrer from URL shortener: %s"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:849
+#: includes/detection/class-heuristic-detector.php:852
 msgid "Referrer from suspicious TLD: %s"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:857
+#: includes/detection/class-heuristic-detector.php:860
 msgid "Referrer is an IP address"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:880
+#: includes/detection/class-heuristic-detector.php:883
 msgid "Missing user agent (bot or script)"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:909
+#: includes/detection/class-heuristic-detector.php:912
 msgid "Known bot detected: %s"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:941
+#: includes/detection/class-heuristic-detector.php:944
 msgid "Suspicious bot pattern: %s"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:950
+#: includes/detection/class-heuristic-detector.php:953
 msgid "Very short user agent string"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:967
+#: includes/detection/class-heuristic-detector.php:970
 msgid "Suspicious pattern in user agent: %s"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:985
+#: includes/detection/class-heuristic-detector.php:988
 msgid "Missing browser identification in user agent"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:991
+#: includes/detection/class-heuristic-detector.php:994
 msgid "Suspicious version pattern in user agent"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:1015
+#: includes/detection/class-heuristic-detector.php:1018
 msgid "Very short content (%d characters)"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:1021
+#: includes/detection/class-heuristic-detector.php:1024
 msgid "Extremely long content (%d characters)"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:1028
+#: includes/detection/class-heuristic-detector.php:1031
 msgid "Suspicious content length (common bot pattern)"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:1131
+#: includes/detection/class-heuristic-detector.php:1134
 msgid "Mixed scripts detected (%s)"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:1128
+#: includes/detection/class-heuristic-detector.php:1131
 msgid "Multiple scripts detected (%s) - strong spam indicator"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:1143
+#: includes/detection/class-heuristic-detector.php:1146
 msgid "Cyrillic mixed with Latin characters (common spam pattern)"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:1189
+#: includes/detection/class-heuristic-detector.php:1192
 msgid "Zero-width characters detected (obfuscation attempt)"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:1209
+#: includes/detection/class-heuristic-detector.php:1212
 msgid "Control characters detected (%d)"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:1222
+#: includes/detection/class-heuristic-detector.php:1225
 msgid "Suspicious character lookalikes detected (homoglyph attack)"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:1257
+#: includes/detection/class-heuristic-detector.php:1260
 msgid "Content contains only numbers (%d digits)"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:1265
+#: includes/detection/class-heuristic-detector.php:1268
 msgid "Content contains only letters (no numbers or punctuation)"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:1274
+#: includes/detection/class-heuristic-detector.php:1277
 msgid "Content is only repeating characters"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:1318
+#: includes/detection/class-heuristic-detector.php:1321
 msgid "IP address found in content (not in URL)"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:1315
+#: includes/detection/class-heuristic-detector.php:1318
 msgid "Multiple IP addresses in content (%d)"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:1332
+#: includes/detection/class-heuristic-detector.php:1335
 msgid "Private IP address in content"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:1377
+#: includes/detection/class-heuristic-detector.php:1380
 msgid "Separator pattern detected (\"%s\") - possible multilingual spam"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:1374
+#: includes/detection/class-heuristic-detector.php:1377
 msgid "Repeated separators detected (%d instances of \"%s\") - common in multilingual spam"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:1393
+#: includes/detection/class-heuristic-detector.php:1396
 msgid "Same URL repeated %d times - strong multilingual spam indicator"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:1390
+#: includes/detection/class-heuristic-detector.php:1393
 msgid "Repeated URLs detected (%d total, %d unique) - common in multilingual spam"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:1422
+#: includes/detection/class-heuristic-detector.php:1425
 msgid "Multiple sections with similar structure (%d sections) - multilingual spam pattern"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:1452
+#: includes/detection/class-heuristic-detector.php:1455
 msgid "Sections have similar sentence structure (%d sections) - suggests multilingual repetition"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:1478
+#: includes/detection/class-heuristic-detector.php:1481
 msgid "Similar URLs across multiple sections (%d sections with URLs, %d unique URLs) - multilingual repetition"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:1515
+#: includes/detection/class-heuristic-detector.php:1518
 msgid "Common keywords/brand names across sections (%d keywords) - suggests multilingual repetition"
 msgstr ""
 
-#: includes/detection/class-heuristic-detector.php:1545
+#: includes/detection/class-heuristic-detector.php:1548
 msgid "Multiple language greetings detected (%d) combined with repeated structure - multilingual spam"
 msgstr ""
 
