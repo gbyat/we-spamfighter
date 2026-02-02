@@ -229,7 +229,7 @@ class Updater
         }
 
         // Cache the data for 1 hour.
-        set_transient($cache_key, $plugin_data, HOUR_IN_SECONDS);
+        set_transient($cache_key, $plugin_data, 3600); // 1 hour in seconds.
 
         return $plugin_data;
     }
@@ -297,6 +297,11 @@ class Updater
             return $transient;
         }
 
+        // Validate that github_response has required properties.
+        if (! isset($this->github_response->tag_name)) {
+            return $transient;
+        }
+
         // Get current version and new version.
         $current_version = $this->plugin['Version'];
         $new_version     = ltrim($this->github_response->tag_name, 'v');
@@ -310,16 +315,21 @@ class Updater
         $download_url = null;
         if (isset($this->github_response->assets) && is_array($this->github_response->assets)) {
             foreach ($this->github_response->assets as $asset) {
-                if ($asset->name === 'we-spamfighter.zip') {
-                    $download_url = $asset->browser_download_url;
+                if (isset($asset->name) && $asset->name === 'we-spamfighter.zip') {
+                    $download_url = isset($asset->browser_download_url) ? $asset->browser_download_url : null;
                     break;
                 }
             }
         }
 
         // Fallback to zipball if no ZIP asset found.
-        if (! $download_url) {
+        if (! $download_url && isset($this->github_response->zipball_url)) {
             $download_url = $this->github_response->zipball_url;
+        }
+
+        // If still no download URL, return transient without update.
+        if (! $download_url) {
+            return $transient;
         }
 
         // Get compatibility data from ZIP file.
@@ -371,6 +381,11 @@ class Updater
             return $result;
         }
 
+        // Validate that github_response has required properties.
+        if (! isset($this->github_response->tag_name)) {
+            return $result;
+        }
+
         // Get changelog from CHANGELOG.md if available.
         $changelog      = '';
         $changelog_file = WE_SPAMFIGHTER_PLUGIN_DIR . 'CHANGELOG.md';
@@ -383,7 +398,7 @@ class Updater
 
         // If no changelog from file, use GitHub release body.
         if (empty($changelog)) {
-            $changelog = $this->github_response->body ?: esc_html__('No changelog available.', 'we-spamfighter');
+            $changelog = isset($this->github_response->body) && $this->github_response->body ? $this->github_response->body : esc_html__('No changelog available.', 'we-spamfighter');
         }
 
         // Get README content for description.
@@ -399,10 +414,10 @@ class Updater
         $plugin_data = array(
             'name'              => $this->plugin['Name'],
             'slug'              => $this->basename,
-            'version'           => $this->github_response->tag_name,
+            'version'           => isset($this->github_response->tag_name) ? $this->github_response->tag_name : $this->plugin['Version'],
             'author'            => $this->plugin['AuthorName'],
             'author_profile'    => $this->plugin['AuthorURI'],
-            'last_updated'      => $this->github_response->published_at,
+            'last_updated'      => isset($this->github_response->published_at) ? $this->github_response->published_at : '',
             'homepage'          => $this->plugin['PluginURI'],
             'short_description' => $this->plugin['Description'],
             'sections'          => array(
@@ -410,7 +425,7 @@ class Updater
                 'changelog'    => $changelog,
                 'installation' => $this->get_installation_instructions(),
             ),
-            'download_link'     => $this->github_response->zipball_url,
+            'download_link'     => isset($this->github_response->zipball_url) ? $this->github_response->zipball_url : '',
             'requires'          => $this->plugin['Requires at least'] ?? '6.0',
             'tested'            => $this->plugin['Tested up to'] ?? '6.9',
             'requires_php'      => $this->plugin['Requires PHP'] ?? '8.0',

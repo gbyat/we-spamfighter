@@ -62,6 +62,19 @@ class HeuristicDetector
             }
         }
 
+        // Check 2b: Author/name field patterns (when structured content available).
+        if ($enable_character && is_array($content)) {
+            $author_value = $content['author'] ?? $content['your-name'] ?? $content['name'] ?? $content['from'] ?? $content['sender'] ?? '';
+            if (!empty($author_value) && is_string($author_value)) {
+                $author_check = self::check_author_name_patterns($author_value);
+                if ($author_check['score'] > 0) {
+                    $total_score += $author_check['score'];
+                    $details['author_check'] = $author_check;
+                    $checks_performed++;
+                }
+            }
+        }
+
         // Check 3: Spam Phrases.
         $enable_phrase = !empty($settings['enable_phrase_check']) || (!isset($settings['enable_phrase_check']) && empty($settings['disable_phrase_check']));
         if ($enable_phrase) {
@@ -115,6 +128,16 @@ class HeuristicDetector
             if ($length_check['score'] > 0) {
                 $total_score += $length_check['score'];
                 $details['content_length_check'] = $length_check;
+                $checks_performed++;
+            }
+        }
+
+        // Check 7b: Empty message body (CF7/forms) - spam often has name/email/subject filled but message empty.
+        if (is_array($content) && $enable_content_length) {
+            $empty_msg_check = self::check_empty_message_body($content);
+            if ($empty_msg_check['score'] > 0) {
+                $total_score += $empty_msg_check['score'];
+                $details['empty_message_check'] = $empty_msg_check;
                 $checks_performed++;
             }
         }
@@ -182,6 +205,9 @@ class HeuristicDetector
         if (isset($details['character_check']) && $details['character_check']['score'] > 0) {
             $checks_with_issues++;
         }
+        if (isset($details['author_check']) && $details['author_check']['score'] > 0) {
+            $checks_with_issues++;
+        }
         if (isset($details['phrase_check']) && $details['phrase_check']['score'] > 0) {
             $checks_with_issues++;
         }
@@ -195,6 +221,9 @@ class HeuristicDetector
             $checks_with_issues++;
         }
         if (isset($details['content_length_check']) && $details['content_length_check']['score'] > 0) {
+            $checks_with_issues++;
+        }
+        if (isset($details['empty_message_check']) && $details['empty_message_check']['score'] > 0) {
             $checks_with_issues++;
         }
         if (isset($details['mixed_script_check']) && $details['mixed_script_check']['score'] > 0) {
@@ -248,9 +277,11 @@ class HeuristicDetector
         $score = 0.0;
         $reasons = array();
 
-        // Find all URLs.
-        preg_match_all('/https?:\/\/[^\s<>"\'\]\[\)]+/i', $text, $urls);
-        $url_count = count($urls[0]);
+        // Find all URLs (with protocol and www. without protocol).
+        preg_match_all('/https?:\/\/[^\s<>"\'\]\[\)]+/i', $text, $urls_proto);
+        preg_match_all('/\bwww\.[a-zA-Z0-9][-a-zA-Z0-9]*(?:\.[a-zA-Z0-9][-a-zA-Z0-9]*)+(?:\/[^\s<>"\'\]\[\)]*)?/i', $text, $urls_www);
+        $urls = array_unique(array_merge($urls_proto[0] ?? array(), $urls_www[0] ?? array()));
+        $url_count = count($urls);
         $text_length = mb_strlen($text);
 
         // Too many links.
@@ -264,7 +295,7 @@ class HeuristicDetector
 
         // High link-to-text ratio.
         if ($text_length > 0 && $url_count > 0) {
-            $link_length = array_sum(array_map('mb_strlen', $urls[0]));
+            $link_length = array_sum(array_map('mb_strlen', $urls));
             $ratio = $link_length / $text_length;
             if ($ratio > 0.5) {
                 $score += 0.5;
@@ -272,6 +303,22 @@ class HeuristicDetector
             } elseif ($ratio > 0.3) {
                 $score += 0.3;
                 $reasons[] = __('High link-to-text ratio', 'we-spamfighter');
+            }
+        }
+
+        // Check for suspicious URL patterns (full URL including path).
+        $suspicious_url_patterns = array(
+            'yandex.com/poll',   // Poll links used for spam/phishing
+            'google.com/o',      // Fake Google redirect paths (phishing)
+        );
+        foreach ($urls as $url) {
+            $url_lower = strtolower($url);
+            foreach ($suspicious_url_patterns as $pattern) {
+                if (strpos($url_lower, $pattern) !== false) {
+                    $score += 0.4;
+                    $reasons[] = sprintf(__('Suspicious URL pattern: %s', 'we-spamfighter'), $pattern);
+                    break;
+                }
             }
         }
 
@@ -319,9 +366,12 @@ class HeuristicDetector
             '.cat', // Catalan domain, sometimes used for spam
         );
 
-        foreach ($urls[0] as $url) {
-            $domain = parse_url($url, PHP_URL_HOST);
+        foreach ($urls as $url) {
+            $domain = parse_url((strpos($url, '//') !== false ? '' : 'http://') . $url, PHP_URL_HOST);
             if (! $domain) {
+                $domain = preg_replace('#/.*#', '', $url);
+            }
+            if (empty($domain)) {
                 continue;
             }
 
@@ -431,11 +481,56 @@ class HeuristicDetector
             }
         }
 
-        // Excessive emojis.
+        // Emojis/icons in content (suspicious in comments/author names - spammers use for visibility).
         $emoji_count = preg_match_all('/[\x{1F300}-\x{1F9FF}]|[\x{2600}-\x{26FF}]|[\x{2700}-\x{27BF}]/u', $text);
-        if ($emoji_count > 5) {
-            $score += 0.2;
-            $reasons[] = sprintf(__('Too many emojis (%d)', 'we-spamfighter'), $emoji_count);
+        if ($emoji_count >= 1) {
+            $score += ($emoji_count >= 5 ? 0.4 : 0.2);
+            $reasons[] = sprintf(__('Emojis/icons detected (%d) - common in spam', 'we-spamfighter'), $emoji_count);
+        }
+
+        return array(
+            'score'   => min(1.0, $score),
+            'reasons' => array_unique($reasons),
+        );
+    }
+
+    /**
+     * Check author/name field for suspicious patterns.
+     * Long names, URLs in names, and emojis are common spam indicators.
+     *
+     * @param string $author Author or name value.
+     * @return array Check result.
+     */
+    private static function check_author_name_patterns($author)
+    {
+        $score = 0.0;
+        $reasons = array();
+        $author = trim($author);
+
+        if (empty($author)) {
+            return array('score' => 0.0, 'reasons' => array());
+        }
+
+        // Extremely long author/name (spam often uses long promotional text as "name").
+        if (mb_strlen($author) > 60) {
+            $score += 0.4;
+            $reasons[] = sprintf(__('Extremely long author/name (%d characters) - common spam pattern', 'we-spamfighter'), mb_strlen($author));
+        } elseif (mb_strlen($author) > 40) {
+            $score += 0.25;
+            $reasons[] = sprintf(__('Very long author/name (%d characters)', 'we-spamfighter'), mb_strlen($author));
+        }
+
+        // URL/link in author name - virtually only occurs with spam, definitive indicator.
+        if (preg_match('/https?:\/\//i', $author) || preg_match('/\bwww\./i', $author)) {
+            $score += 0.8;
+            $reasons[] = __('URL/link in author name - definitive spam indicator', 'we-spamfighter');
+        }
+
+        // Emojis/icons in author name (used by spammers for visibility).
+        $emoji_count = preg_match_all('/[\x{1F300}-\x{1F9FF}]|[\x{2600}-\x{26FF}]|[\x{2700}-\x{27BF}]/u', $author);
+        if ($emoji_count >= 1) {
+            $score += 0.3;
+            $reasons[] = sprintf(__('Emojis/icons in author name (%d) - common in spam', 'we-spamfighter'), $emoji_count);
         }
 
         return array(
@@ -458,6 +553,13 @@ class HeuristicDetector
 
         // Common spam phrases (multi-language).
         $spam_phrases = array(
+            // Adult/dating spam (high priority).
+            'adult dating',
+            'sex dating',
+            'dating for sex',
+            'adult dating.',
+            'sex dating.',
+            'dating for sex.',
             // English.
             'buy now',
             'click here',
@@ -582,6 +684,7 @@ class HeuristicDetector
 
         // Suspicious email providers.
         $suspicious_providers = array(
+            'tmxttvmail',  // Disposable/random mail pattern
             'temp-mail',
             'guerrillamail',
             'mailinator',
@@ -1038,6 +1141,53 @@ class HeuristicDetector
     }
 
     /**
+     * Check for empty message body when other fields are filled (common spam pattern).
+     *
+     * @param array $content Structured content.
+     * @return array Check result.
+     */
+    private static function check_empty_message_body($content)
+    {
+        $score = 0.0;
+        $reasons = array();
+        $msg_keys = array('your-message', 'message', 'comment', 'msg', 'text', 'nachricht', 'inhalt');
+        $other_keys = array('your-name', 'name', 'author', 'your-email', 'email', 'your-subject', 'subject');
+
+        $has_msg_field = false;
+        $msg_empty = false;
+        $filled_other = 0;
+
+        foreach ($msg_keys as $key) {
+            if (array_key_exists($key, $content)) {
+                $has_msg_field = true;
+                $val = is_array($content[$key]) ? implode('', $content[$key]) : (string) $content[$key];
+                $msg_empty = trim($val) === '';
+                break;
+            }
+        }
+
+        if (!$has_msg_field || !$msg_empty) {
+            return array('score' => 0.0, 'reasons' => array());
+        }
+
+        foreach ($other_keys as $key) {
+            if (!empty($content[$key]) && trim((string) $content[$key]) !== '') {
+                $filled_other++;
+            }
+        }
+
+        if ($filled_other >= 2) {
+            $score += 0.35;
+            $reasons[] = __('Empty message body with name/email/subject filled - common spam pattern', 'we-spamfighter');
+        }
+
+        return array(
+            'score'   => min(1.0, $score),
+            'reasons' => $reasons,
+        );
+    }
+
+    /**
      * Check for mixed scripts (different character sets mixed together).
      *
      * @param string $text Text to analyze.
@@ -1276,6 +1426,12 @@ class HeuristicDetector
                 $score += 0.4;
                 $reasons[] = __('Content is only repeating characters', 'we-spamfighter');
             }
+        }
+
+        // Very short alphanumeric-only content (e.g. "dfnrrm", "4tm1lq") - common bot placeholder.
+        if (preg_match('/^[a-zA-Z0-9]+$/u', $clean_text) && mb_strlen($clean_text) >= 4 && mb_strlen($clean_text) <= 12) {
+            $score += 0.35;
+            $reasons[] = sprintf(__('Very short alphanumeric-only content (%d chars) - common bot pattern', 'we-spamfighter'), mb_strlen($clean_text));
         }
 
         return array(

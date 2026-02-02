@@ -95,8 +95,10 @@ class Comments
             }
         }
 
-        // If OpenAI is not enabled, return approved status as-is.
-        if (! $this->is_openai_enabled()) {
+        // If neither heuristic nor OpenAI is enabled, there is nothing to check.
+        $heuristic_enabled = ! empty($this->settings['heuristic_enabled']);
+        $openai_enabled = $this->is_openai_enabled();
+        if (! $heuristic_enabled && ! $openai_enabled) {
             return $approved;
         }
 
@@ -106,10 +108,15 @@ class Comments
         $is_spam = false;
         $score = 0.0;
         $openai_result = null;
-        $threshold = (float) ($this->settings['ai_threshold'] ?? 0.7);
+        $heuristic_result = null;
+        $detection_details = array();
+        // Use heuristic threshold when heuristic-only; ai_threshold when OpenAI is used.
+        $threshold = $heuristic_enabled && ! $openai_enabled
+            ? (float) ($this->settings['heuristic_threshold'] ?? 0.6)
+            : (float) ($this->settings['ai_threshold'] ?? 0.7);
 
         // STEP 1: Check with heuristic detector FIRST (local, fast, free).
-        if (! empty($this->settings['heuristic_enabled']) && ! empty($entry_data)) {
+        if ($heuristic_enabled && ! empty($entry_data)) {
             // Prepare context for heuristic detection (referrer, user agent).
             $context = array(
                 'referrer' => isset($_SERVER['HTTP_REFERER']) ? sanitize_text_field(wp_unslash($_SERVER['HTTP_REFERER'])) : '',
@@ -117,11 +124,12 @@ class Comments
             );
             $heuristic_result = HeuristicDetector::analyze($entry_data, $this->settings, $context);
             $heuristic_score = isset($heuristic_result['score']) ? (float) $heuristic_result['score'] : 0.0;
+            $detection_details['heuristic'] = $heuristic_result;
 
             if ($heuristic_score > 0) {
                 $score = min(1.0, $score + $heuristic_score);
 
-                // Check if already spam.
+                // Check if already spam (use heuristic's own is_spam when in heuristic-only mode).
                 if ($score >= $threshold || ! empty($heuristic_result['is_spam'])) {
                     $is_spam = true;
                 }
@@ -131,7 +139,7 @@ class Comments
         // STEP 2: Check language mismatch if enabled (local, fast, free).
         $has_language_mismatch = false;
         $heuristic_has_links = false;
-        if (! empty($this->settings['heuristic_enabled']) && ! empty($detection_details['heuristic']['details']['link_check'])) {
+        if ($heuristic_enabled && isset($heuristic_result['details']['link_check']) && ! empty($heuristic_result['details']['link_check']['score'])) {
             $heuristic_has_links = true;
         }
 
