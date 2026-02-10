@@ -62,6 +62,11 @@ Protects Contact Form 7 forms and WordPress comments from spam submissions with 
   * Automatic cleanup (max 100 entries, respects log retention days)
   * Manual clear option
   * Only shows when enabled in settings
+* Privacy / GDPR (OpenAI only): When OpenAI is active, DSGVO-compliant privacy measures
+  * Configurable privacy passage on the privacy policy page (filter, manual shortcode/block, or none)
+  * Optional form notice at comment and CF7 forms
+  * Shortcode [we_spamfighter_privacy] for manual placement
+  * Suggested text for the Privacy Policy Guide
 
 == Installation ==
 
@@ -117,6 +122,17 @@ The plugin automatically detects and repairs missing tables or columns:
 - Missing columns: Automatically added without data loss
 - Weekly maintenance: Runs every Sunday at 3 AM to check table integrity and optimize performance (CHECK TABLE, OPTIMIZE TABLE)
 
+= Privacy / GDPR (OpenAI) - What are the privacy options? =
+
+When OpenAI is enabled, personal form data is transmitted to OpenAI (USA). For GDPR/DSGVO compliance, the plugin provides:
+
+* Privacy Tab in Settings: Configure how privacy information is displayed
+  * Privacy passage on privacy policy page: Filter (auto-append), Manual (shortcode), or None
+  * Form notice: Show/hide notice at comment and CF7 forms
+* The options only take effect when OpenAI is enabled and an API key is configured
+* Suggested privacy policy text is available under Settings -> Privacy in WordPress admin
+* Shortcode [we_spamfighter_privacy] for manual placement in classic editor or wherever shortcodes are supported
+
 = What is the Activity Log? =
 
 The Activity Log is an optional feature that tracks important plugin events (e.g., weekly summaries sent, table maintenance performed, email notifications). It is disabled by default and can be enabled in Settings -> Maintenance tab. When enabled, a new "Activity Log" menu item appears under WE Spamfighter in the admin menu. You can view all recent events there and manually clear the log using the "Clear Activity Log" button. You can also clear the log directly from the Maintenance tab in Settings (button appears when entries exist). The log automatically cleans old entries based on the log retention setting and keeps a maximum of 100 entries. Email notifications (daily/weekly summaries) are automatically logged with success/failure status for debugging.
@@ -129,6 +145,14 @@ The Activity Log is an optional feature that tracks important plugin events (e.g
 4. Spam analytics
 
 == Changelog ==
+
+= 1.5.0 =
+* Privacy / GDPR (OpenAI): DSGVO-compliant privacy measures when OpenAI is active
+  * New Privacy tab in Settings with configurable options
+  * Privacy passage: Filter (auto-append to privacy page), Manual (shortcode [we_spamfighter_privacy]), or None
+  * Form notice: Optional notice at comment and CF7 forms about OpenAI data transfer
+  * Suggested text for the WordPress Privacy Policy Guide
+  * Options only active when OpenAI is enabled
 
 = 1.3.3 =
 * Enhanced Heuristic Detection: Added multiple new spam detection methods
@@ -184,6 +208,9 @@ The Activity Log is an optional feature that tracks important plugin events (e.g
 * Dashboard with submission management
 
 == Upgrade Notice ==
+
+= 1.5.0 =
+Recommended update: New Privacy tab for GDPR/DSGVO compliance when using OpenAI. Existing installations get privacy notices by default (filter + form notice).
 
 = 1.3.3 =
 Recommended update: Enhanced heuristic spam detection with referrer and user agent analysis for better bot and spam detection. Improved email notification debugging in Activity Log.

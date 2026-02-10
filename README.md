@@ -82,6 +82,11 @@ Protects Contact Form 7 forms and WordPress comments from spam submissions with 
 - **IP Tracking**: Optional IP address and user agent logging
 - **Multi-site Support**: Full WordPress multisite compatibility
 - **Secure API Keys**: API keys can be stored in wp-config.php for better security
+- **GDPR/Privacy (OpenAI only)**: When OpenAI is active, personal data is sent to OpenAI (USA)
+  - Configurable privacy passage on the privacy policy page (filter, manual shortcode/block, or none)
+  - Optional form notice at comment and CF7 forms
+  - Suggested text for the Privacy Policy Guide (Settings → Privacy)
+  - Shortcode `[we_spamfighter_privacy]` for manual placement
 
 ### ⚡ Performance
 
@@ -179,6 +184,18 @@ Navigate to **WE Spamfighter → Settings** (organized in tabs) to configure:
 
 - **Notification Email**: Email address for spam notifications
 - **Notification Type**: Choose frequency (none, immediate, daily, weekly)
+
+#### Privacy Tab (GDPR/DSGVO)
+
+*These options only take effect when OpenAI is enabled and an API key is configured.*
+
+- **Privacy passage on privacy policy page**: How to include the privacy passage
+  - **Filter**: Append automatically to the configured privacy policy page (default)
+  - **Manual**: Use shortcode `[we_spamfighter_privacy]` or block for manual placement
+  - **None**: Do not add (at your own risk)
+- **Form notice**: Show a notice at comment and CF7 forms when OpenAI is active (default: enabled)
+
+The plugin provides suggested privacy policy text under **Settings → Privacy** in WordPress admin. The passage explains that form data may be transmitted to OpenAI (USA) for spam checking, based on legitimate interest (Art. 6(1)(f) GDPR) and Standard Contractual Clauses.
 
 #### Maintenance Tab
 
@@ -487,6 +504,15 @@ To add your own translation:
 5. Place in `languages/` directory
 
 ## Changelog
+
+### Version 1.5.0+
+
+- **Privacy / GDPR (OpenAI)**: When OpenAI is active, DSGVO-compliant privacy measures
+  - New Privacy tab in Settings with configurable options
+  - Privacy passage: Filter (auto-append to privacy page), Manual (shortcode `[we_spamfighter_privacy]`), or None
+  - Form notice: Optional notice at comment and CF7 forms informing users about OpenAI data transfer
+  - Suggested text for the WordPress Privacy Policy Guide
+  - Options only active when OpenAI is enabled
 
 ### Version 1.3.3+
 
