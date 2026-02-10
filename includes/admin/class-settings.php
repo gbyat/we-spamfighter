@@ -592,6 +592,45 @@ class Settings
                 'description' => __('Enable activity logging to track important plugin events (e.g., weekly summaries sent, table maintenance).', 'we-spamfighter'),
             )
         );
+
+        // Privacy section (DSGVO).
+        add_settings_section(
+            'we_spamfighter_privacy',
+            __('Privacy / GDPR', 'we-spamfighter'),
+            array($this, 'render_privacy_section'),
+            'we-spamfighter'
+        );
+
+        add_settings_field(
+            'privacy_page_mode',
+            __('Privacy passage on privacy policy page', 'we-spamfighter'),
+            array($this, 'render_select_field'),
+            'we-spamfighter',
+            'we_spamfighter_privacy',
+            array(
+                'field_id'    => 'privacy_page_mode',
+                'options'     => array(
+                    'filter'  => __('Filter: Append automatically to privacy page', 'we-spamfighter'),
+                    'manual'  => __('Manual: Use shortcode [we_spamfighter_privacy] or block', 'we-spamfighter'),
+                    'none'    => __('None: Do not add (at your own risk)', 'we-spamfighter'),
+                ),
+                'description' => __('How to include the privacy passage. Only active when OpenAI is enabled.', 'we-spamfighter'),
+                'default'     => 'filter',
+            )
+        );
+
+        add_settings_field(
+            'form_notice_enabled',
+            __('Form notice', 'we-spamfighter'),
+            array($this, 'render_checkbox_field'),
+            'we-spamfighter',
+            'we_spamfighter_privacy',
+            array(
+                'field_id'    => 'form_notice_enabled',
+                'description' => __('Show notice at comment and CF7 forms when OpenAI is active.', 'we-spamfighter'),
+                'default'     => true,
+            )
+        );
     }
 
     /**
@@ -600,6 +639,14 @@ class Settings
     public function render_general_section()
     {
         echo esc_html__('Configure general spam protection settings.', 'we-spamfighter');
+    }
+
+    /**
+     * Render privacy section.
+     */
+    public function render_privacy_section()
+    {
+        echo '<p>' . esc_html__('Privacy-related options for OpenAI usage. These settings only take effect when OpenAI is enabled and an API key is configured.', 'we-spamfighter') . '</p>';
     }
 
     /**
@@ -747,7 +794,8 @@ class Settings
     public function render_checkbox_field($args)
     {
         $settings = get_option($this->option_name, array());
-        $value    = isset($settings[$args['field_id']]) ? $settings[$args['field_id']] : false;
+        $default  = isset($args['default']) ? (bool) $args['default'] : false;
+        $value    = isset($settings[$args['field_id']]) ? $settings[$args['field_id']] : $default;
         $class    = isset($args['class']) ? esc_attr($args['class']) : '';
         $field_id = esc_attr($args['field_id']);
         $field_name = esc_attr($this->option_name . '[' . $field_id . ']');
@@ -850,7 +898,8 @@ class Settings
     public function render_select_field($args)
     {
         $settings = get_option($this->option_name, array());
-        $value    = isset($settings[$args['field_id']]) ? $settings[$args['field_id']] : '';
+        $default  = isset($args['default']) ? $args['default'] : '';
+        $value    = isset($settings[$args['field_id']]) ? $settings[$args['field_id']] : $default;
 
         printf(
             '<select name="%s[%s]">',
@@ -904,6 +953,10 @@ class Settings
             'maintenance' => array(
                 'title' => __('Maintenance', 'we-spamfighter'),
                 'sections' => array('we_spamfighter_maintenance'),
+            ),
+            'privacy' => array(
+                'title' => __('Privacy', 'we-spamfighter'),
+                'sections' => array('we_spamfighter_privacy'),
             ),
         );
 
@@ -1406,6 +1459,21 @@ class Settings
             $sanitized['notification_type'] = in_array($input['notification_type'], $allowed_types, true) ? $input['notification_type'] : 'none';
         } else {
             $sanitized['notification_type'] = isset($existing['notification_type']) ? $existing['notification_type'] : 'none';
+        }
+
+        // Privacy page mode.
+        if (isset($input['privacy_page_mode'])) {
+            $allowed_modes = array('filter', 'manual', 'none');
+            $sanitized['privacy_page_mode'] = in_array($input['privacy_page_mode'], $allowed_modes, true) ? $input['privacy_page_mode'] : 'filter';
+        } else {
+            $sanitized['privacy_page_mode'] = isset($existing['privacy_page_mode']) ? $existing['privacy_page_mode'] : 'filter';
+        }
+
+        // Form notice enabled (default true for existing installs).
+        if (isset($input['form_notice_enabled'])) {
+            $sanitized['form_notice_enabled'] = !empty($input['form_notice_enabled']);
+        } else {
+            $sanitized['form_notice_enabled'] = isset($existing['form_notice_enabled']) ? (bool) $existing['form_notice_enabled'] : true;
         }
 
         return $sanitized;

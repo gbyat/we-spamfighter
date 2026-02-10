@@ -205,6 +205,7 @@ class Plugin
         Core\Logger::get_instance();
         Core\Database::get_instance();
         Core\ActivityLog::get_instance();
+        Core\Privacy::get_instance();
 
         // Migrate disable_* settings to enable_* settings (one-time migration).
         $this->migrate_heuristic_check_settings();
@@ -382,6 +383,8 @@ class Plugin
             'notification_email'           => get_option('admin_email'),
             'notification_type'            => 'none',
             'spam_blocked_message'         => __('Thank you for your message.', 'we-spamfighter'),
+            'privacy_page_mode'            => 'filter',
+            'form_notice_enabled'          => true,
         );
 
         add_option('we_spamfighter_settings', $defaults);

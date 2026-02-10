@@ -8,7 +8,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Language-Team: webentwicklerin, Gabriele Laesser\n"
 "Last-Translator: webentwicklerin, Gabriele Laesser <info@webentwicklerin.at>\n"
-"POT-Creation-Date: 2026-02-02 07:46+0000\n"
+"POT-Creation-Date: 2026-02-10 12:07+0000\n"
 "Report-Msgid-Bugs-To: https://github.com/gbyat/we-spamfighter/issues\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: __;_e;_ex:1,2c;_n:1,2;_n_noop:1,2;_nx:1,2,4c;_nx_noop:1,2,3c;_x:1,2c;esc_attr__;esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c\n"
@@ -165,7 +165,7 @@ msgstr ""
 msgid "Next"
 msgstr ""
 
-#: includes/admin/class-dashboard.php:438, includes/admin/class-dashboard.php:465, includes/admin/class-dashboard.php:492, includes/admin/class-dashboard.php:519, includes/admin/class-dashboard.php:555, includes/admin/class-settings.php:1160
+#: includes/admin/class-dashboard.php:438, includes/admin/class-dashboard.php:465, includes/admin/class-dashboard.php:492, includes/admin/class-dashboard.php:519, includes/admin/class-dashboard.php:555, includes/admin/class-settings.php:1213
 msgid "Unauthorized"
 msgstr ""
 
@@ -215,7 +215,7 @@ msgstr ""
 msgid "Settings"
 msgstr ""
 
-#: includes/admin/class-settings.php:77, includes/admin/class-settings.php:78, includes/admin/class-settings.php:734, includes/admin/class-settings.php:1017, includes/admin/class-settings.php:1061, includes/admin/class-settings.php:1084
+#: includes/admin/class-settings.php:77, includes/admin/class-settings.php:78, includes/admin/class-settings.php:781, includes/admin/class-settings.php:1070, includes/admin/class-settings.php:1114, includes/admin/class-settings.php:1137
 msgid "Activity Log"
 msgstr ""
 
@@ -308,7 +308,7 @@ msgstr ""
 msgid "Spam score threshold (0.0 - 1.0). Higher values mean fewer submissions are flagged as spam (less strict). Lower values mean more submissions are flagged as spam (more strict). Default: 0.7"
 msgstr ""
 
-#: includes/admin/class-settings.php:322, includes/admin/class-settings.php:893
+#: includes/admin/class-settings.php:322, includes/admin/class-settings.php:942
 msgid "Heuristic Detection"
 msgstr ""
 
@@ -460,7 +460,7 @@ msgstr ""
 msgid "How often to receive spam notifications."
 msgstr ""
 
-#: includes/admin/class-settings.php:540, includes/admin/class-settings.php:905
+#: includes/admin/class-settings.php:540, includes/admin/class-settings.php:954
 msgid "Maintenance"
 msgstr ""
 
@@ -496,174 +496,214 @@ msgstr ""
 msgid "Enable activity logging to track important plugin events (e.g., weekly summaries sent, table maintenance)."
 msgstr ""
 
-#: includes/admin/class-settings.php:602
+#: includes/admin/class-settings.php:599
+msgid "Privacy / GDPR"
+msgstr ""
+
+#: includes/admin/class-settings.php:606
+msgid "Privacy passage on privacy policy page"
+msgstr ""
+
+#: includes/admin/class-settings.php:613
+msgid "Filter: Append automatically to privacy page"
+msgstr ""
+
+#: includes/admin/class-settings.php:614
+msgid "Manual: Use shortcode [we_spamfighter_privacy] or block"
+msgstr ""
+
+#: includes/admin/class-settings.php:615
+msgid "None: Do not add (at your own risk)"
+msgstr ""
+
+#: includes/admin/class-settings.php:617
+msgid "How to include the privacy passage. Only active when OpenAI is enabled."
+msgstr ""
+
+#: includes/admin/class-settings.php:624
+msgid "Form notice"
+msgstr ""
+
+#: includes/admin/class-settings.php:630
+msgid "Show notice at comment and CF7 forms when OpenAI is active."
+msgstr ""
+
+#: includes/admin/class-settings.php:641
 msgid "Configure general spam protection settings."
 msgstr ""
 
-#: includes/admin/class-settings.php:610
+#: includes/admin/class-settings.php:649
+msgid "Privacy-related options for OpenAI usage. These settings only take effect when OpenAI is enabled and an API key is configured."
+msgstr ""
+
+#: includes/admin/class-settings.php:657
 msgid "Configure OpenAI integration for spam detection."
 msgstr ""
 
-#: includes/admin/class-settings.php:618
+#: includes/admin/class-settings.php:665
 msgid "Configure local heuristic spam detection (works without OpenAI)."
 msgstr ""
 
-#: includes/admin/class-settings.php:622
+#: includes/admin/class-settings.php:669
 msgid "Enable All Checks"
 msgstr ""
 
-#: includes/admin/class-settings.php:625
+#: includes/admin/class-settings.php:672
 msgid "Disable All Checks"
 msgstr ""
 
-#: includes/admin/class-settings.php:664
+#: includes/admin/class-settings.php:711
 msgid "Configure email notifications for spam detections."
 msgstr ""
 
-#: includes/admin/class-settings.php:672
+#: includes/admin/class-settings.php:719
 msgid "Configure maintenance and cleanup settings."
 msgstr ""
 
-#: includes/admin/class-settings.php:682
+#: includes/admin/class-settings.php:729
 msgid "Email Notification Status:"
 msgstr ""
 
-#: includes/admin/class-settings.php:695
+#: includes/admin/class-settings.php:742
 msgid "Daily summary: NOT SCHEDULED - Please save settings to schedule."
 msgstr ""
 
-#: includes/admin/class-settings.php:691
+#: includes/admin/class-settings.php:738
 msgid "Daily summary: Next scheduled for %s"
 msgstr ""
 
-#: includes/admin/class-settings.php:710
+#: includes/admin/class-settings.php:757
 msgid "Weekly summary: NOT SCHEDULED - Please save settings to schedule."
 msgstr ""
 
-#: includes/admin/class-settings.php:706
+#: includes/admin/class-settings.php:753
 msgid "Weekly summary: Next scheduled for %s"
 msgstr ""
 
-#: includes/admin/class-settings.php:718
+#: includes/admin/class-settings.php:765
 msgid "WARNING: WordPress cron is disabled. Email notifications will not work unless you use a real cron job."
 msgstr ""
 
 #. translators: %s: Email address
-#: includes/admin/class-settings.php:725
+#: includes/admin/class-settings.php:772
 msgid "Notification email: %s"
 msgstr ""
 
 #. translators: %s: Link to Activity Log
-#: includes/admin/class-settings.php:733
+#: includes/admin/class-settings.php:780
 msgid "Check the %s for email delivery logs and debug information."
 msgstr ""
 
-#: includes/admin/class-settings.php:889
+#: includes/admin/class-settings.php:938
 msgid "General"
 msgstr ""
 
-#: includes/admin/class-settings.php:897
+#: includes/admin/class-settings.php:946
 msgid "OpenAI"
 msgstr ""
 
-#: includes/admin/class-settings.php:901
+#: includes/admin/class-settings.php:950
 msgid "Notifications"
 msgstr ""
 
-#: includes/admin/class-settings.php:918
+#: includes/admin/class-settings.php:958
+msgid "Privacy"
+msgstr ""
+
+#: includes/admin/class-settings.php:971
 msgid "WE Spamfighter Settings"
 msgstr ""
 
-#: includes/admin/class-settings.php:990
+#: includes/admin/class-settings.php:1043
 msgid "Test OpenAI Connection"
 msgstr ""
 
-#: includes/admin/class-settings.php:992
+#: includes/admin/class-settings.php:1045
 msgid "Test your OpenAI API connection and configuration."
 msgstr ""
 
-#: includes/admin/class-settings.php:995
+#: includes/admin/class-settings.php:1048
 msgid "Test Connection"
 msgstr ""
 
-#: includes/admin/class-settings.php:1020, includes/admin/class-settings.php:1088
+#: includes/admin/class-settings.php:1073, includes/admin/class-settings.php:1141
 msgid "Activity log cleared successfully."
 msgstr ""
 
 #. translators: %d: Number of log entries
-#: includes/admin/class-settings.php:1027
+#: includes/admin/class-settings.php:1080
 msgid "Currently %d entries in the activity log."
 msgstr ""
 
-#: includes/admin/class-settings.php:1035, includes/admin/class-settings.php:1103
+#: includes/admin/class-settings.php:1088, includes/admin/class-settings.php:1156
 msgid "Are you sure you want to clear the activity log? This action cannot be undone."
 msgstr ""
 
-#: includes/admin/class-settings.php:1036, includes/admin/class-settings.php:1104
+#: includes/admin/class-settings.php:1089, includes/admin/class-settings.php:1157
 msgid "Clear Activity Log"
 msgstr ""
 
-#: includes/admin/class-settings.php:1064
+#: includes/admin/class-settings.php:1117
 msgid "Activity Log is not enabled. Please enable it in Settings → Maintenance tab."
 msgstr ""
 
-#: includes/admin/class-settings.php:1096
+#: includes/admin/class-settings.php:1149
 msgid "Recent plugin activities and events."
 msgstr ""
 
-#: includes/admin/class-settings.php:1131
+#: includes/admin/class-settings.php:1184
 msgid "No activity log entries yet."
 msgstr ""
 
-#: includes/admin/class-settings.php:1134
+#: includes/admin/class-settings.php:1187
 msgid "Activity log entries will appear here once plugin events occur, such as:"
 msgstr ""
 
-#: includes/admin/class-settings.php:1137
+#: includes/admin/class-settings.php:1190
 msgid "Weekly spam summary emails sent"
 msgstr ""
 
-#: includes/admin/class-settings.php:1138
+#: includes/admin/class-settings.php:1191
 msgid "Daily spam summary emails sent"
 msgstr ""
 
-#: includes/admin/class-settings.php:1139, we-spamfighter.php:488
+#: includes/admin/class-settings.php:1192, we-spamfighter.php:491
 msgid "Table maintenance completed"
 msgstr ""
 
-#: includes/admin/class-settings.php:1140, we-spamfighter.php:460
+#: includes/admin/class-settings.php:1193, we-spamfighter.php:463
 msgid "Old logs cleaned"
 msgstr ""
 
-#: includes/admin/class-settings.php:1143
+#: includes/admin/class-settings.php:1196
 msgid "The log will start recording events after the next scheduled task runs."
 msgstr ""
 
-#: includes/admin/class-settings.php:1113
+#: includes/admin/class-settings.php:1166
 msgid "Date/Time"
 msgstr ""
 
-#: includes/admin/class-settings.php:1114
+#: includes/admin/class-settings.php:1167
 msgid "Event"
 msgstr ""
 
-#: includes/admin/class-settings.php:1115
+#: includes/admin/class-settings.php:1168
 msgid "Message"
 msgstr ""
 
-#: includes/admin/class-settings.php:1164
+#: includes/admin/class-settings.php:1217
 msgid "Activity Log class not found"
 msgstr ""
 
-#: includes/admin/class-settings.php:1181
+#: includes/admin/class-settings.php:1234
 msgid "Failed to clear activity log"
 msgstr ""
 
-#: includes/admin/class-settings.php:1175
+#: includes/admin/class-settings.php:1228
 msgid "Activity log cleared successfully. %d entries deleted."
 msgstr ""
 
-#: includes/admin/class-settings.php:1400, includes/integration/class-contact-form-7.php:524, we-spamfighter.php:384
+#: includes/admin/class-settings.php:1453, includes/integration/class-contact-form-7.php:524, we-spamfighter.php:385
 msgid "Thank you for your message."
 msgstr ""
 
@@ -816,6 +856,24 @@ msgstr ""
 
 #: includes/core/class-notifications.php:449
 msgid "View All in Dashboard:"
+msgstr ""
+
+#. translators: %s: URL to OpenAI privacy policy
+#: includes/core/class-privacy.php:80
+msgid "We use the plugin WE Spamfighter to detect spam in contact forms and comments. When the AI check (OpenAI) is enabled, your entered data (name, email address, subject and message content) is transmitted to OpenAI (USA) for spam checking. The processing is based on our legitimate interest in effective spam protection (Art. 6(1)(f) GDPR). The transmission to OpenAI is based on Standard Contractual Clauses (Art. 46(2)(c) GDPR). The data is transmitted exclusively for spam checking and is not used by OpenAI for model training or advertising purposes. For details on processing and storage at OpenAI, see: %s"
+msgstr ""
+
+#: includes/core/class-privacy.php:100
+msgid "privacy policy"
+msgstr ""
+
+#. translators: %s: link to privacy policy or plain text "privacy policy"
+#: includes/core/class-privacy.php:107
+msgid "Your message may be transmitted to OpenAI (USA) for spam checking. For details, see our %s."
+msgstr ""
+
+#: includes/core/class-privacy.php:125, includes/core/class-privacy.php:180
+msgid "Spam protection"
 msgstr ""
 
 #: includes/core/class-updater.php:401
