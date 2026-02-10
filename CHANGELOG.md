@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.0] - 2026-02-10
+
+- Add privacy settings for OpenAI integration
+  - Introduced a new privacy section in the settings for GDPR compliance, allowing users to configure how privacy passages are included on their privacy policy page.
+  - Added options for 'privacy_page_mode' to control the inclusion method (filter, manual, none) and a checkbox for enabling a form notice when OpenAI is active.
+  - Updated the plugin's main class to initialize the new privacy component and added corresponding styles for the form notice in the frontend CSS.
+
+
 ## [1.4.3] - 2026-02-02
 
 - Version update
@@ -299,3 +307,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [1.4.1]: https://github.com/gbyat/we-spamfighter/releases/tag/v1.4.1
 [1.4.2]: https://github.com/gbyat/we-spamfighter/releases/tag/v1.4.2
 [1.4.3]: https://github.com/gbyat/we-spamfighter/releases/tag/v1.4.3
+[1.5.0]: https://github.com/gbyat/we-spamfighter/releases/tag/v1.5.0
