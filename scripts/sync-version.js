@@ -1,70 +1,126 @@
 const fs = require('fs');
 const path = require('path');
-const { execSync } = require('child_process');
+const { rootDir, readLf, writeLf, runGit } = require('./process');
 
-
-// Read package.json
-const packagePath = path.join(__dirname, '..', 'package.json');
-const packageData = JSON.parse(fs.readFileSync(packagePath, 'utf8'));
+const packagePath = path.join(rootDir, 'package.json');
+const packageData = JSON.parse(readLf(packagePath));
 const version = packageData.version;
 
-console.log(`📦 Syncing version to ${version}...`);
+console.log(`Syncing version to ${version}...`);
 
-// Read plugin file
-const pluginPath = path.join(__dirname, '..', 'we-spamfighter.php');
-let pluginContent = fs.readFileSync(pluginPath, 'utf8');
+const pluginPath = path.join(rootDir, 'we-spamfighter.php');
+let pluginContent = readLf(pluginPath);
 
-// Update version in plugin file header
 pluginContent = pluginContent.replace(
-    /Version:\s*\d+\.\d+\.\d+/,
-    `Version: ${version}`
+	/Version:\s*\d+\.\d+\.\d+/,
+	`Version: ${version}`
 );
 
-// Update WE_SPAMFIGHTER_VERSION constant
 pluginContent = pluginContent.replace(
-    /define\(\s*'WE_SPAMFIGHTER_VERSION',\s*'[^']*'\s*\);/,
-    `define('WE_SPAMFIGHTER_VERSION', '${version}');`
+	/define\(\s*'WE_SPAMFIGHTER_VERSION',\s*'[^']*'\s*\);/,
+	`define('WE_SPAMFIGHTER_VERSION', '${version}');`
 );
 
-// Write updated plugin file
-fs.writeFileSync(pluginPath, pluginContent);
-console.log(`✅ Updated we-spamfighter.php`);
+writeLf(pluginPath, pluginContent);
+console.log('Updated we-spamfighter.php');
 
-// Update README.md stable tag
-const readmeMdPath = path.join(__dirname, '..', 'README.md');
+const readmeMdPath = path.join(rootDir, 'README.md');
 if (fs.existsSync(readmeMdPath)) {
-    let readmeContent = fs.readFileSync(readmeMdPath, 'utf8');
-
-    // Update Stable tag line
-    readmeContent = readmeContent.replace(
-        /\*\*Stable tag:\*\*\s*\d+\.\d+\.\d+/,
-        `**Stable tag:** ${version}`
-    );
-
-    fs.writeFileSync(readmeMdPath, readmeContent);
-    console.log(`✅ Updated README.md stable tag to ${version}`);
+	let readmeContent = readLf(readmeMdPath);
+	readmeContent = readmeContent.replace(
+		/\*\*Stable tag:\*\*\s*\d+\.\d+\.\d+/,
+		`**Stable tag:** ${version}`
+	);
+	writeLf(readmeMdPath, readmeContent);
+	console.log(`Updated README.md stable tag to ${version}`);
 }
 
-// Update README.txt stable tag (WordPress format)
-const readmeTxtPath = path.join(__dirname, '..', 'README.txt');
+const readmeTxtPath = path.join(rootDir, 'README.txt');
 if (fs.existsSync(readmeTxtPath)) {
-    let readmeTxtContent = fs.readFileSync(readmeTxtPath, 'utf8');
-
-    // Update Stable tag line (WordPress README.txt format: "Stable tag: X.Y.Z")
-    readmeTxtContent = readmeTxtContent.replace(
-        /Stable tag:\s*\d+\.\d+\.\d+/,
-        `Stable tag: ${version}`
-    );
-
-    fs.writeFileSync(readmeTxtPath, readmeTxtContent);
-    console.log(`✅ Updated README.txt stable tag to ${version}`);
+	let readmeTxtContent = readLf(readmeTxtPath);
+	readmeTxtContent = readmeTxtContent.replace(
+		/Stable tag:\s*\d+\.\d+\.\d+/,
+		`Stable tag: ${version}`
+	);
+	writeLf(readmeTxtPath, readmeTxtContent);
+	console.log(`Updated README.txt stable tag to ${version}`);
 }
 
-// Update CHANGELOG.md
-const changelogPath = path.join(__dirname, '..', 'CHANGELOG.md');
+/**
+ * @param {string} lastTag
+ * @param {number} limit
+ * @return {string}
+ */
+function getGitCommitLog(lastTag, limit) {
+	const separator = '|||COMMIT_SEPARATOR|||';
+	const args = lastTag
+		? ['log', `${lastTag}..HEAD`, `--pretty=format:${separator}%B`, '--no-merges']
+		: ['log', `-${limit}`, `--pretty=format:${separator}%B`, '--no-merges'];
+
+	const result = runGit(args, { encoding: 'utf8', stdio: 'pipe', allowFailure: true });
+	if (result.status !== 0) {
+		return '';
+	}
+
+	return (result.stdout || '').trim();
+}
+
+/**
+ * @param {string} rawLog
+ * @param {Set<string>} existingCommits
+ * @param {number} [maxEntries]
+ * @return {string}
+ */
+function formatCommitLog(rawLog, existingCommits, maxEntries = 0) {
+	const separator = '|||COMMIT_SEPARATOR|||';
+	const allCommits = rawLog
+		.split(separator)
+		.map((commit) => commit.trim())
+		.filter((commit) => commit.length > 0)
+		.map((commit) => {
+			const lines = commit.split('\n');
+			const cleaned = lines.filter((line) => line.trim().length > 0);
+			return cleaned.join('\n').trim();
+		})
+		.filter((commit) => {
+			const trimmed = commit.trim();
+			return (
+				trimmed &&
+				!trimmed.match(/^Release v\d+\.\d+\.\d+$/i) &&
+				!trimmed.match(/^Bump version/i) &&
+				!trimmed.match(/^Version update$/i)
+			);
+		});
+
+	const newCommits = allCommits.filter((commit) => {
+		const firstLine = commit.split('\n')[0].trim();
+		return !existingCommits.has(firstLine);
+	});
+
+	if (0 === newCommits.length) {
+		return '';
+	}
+
+	const limitedCommits = maxEntries > 0 ? newCommits.slice(0, maxEntries) : newCommits;
+
+	return limitedCommits
+		.map((commit) => {
+			const lines = commit.split('\n');
+			const subject = lines[0].trim();
+			const body = lines.slice(1).filter((line) => line.trim().length > 0);
+
+			if (body.length > 0) {
+				return `- ${subject}\n  ${body.map((line) => line.trim()).join('\n  ')}`;
+			}
+
+			return `- ${subject}`;
+		})
+		.join('\n');
+}
+
+const changelogPath = path.join(rootDir, 'CHANGELOG.md');
 if (!fs.existsSync(changelogPath)) {
-    // Create initial CHANGELOG.md
-    const initialContent = `# Changelog
+	const initialContent = `# Changelog
 
 All notable changes to this project will be documented in this file.
 
@@ -77,210 +133,87 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Initial release of WE Spamfighterin
 
 `;
-    fs.writeFileSync(changelogPath, initialContent);
-    console.log(`📝 Created CHANGELOG.md`);
+	writeLf(changelogPath, initialContent);
+	console.log('Created CHANGELOG.md');
 } else {
-    let changelogContent = fs.readFileSync(changelogPath, 'utf8');
+	let changelogContent = readLf(changelogPath);
+	const versionPattern = new RegExp(`## \\[${version.replace(/\./g, '\\.')}\\]`);
 
-    // Check if this version already exists in changelog
-    const versionPattern = new RegExp(`## \\[${version.replace(/\./g, '\\.')}\\]`);
-    if (!versionPattern.test(changelogContent)) {
-        // Get current date
-        const dateStr = new Date().toISOString().split('T')[0];
+	if (!versionPattern.test(changelogContent)) {
+		const dateStr = new Date().toISOString().split('T')[0];
+		const existingCommits = new Set();
 
-        // Extract all commit messages already in CHANGELOG to avoid duplicates
-        const existingCommits = new Set();
-        const changelogLines = changelogContent.split('\n');
-        changelogLines.forEach(line => {
-            // Match lines that start with "- " (changelog entries)
-            // Only extract the subject (first line), ignore indented body lines
-            const match = line.match(/^-\s+(.+)$/);
-            if (match && !line.startsWith('  ')) { // Not an indented body line
-                const commitMsg = match[1].trim();
-                existingCommits.add(commitMsg);
-            }
-        });
+		changelogContent.split('\n').forEach((line) => {
+			const match = line.match(/^-\s+(.+)$/);
+			if (match && !line.startsWith('  ')) {
+				existingCommits.add(match[1].trim());
+			}
+		});
 
-        // Get git commits since last tag
-        let gitLog = '';
-        try {
-            // First, try to get the last tag
-            let lastTag = '';
-            try {
-                lastTag = execSync('git describe --tags --abbrev=0', {
-                    encoding: 'utf8',
-                    stdio: ['pipe', 'pipe', 'ignore']
-                }).trim();
-            } catch (e) {
-                // No tags yet, use all commits
-                lastTag = '';
-            }
+		let lastTag = '';
+		const tagResult = runGit(['describe', '--tags', '--abbrev=0'], {
+			encoding: 'utf8',
+			stdio: 'pipe',
+			allowFailure: true,
+		});
+		if (tagResult.status === 0) {
+			lastTag = (tagResult.stdout || '').trim();
+		}
 
-            // Get commits since last tag (or last 20 if no tags)
-            // Exclude release commits and merge commits
-            // Use a unique separator to split commits, then get full message
-            const separator = '|||COMMIT_SEPARATOR|||';
-            const gitCommand = lastTag
-                ? `git log ${lastTag}..HEAD --pretty=format:"${separator}%B" --no-merges`
-                : `git log -20 --pretty=format:"${separator}%B" --no-merges`;
+		let gitLog = '';
+		try {
+			gitLog = formatCommitLog(getGitCommitLog(lastTag, 20), existingCommits);
+		} catch (error) {
+			gitLog = '- Version update';
+		}
 
-            let commitMessages = execSync(gitCommand, {
-                encoding: 'utf8',
-                stdio: ['pipe', 'pipe', 'ignore']
-            }).trim();
+		const unreleasedMatch = changelogContent.match(/## \[Unreleased\]([\s\S]*?)(?=## \[|$)/);
+		let unreleasedContent = '';
+		if (unreleasedMatch && unreleasedMatch[1]) {
+			unreleasedContent = unreleasedMatch[1].trim();
+		}
 
-            // Split by our unique separator
-            let allCommits = commitMessages.split(separator)
-                .map(commit => commit.trim())
-                .filter(commit => commit.length > 0)
-                .map(commit => {
-                    // Clean up the commit message
-                    const lines = commit.split('\n');
-                    // Remove empty lines at start/end, but preserve structure
-                    const cleaned = lines.filter(line => line.trim().length > 0);
-                    return cleaned.join('\n').trim();
-                })
-                .filter(commit => {
-                    // Filter out release commits and empty commits
-                    const trimmed = commit.trim();
-                    return trimmed &&
-                        !trimmed.match(/^Release v\d+\.\d+\.\d+$/i) &&
-                        !trimmed.match(/^Bump version/i) &&
-                        !trimmed.match(/^Version update$/i);
-                });
+		let changelogEntry = '';
+		if (unreleasedContent) {
+			changelogEntry = unreleasedContent;
+		} else if (gitLog) {
+			changelogEntry = gitLog;
+		} else {
+			try {
+				changelogEntry = formatCommitLog(getGitCommitLog('', 20), existingCommits, 10) || '- Version update';
+			} catch (error) {
+				changelogEntry = '- Version update';
+			}
+		}
 
-            // Filter out commits that are already in CHANGELOG
-            // Check only the first line (subject) for duplicates
-            const newCommits = allCommits.filter(commit => {
-                const firstLine = commit.split('\n')[0].trim();
-                return !existingCommits.has(firstLine);
-            });
-
-            // Format as changelog entries
-            // For multi-line commits, indent body lines
-            if (newCommits.length > 0) {
-                gitLog = newCommits.map(commit => {
-                    const lines = commit.split('\n');
-                    const subject = lines[0].trim();
-                    const body = lines.slice(1).filter(l => l.trim().length > 0);
-
-                    if (body.length > 0) {
-                        // Multi-line commit: subject as main line, body indented
-                        return `- ${subject}\n  ${body.map(l => l.trim()).join('\n  ')}`;
-                    } else {
-                        // Single-line commit
-                        return `- ${subject}`;
-                    }
-                }).join('\n');
-            } else {
-                gitLog = '';
-            }
-        } catch (e) {
-            // Fallback if git fails
-            gitLog = '- Version update';
-        }
-
-        // Get unreleased changes if they exist
-        const unreleasedMatch = changelogContent.match(/## \[Unreleased\]([\s\S]*?)(?=## \[|$)/);
-        let unreleasedContent = '';
-        if (unreleasedMatch && unreleasedMatch[1]) {
-            unreleasedContent = unreleasedMatch[1].trim();
-        }
-
-        // Combine unreleased content and git log, prioritizing unreleased
-        let changelogEntry = '';
-        if (unreleasedContent) {
-            changelogEntry = unreleasedContent;
-        } else if (gitLog) {
-            changelogEntry = gitLog;
-        } else {
-            // If no commits found, try to get commits from the last 20 commits
-            try {
-                const separator = '|||COMMIT_SEPARATOR|||';
-                const commitMessages = execSync(`git log -20 --pretty=format:"${separator}%B" --no-merges`, {
-                    encoding: 'utf8',
-                    stdio: ['pipe', 'pipe', 'ignore']
-                }).trim();
-
-                let allCommits = commitMessages.split(separator)
-                    .map(commit => commit.trim())
-                    .filter(commit => commit.length > 0)
-                    .map(commit => {
-                        const lines = commit.split('\n');
-                        const cleaned = lines.filter(line => line.trim().length > 0);
-                        return cleaned.join('\n').trim();
-                    })
-                    .filter(commit => {
-                        const trimmed = commit.trim();
-                        return trimmed &&
-                            !trimmed.match(/^Release v\d+\.\d+\.\d+$/i) &&
-                            !trimmed.match(/^Bump version/i) &&
-                            !trimmed.match(/^Version update$/i);
-                    });
-
-                // Filter out commits that are already in CHANGELOG
-                const newCommits = allCommits.filter(commit => {
-                    const firstLine = commit.split('\n')[0].trim();
-                    return !existingCommits.has(firstLine);
-                });
-
-                if (newCommits.length > 0) {
-                    changelogEntry = newCommits.slice(0, 10).map(commit => {
-                        const lines = commit.split('\n');
-                        const subject = lines[0].trim();
-                        const body = lines.slice(1).filter(l => l.trim().length > 0);
-
-                        if (body.length > 0) {
-                            return `- ${subject}\n  ${body.map(l => l.trim()).join('\n  ')}`;
-                        } else {
-                            return `- ${subject}`;
-                        }
-                    }).join('\n');
-                } else {
-                    changelogEntry = '- Version update';
-                }
-            } catch (e) {
-                changelogEntry = '- Version update';
-            }
-        }
-
-        // Create new changelog entry
-        const newEntry = `## [${version}] - ${dateStr}
+		const newEntry = `## [${version}] - ${dateStr}
 
 ${changelogEntry}
 
 `;
 
-        // Insert after the first heading (main title)
-        const lines = changelogContent.split('\n');
-        const firstHeadingIndex = lines.findIndex(line => line.startsWith('## ['));
+		const lines = changelogContent.split('\n');
+		const firstHeadingIndex = lines.findIndex((line) => line.startsWith('## ['));
 
-        if (firstHeadingIndex !== -1) {
-            lines.splice(firstHeadingIndex, 0, newEntry);
-            changelogContent = lines.join('\n');
-        } else {
-            // No existing entries, add after main heading
-            changelogContent = changelogContent.replace(
-                /(# Changelog.*?\n\n)/s,
-                `$1${newEntry}`
-            );
-        }
+		if (-1 !== firstHeadingIndex) {
+			lines.splice(firstHeadingIndex, 0, newEntry);
+			changelogContent = lines.join('\n');
+		} else {
+			changelogContent = changelogContent.replace(/(# Changelog.*?\n\n)/s, `$1${newEntry}`);
+		}
 
-        // Remove unreleased section if it was used
-        changelogContent = changelogContent.replace(/## \[Unreleased\][\s\S]*?(?=## \[|$)/, '');
+		changelogContent = changelogContent.replace(/## \[Unreleased\][\s\S]*?(?=## \[|$)/, '');
 
-        // Add release link at the bottom if it doesn't exist
-        if (!changelogContent.includes(`[${version}]:`)) {
-            const releaseLink = `\n[${version}]: https://github.com/gbyat/we-spamfighter/releases/tag/v${version}\n`;
-            changelogContent = changelogContent.trim() + releaseLink;
-        }
+		if (!changelogContent.includes(`[${version}]:`)) {
+			const releaseLink = `\n[${version}]: https://github.com/gbyat/we-spamfighter/releases/tag/v${version}\n`;
+			changelogContent = `${changelogContent.trim()}${releaseLink}`;
+		}
 
-        fs.writeFileSync(changelogPath, changelogContent);
-        console.log(`📝 Updated CHANGELOG.md with version ${version}`);
-    } else {
-        console.log(`ℹ️  Version ${version} already exists in CHANGELOG.md`);
-    }
+		writeLf(changelogPath, changelogContent);
+		console.log(`Updated CHANGELOG.md with version ${version}`);
+	} else {
+		console.log(`Version ${version} already exists in CHANGELOG.md`);
+	}
 }
 
-console.log(`✅ Version synchronized to ${version}`);
-
+console.log(`Version synchronized to ${version}`);

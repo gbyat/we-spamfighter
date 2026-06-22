@@ -13,6 +13,8 @@ use WeSpamfighter\Detection\OpenAI;
 use WeSpamfighter\Detection\AiSpamDetector;
 use WeSpamfighter\Detection\LanguageDetector;
 use WeSpamfighter\Detection\HeuristicDetector;
+use WeSpamfighter\Detection\GroupedEntry;
+use WeSpamfighter\Detection\PatternAnalyzer;
 
 /**
  * Comments integration class.
@@ -96,10 +98,11 @@ class Comments
             }
         }
 
-        // If neither heuristic nor OpenAI is enabled, there is nothing to check.
+        // If nothing is enabled to check, exit early.
         $heuristic_enabled = ! empty($this->settings['heuristic_enabled']);
-        $openai_enabled = $this->is_openai_enabled();
-        if (! $heuristic_enabled && ! $openai_enabled) {
+        $openai_enabled    = $this->is_openai_enabled();
+        $pattern_enabled   = $this->is_pattern_check_enabled();
+        if (! $heuristic_enabled && ! $openai_enabled && ! $pattern_enabled) {
             return $approved;
         }
 
@@ -132,6 +135,25 @@ class Comments
 
                 // Check if already spam (use heuristic's own is_spam when in heuristic-only mode).
                 if ($score >= $threshold || ! empty($heuristic_result['is_spam'])) {
+                    $is_spam = true;
+                }
+            }
+        }
+
+        // STEP 1b: Field-type pattern analysis (comment body vs author vs URL field).
+        if ($this->is_pattern_check_enabled() && ! empty($entry_data)) {
+            $grouped_entry    = GroupedEntry::from_comment($commentdata);
+            $pattern_analyzer = new PatternAnalyzer();
+            $pattern_result   = $pattern_analyzer->analyze(
+                $grouped_entry,
+                $this->get_pattern_analyzer_options()
+            );
+
+            $pattern_score = isset($pattern_result['score']) ? (float) $pattern_result['score'] : 0.0;
+            if ($pattern_score > 0 || ! empty($pattern_result['reasons'])) {
+                $detection_details['pattern'] = $pattern_result;
+                $score = min(1.0, $score + $pattern_score);
+                if ($score >= $threshold || ! empty($pattern_result['is_spam'])) {
                     $is_spam = true;
                 }
             }
@@ -345,6 +367,44 @@ class Comments
         <p><a href="<?php echo esc_url(admin_url('edit-comments.php?comment_status=spam')); ?>"><?php esc_html_e('View Spam Comments', 'we-spamfighter'); ?></a></p>
 <?php
         return ob_get_clean();
+    }
+
+    /**
+     * Whether field-type pattern analysis should run for comments.
+     *
+     * @return bool
+     */
+    private function is_pattern_check_enabled()
+    {
+        if (empty($this->settings['comments_enabled'])) {
+            return false;
+        }
+
+        if (isset($this->settings['pattern_check_enabled'])) {
+            return ! empty($this->settings['pattern_check_enabled']);
+        }
+
+        return ! isset($this->settings['enable_cf7_fieldtype_check']) || ! empty($this->settings['enable_cf7_fieldtype_check']);
+    }
+
+    /**
+     * Options passed to PatternAnalyzer for comment submissions.
+     *
+     * @return array
+     */
+    private function get_pattern_analyzer_options()
+    {
+        $options = array(
+            'duplicate_check_enabled'                  => ! isset($this->settings['duplicate_check_enabled']) || ! empty($this->settings['duplicate_check_enabled']),
+            'duplicate_check_timeframe'                => isset($this->settings['duplicate_check_timeframe']) ? (int) $this->settings['duplicate_check_timeframe'] : 24,
+            'similar_domain_message_threshold'         => isset($this->settings['similar_domain_message_threshold']) ? (float) $this->settings['similar_domain_message_threshold'] : 0.9,
+            'similar_domain_message_min_prior_matches' => isset($this->settings['similar_domain_message_min_prior_matches']) ? (int) $this->settings['similar_domain_message_min_prior_matches'] : 1,
+            'business_terminology_signal_enabled'      => ! isset($this->settings['business_terminology_signal_enabled']) || ! empty($this->settings['business_terminology_signal_enabled']),
+            'format_validity_checks_enabled'           => ! empty($this->settings['format_validity_checks_enabled']),
+            'form_id'                                  => 0,
+        );
+
+        return apply_filters('we_spamfighter_comments_pattern_options', $options, $this->settings);
     }
 
     /**

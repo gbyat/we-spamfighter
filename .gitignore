@@ -9,9 +9,14 @@ wp-content/wp-cache-config.php
 # Dependencies
 node_modules/
 vendor/
+wp-cli.phar
 composer.json
 composer.lock
 # package-lock.json should be committed for reproducible builds
+
+# Build / release artifacts (built locally or in CI)
+*.zip
+release_notes.txt
 
 # Build files
 *.min.js

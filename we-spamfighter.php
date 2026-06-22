@@ -317,10 +317,6 @@ class Plugin
         // Always load if CF7 is installed, so script hook is registered.
         // Spam checking is still conditional on cf7_enabled setting.
         if (class_exists('WPCF7_ContactForm')) {
-            // CF7 pipeline depends on this class; load explicitly so submission checks never
-            // die with "class not found" if autoload resolution differs on the host.
-            require_once __DIR__ . '/includes/detection/class-cf7-field-type-heuristic.php';
-
             // Manually require the file first, then check if class exists.
             $cf7_class_file = __DIR__ . '/includes/integration/class-contact-form-7.php';
             if (file_exists($cf7_class_file)) {
@@ -383,8 +379,13 @@ class Plugin
             'enable_numbers_letters_only_check' => true,
             'enable_ip_in_content_check'  => true,
             'enable_repeated_multilingual_check' => true,
-            'enable_cf7_fieldtype_check'  => true,
-            'cf7_text_line_max_length'    => 400,
+            'pattern_check_enabled'              => true,
+            'duplicate_check_enabled'            => true,
+            'business_terminology_signal_enabled' => true,
+            'format_validity_checks_enabled'     => false,
+            'duplicate_check_timeframe'          => 24,
+            'similar_domain_message_threshold'   => 0.9,
+            'similar_domain_message_min_prior_matches' => 1,
             'log_retention_days'           => 30,
             'keep_data_on_uninstall'       => false,
             'github_updates_enabled'       => false,

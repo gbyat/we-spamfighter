@@ -1,0 +1,22 @@
+{
+	"slug": "we-spamfighter",
+	"name": "WE Spamfighterin",
+	"description": "Advanced spam protection for Contact Form 7 and comments using heuristics and optional AI.",
+	"textDomain": "we-spamfighter",
+	"versionConstant": "WE_SPAMFIGHTER_VERSION",
+	"githubRepo": "gbyat/we-spamfighter",
+	"locales": ["de_DE"],
+	"hasBlocks": false,
+	"potExclude": "node_modules,vendor,scripts,release-temp,.github,assets/vendor,**/*.min.js",
+	"zipInclude": {
+		"files": [
+			"we-spamfighter.php",
+			"uninstall.php",
+			"README.md",
+			"README.txt",
+			"CHANGELOG.md",
+			"LICENSE"
+		],
+		"directories": ["includes", "assets", "languages"]
+	}
+}

@@ -13,7 +13,8 @@ use WeSpamfighter\Detection\OpenAI;
 use WeSpamfighter\Detection\AiSpamDetector;
 use WeSpamfighter\Detection\LanguageDetector;
 use WeSpamfighter\Detection\HeuristicDetector;
-use WeSpamfighter\Detection\Cf7FieldTypeHeuristic;
+use WeSpamfighter\Detection\GroupedEntry;
+use WeSpamfighter\Detection\PatternAnalyzer;
 
 /**
  * Contact Form 7 integration class.
@@ -217,21 +218,34 @@ class ContactForm7
                 }
             }
 
-            // STEP 1b: CF7 field-type heuristics ([text] vs [url], etc.) — supplements CF7 validation.
-            if (! empty($this->settings['cf7_enabled'])) {
-                $ft_check = Cf7FieldTypeHeuristic::analyze($posted_data, $contact_form, $this->settings);
-                if (! empty($ft_check['details']) || $ft_check['score'] > 0 || ! empty($ft_check['reasons'])) {
-                    $detection_details['cf7_field_type_check'] = $ft_check;
+            // STEP 1b: Field-type pattern analysis (text vs textarea vs email vs URL).
+            if ($this->is_pattern_check_enabled()) {
+                $grouped_entry = GroupedEntry::from_cf7($posted_data, $contact_form);
+                $pattern_analyzer = new PatternAnalyzer();
+                $pattern_result   = $pattern_analyzer->analyze(
+                    $grouped_entry,
+                    $this->get_pattern_analyzer_options($form_id)
+                );
+
+                $pattern_score = isset($pattern_result['score']) ? (float) $pattern_result['score'] : 0.0;
+                $has_textarea  = ! empty($grouped_entry['_grouped']['textarea']);
+                if (! $has_textarea && $pattern_score > 0) {
+                    $pattern_score *= 0.75;
                 }
-                if ($ft_check['score'] > 0) {
-                    $score = min(1.0, $score + $ft_check['score']);
-                    if ($score >= $threshold) {
+
+                if (! empty($pattern_result['details']) || $pattern_score > 0 || ! empty($pattern_result['reasons'])) {
+                    $detection_details['pattern'] = $pattern_result;
+                }
+
+                if ($pattern_score > 0) {
+                    $score = min(1.0, $score + $pattern_score);
+                    if ($score >= $threshold || ! empty($pattern_result['is_spam'])) {
                         $is_spam = true;
                     }
                     if (empty($detection_method)) {
-                        $detection_method = 'cf7_fieldtype';
-                    } elseif (false === strpos($detection_method, 'cf7_fieldtype')) {
-                        $detection_method .= '+cf7_fieldtype';
+                        $detection_method = 'pattern';
+                    } elseif (false === strpos($detection_method, 'pattern')) {
+                        $detection_method .= '+pattern';
                     }
                 }
             }
@@ -750,6 +764,55 @@ class ContactForm7
          * @param array $original Original plugin settings from the option.
          */
         return apply_filters('we_spamfighter_cf7_heuristic_settings', $settings, $this->settings);
+    }
+
+    /**
+     * Whether field-type pattern analysis should run for CF7.
+     *
+     * Runs when CF7 protection is on and pattern check is enabled (default on).
+     *
+     * @return bool
+     */
+    private function is_pattern_check_enabled()
+    {
+        if (empty($this->settings['cf7_enabled'])) {
+            return false;
+        }
+
+        if (isset($this->settings['pattern_check_enabled'])) {
+            return ! empty($this->settings['pattern_check_enabled']);
+        }
+
+        // Legacy: CF7 field-type toggle before pattern_check_enabled existed.
+        return ! isset($this->settings['enable_cf7_fieldtype_check']) || ! empty($this->settings['enable_cf7_fieldtype_check']);
+    }
+
+    /**
+     * Options passed to PatternAnalyzer for a CF7 submission.
+     *
+     * @param int $form_id CF7 form ID.
+     * @return array
+     */
+    private function get_pattern_analyzer_options($form_id)
+    {
+        $options = array(
+            'duplicate_check_enabled'                  => ! isset($this->settings['duplicate_check_enabled']) || ! empty($this->settings['duplicate_check_enabled']),
+            'duplicate_check_timeframe'                => isset($this->settings['duplicate_check_timeframe']) ? (int) $this->settings['duplicate_check_timeframe'] : 24,
+            'similar_domain_message_threshold'         => isset($this->settings['similar_domain_message_threshold']) ? (float) $this->settings['similar_domain_message_threshold'] : 0.9,
+            'similar_domain_message_min_prior_matches' => isset($this->settings['similar_domain_message_min_prior_matches']) ? (int) $this->settings['similar_domain_message_min_prior_matches'] : 1,
+            'business_terminology_signal_enabled'      => ! isset($this->settings['business_terminology_signal_enabled']) || ! empty($this->settings['business_terminology_signal_enabled']),
+            'format_validity_checks_enabled'           => ! empty($this->settings['format_validity_checks_enabled']),
+            'form_id'                                  => (int) $form_id,
+        );
+
+        /**
+         * Filters PatternAnalyzer options for Contact Form 7 submissions.
+         *
+         * @param array $options  Analyzer options.
+         * @param array $settings Plugin settings.
+         * @param int   $form_id  CF7 form ID.
+         */
+        return apply_filters('we_spamfighter_cf7_pattern_options', $options, $this->settings, (int) $form_id);
     }
 
     /**

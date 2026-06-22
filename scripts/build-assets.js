@@ -1,94 +1,108 @@
-const fs = require('fs');
-const path = require('path');
-const { execSync } = require('child_process');
-
 /**
- * Build script to minify CSS and JavaScript assets
- * Creates .min versions of all CSS and JS files in assets/
+ * Minify CSS and JavaScript assets (pure Node — no shell).
  */
 
-const assetsDir = path.join(__dirname, '..', 'assets');
+const fs = require('fs');
+const path = require('path');
+const CleanCSS = require('clean-css');
+const { minify } = require('terser');
+const { rootDir, writeLf, readLf } = require('./process');
+
+const assetsDir = path.join(rootDir, 'assets');
 const cssDir = path.join(assetsDir, 'css');
 const jsDir = path.join(assetsDir, 'js');
 
-console.log('🔨 Building minified assets...\n');
+console.log('Building minified assets...\n');
 
-// Check if required tools are available (prefer local node_modules)
-function checkTool(globalCommand, localCommand, installCommand) {
-    // Try local first (from node_modules/.bin)
-    const localPath = path.join(__dirname, '..', 'node_modules', '.bin', localCommand);
-    if (fs.existsSync(localPath)) {
-        return localPath;
-    }
-
-    // Try global
-    try {
-        execSync(`${globalCommand} --version`, { stdio: 'ignore' });
-        return globalCommand;
-    } catch (e) {
-        console.warn(`⚠️  ${globalCommand} not found. Install with: ${installCommand}`);
-        return null;
-    }
+/**
+ * @param {string} inputPath
+ * @param {string} outputPath
+ */
+function minifyCssFile(inputPath, outputPath) {
+	const input = readLf(inputPath);
+	const output = new CleanCSS({}).minify(input);
+	if (output.errors && output.errors.length > 0) {
+		throw new Error(output.errors.join('; '));
+	}
+	writeLf(outputPath, `${output.styles}\n`);
 }
 
-const cleanCssCmd = checkTool('cleancss', 'cleancss', 'npm install -D clean-css-cli');
-const terserCmd = checkTool('terser', 'terser', 'npm install -D terser');
-const hasCleanCss = cleanCssCmd !== null;
-const hasTerser = terserCmd !== null;
-
-if (!hasCleanCss && !hasTerser) {
-    console.error('❌ No minification tools found!');
-    console.error('   Install with: npm install -g clean-css-cli terser');
-    process.exit(1);
+/**
+ * @param {string} inputPath
+ * @param {string} outputPath
+ */
+async function minifyJsFile(inputPath, outputPath) {
+	const input = readLf(inputPath);
+	const result = await minify(input, { compress: true, mangle: true });
+	if (!result.code) {
+		throw new Error(`Terser returned empty output for ${inputPath}`);
+	}
+	writeLf(outputPath, `${result.code}\n`);
 }
 
-// Minify CSS files
-if (hasCleanCss && fs.existsSync(cssDir)) {
-    console.log('📦 Minifying CSS files...');
-    const cssFiles = fs.readdirSync(cssDir).filter(file =>
-        file.endsWith('.css') && !file.endsWith('.min.css')
-    );
+/**
+ * @param {string} dir
+ * @param {string} extension
+ * @param {string} minExtension
+ * @return {string[]}
+ */
+function listSourceFiles(dir, extension, minExtension) {
+	if (!fs.existsSync(dir)) {
+		return [];
+	}
 
-    cssFiles.forEach(file => {
-        const inputPath = path.join(cssDir, file);
-        const outputFile = file.replace('.css', '.min.css');
-        const outputPath = path.join(cssDir, outputFile);
-
-        try {
-            execSync(`"${cleanCssCmd}" -o "${outputPath}" "${inputPath}"`, { stdio: 'pipe' });
-            const originalSize = fs.statSync(inputPath).size;
-            const minifiedSize = fs.statSync(outputPath).size;
-            const savings = ((1 - minifiedSize / originalSize) * 100).toFixed(1);
-            console.log(`   ✅ ${file} → ${outputFile} (${savings}% smaller)`);
-        } catch (e) {
-            console.error(`   ❌ Failed to minify ${file}`);
-        }
-    });
+	return fs.readdirSync(dir).filter(
+		(file) => file.endsWith(extension) && !file.endsWith(minExtension)
+	);
 }
 
-// Minify JavaScript files
-if (hasTerser && fs.existsSync(jsDir)) {
-    console.log('\n📦 Minifying JavaScript files...');
-    const jsFiles = fs.readdirSync(jsDir).filter(file =>
-        file.endsWith('.js') && !file.endsWith('.min.js')
-    );
+async function main() {
+	if (fs.existsSync(cssDir)) {
+		console.log('Minifying CSS files...');
+		const cssFiles = listSourceFiles(cssDir, '.css', '.min.css');
 
-    jsFiles.forEach(file => {
-        const inputPath = path.join(jsDir, file);
-        const outputFile = file.replace('.js', '.min.js');
-        const outputPath = path.join(jsDir, outputFile);
+		cssFiles.forEach((file) => {
+			const inputPath = path.join(cssDir, file);
+			const outputPath = path.join(cssDir, file.replace('.css', '.min.css'));
 
-        try {
-            execSync(`"${terserCmd}" "${inputPath}" -o "${outputPath}" --compress --mangle`, { stdio: 'pipe' });
-            const originalSize = fs.statSync(inputPath).size;
-            const minifiedSize = fs.statSync(outputPath).size;
-            const savings = ((1 - minifiedSize / originalSize) * 100).toFixed(1);
-            console.log(`   ✅ ${file} → ${outputFile} (${savings}% smaller)`);
-        } catch (e) {
-            console.error(`   ❌ Failed to minify ${file}`);
-        }
-    });
+			try {
+				minifyCssFile(inputPath, outputPath);
+				const originalSize = fs.statSync(inputPath).size;
+				const minifiedSize = fs.statSync(outputPath).size;
+				const savings = ((1 - minifiedSize / originalSize) * 100).toFixed(1);
+				console.log(`   OK ${file} -> ${file.replace('.css', '.min.css')} (${savings}% smaller)`);
+			} catch (error) {
+				console.error(`   Failed to minify ${file}: ${error.message}`);
+				process.exit(1);
+			}
+		});
+	}
+
+	if (fs.existsSync(jsDir)) {
+		console.log('\nMinifying JavaScript files...');
+		const jsFiles = listSourceFiles(jsDir, '.js', '.min.js');
+
+		for (const file of jsFiles) {
+			const inputPath = path.join(jsDir, file);
+			const outputPath = path.join(jsDir, file.replace('.js', '.min.js'));
+
+			try {
+				await minifyJsFile(inputPath, outputPath);
+				const originalSize = fs.statSync(inputPath).size;
+				const minifiedSize = fs.statSync(outputPath).size;
+				const savings = ((1 - minifiedSize / originalSize) * 100).toFixed(1);
+				console.log(`   OK ${file} -> ${file.replace('.js', '.min.js')} (${savings}% smaller)`);
+			} catch (error) {
+				console.error(`   Failed to minify ${file}: ${error.message}`);
+				process.exit(1);
+			}
+		}
+	}
+
+	console.log('\nAsset build complete.');
 }
 
-console.log('\n✅ Asset build complete!');
-
+main().catch((error) => {
+	console.error(error instanceof Error ? error.message : String(error));
+	process.exit(1);
+});

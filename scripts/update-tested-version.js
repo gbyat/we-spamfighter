@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const { execSync } = require('child_process');
+const { rootDir, readLf, writeLf } = require('./process');
 
 /**
  * Update "Tested up to" version across all files in the project
@@ -24,22 +24,22 @@ console.log(`🔄 Updating "Tested up to" to ${newVersion}...\n`);
 // Files to update with their patterns
 const filesToUpdate = [
     {
-        path: path.join(__dirname, '..', 'we-spamfighter.php'),
+        path: path.join(rootDir, 'we-spamfighter.php'),
         pattern: /Tested up to:\s*\d+\.\d+(\.\d+)?/,
         replacement: `Tested up to: ${newVersion}`
     },
     {
-        path: path.join(__dirname, '..', 'README.md'),
+        path: path.join(rootDir, 'README.md'),
         pattern: /\*\*Tested up to:\*\*\s*\d+\.\d+(\.\d+)?/,
         replacement: `**Tested up to:** ${newVersion}`
     },
     {
-        path: path.join(__dirname, '..', 'README.txt'),
+        path: path.join(rootDir, 'README.txt'),
         pattern: /Tested up to:\s*\d+\.\d+(\.\d+)?/,
         replacement: `Tested up to: ${newVersion}`
     },
     {
-        path: path.join(__dirname, '..', 'includes', 'core', 'class-updater.php'),
+        path: path.join(rootDir, 'includes', 'core', 'class-updater.php'),
         patterns: [
             {
                 // Pattern for: $tested = ... ?? '6.9'
@@ -66,7 +66,7 @@ filesToUpdate.forEach(fileInfo => {
         return;
     }
 
-    let content = fs.readFileSync(filePath, 'utf8');
+    let content = readLf(filePath);
     let fileChanged = false;
     let replacements = 0;
 
@@ -91,7 +91,7 @@ filesToUpdate.forEach(fileInfo => {
     }
 
     if (fileChanged) {
-        fs.writeFileSync(filePath, content, 'utf8');
+        writeLf(filePath, content);
         const relativePath = path.relative(process.cwd(), filePath);
         console.log(`✅ Updated ${relativePath} (${replacements} replacement(s))`);
         updatedFiles++;

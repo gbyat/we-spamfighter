@@ -474,29 +474,50 @@ class Settings
         );
 
         add_settings_field(
-            'enable_cf7_fieldtype_check',
-            __('Enable CF7 field-type heuristics', 'we-spamfighter'),
+            'pattern_check_enabled',
+            __('Enable field-type pattern analysis', 'we-spamfighter'),
             array($this, 'render_checkbox_field'),
             'we-spamfighter',
             'we_spamfighter_heuristic',
             array(
-                'field_id'    => 'enable_cf7_fieldtype_check',
-                'description' => __('For Contact Form 7: score suspicious content in [text] fields (URLs, emails, very long lines) and odd [url] query patterns. Does not replace CF7 validation.', 'we-spamfighter'),
+                'field_id'    => 'pattern_check_enabled',
+                'description' => __('Analyze submissions by field role (single-line text vs message vs email vs URL). Catches URLs in name fields, spam in message bodies, disposable emails, and more.', 'we-spamfighter'),
             )
         );
 
         add_settings_field(
-            'cf7_text_line_max_length',
-            __('CF7 single-line text max length', 'we-spamfighter'),
-            array($this, 'render_number_field'),
+            'duplicate_check_enabled',
+            __('Enable duplicate message detection', 'we-spamfighter'),
+            array($this, 'render_checkbox_field'),
             'we-spamfighter',
             'we_spamfighter_heuristic',
             array(
-                'field_id'    => 'cf7_text_line_max_length',
-                'min'         => 80,
-                'max'         => 2000,
-                'step'        => 10,
-                'description' => __('Characters: above this length in a CF7 [text] field adds a spam score. Default: 400.', 'we-spamfighter'),
+                'field_id'    => 'duplicate_check_enabled',
+                'description' => __('Flag identical messages resubmitted by the same email or IP within 24 hours.', 'we-spamfighter'),
+            )
+        );
+
+        add_settings_field(
+            'business_terminology_signal_enabled',
+            __('Enable business terminology signals', 'we-spamfighter'),
+            array($this, 'render_checkbox_field'),
+            'we-spamfighter',
+            'we_spamfighter_heuristic',
+            array(
+                'field_id'    => 'business_terminology_signal_enabled',
+                'description' => __('Soft score boost when message text uses typical B2B/legal vocabulary (reduces false positives for legitimate inquiries).', 'we-spamfighter'),
+            )
+        );
+
+        add_settings_field(
+            'format_validity_checks_enabled',
+            __('Enable strict email/URL field format checks', 'we-spamfighter'),
+            array($this, 'render_checkbox_field'),
+            'we-spamfighter',
+            'we_spamfighter_heuristic',
+            array(
+                'field_id'    => 'format_validity_checks_enabled',
+                'description' => __('Validate dedicated email and URL fields (invalid format, email in URL field, etc.). Off by default to avoid blocking edge cases.', 'we-spamfighter'),
             )
         );
 
@@ -1498,7 +1519,10 @@ class Settings
             'enable_numbers_letters_only_check',
             'enable_ip_in_content_check',
             'enable_repeated_multilingual_check',
-            'enable_cf7_fieldtype_check',
+            'pattern_check_enabled',
+            'duplicate_check_enabled',
+            'business_terminology_signal_enabled',
+            'format_validity_checks_enabled',
             'keep_data_on_uninstall',
             'github_updates_enabled',
             'activity_log_enabled',
@@ -1527,10 +1551,16 @@ class Settings
         $heuristic_final_state = isset($input['heuristic_enabled']) ? (bool) $input['heuristic_enabled'] : false;
 
         foreach ($boolean_fields as $field) {
-            if ('enable_cf7_fieldtype_check' === $field) {
+            if (in_array($field, array('pattern_check_enabled', 'duplicate_check_enabled', 'business_terminology_signal_enabled', 'format_validity_checks_enabled'), true)) {
+                $defaults = array(
+                    'pattern_check_enabled'               => true,
+                    'duplicate_check_enabled'             => true,
+                    'business_terminology_signal_enabled'   => true,
+                    'format_validity_checks_enabled'      => false,
+                );
                 $sanitized[ $field ] = isset($input[ $field ])
                     ? (bool) $input[ $field ]
-                    : ( isset($existing[ $field ]) ? (bool) $existing[ $field ] : true );
+                    : ( isset($existing[ $field ]) ? (bool) $existing[ $field ] : $defaults[ $field ] );
                 continue;
             }
 
@@ -1652,10 +1682,10 @@ class Settings
             $sanitized['heuristic_threshold'] = isset($existing['heuristic_threshold']) ? floatval($existing['heuristic_threshold']) : 0.6;
         }
 
-        if (isset($input['cf7_text_line_max_length'])) {
-            $sanitized['cf7_text_line_max_length'] = min(2000, max(80, intval($input['cf7_text_line_max_length'])));
+        if (isset($input['duplicate_check_timeframe'])) {
+            $sanitized['duplicate_check_timeframe'] = max(1, intval($input['duplicate_check_timeframe']));
         } else {
-            $sanitized['cf7_text_line_max_length'] = isset($existing['cf7_text_line_max_length']) ? intval($existing['cf7_text_line_max_length']) : 400;
+            $sanitized['duplicate_check_timeframe'] = isset($existing['duplicate_check_timeframe']) ? intval($existing['duplicate_check_timeframe']) : 24;
         }
 
         if (isset($input['log_retention_days'])) {
@@ -1701,6 +1731,11 @@ class Settings
             $sanitized['form_notice_enabled'] = !empty($input['form_notice_enabled']);
         } else {
             $sanitized['form_notice_enabled'] = isset($existing['form_notice_enabled']) ? (bool) $existing['form_notice_enabled'] : true;
+        }
+
+        // Legacy migration: old CF7-only toggle maps to pattern_check_enabled.
+        if (! isset($sanitized['pattern_check_enabled']) && isset($existing['enable_cf7_fieldtype_check'])) {
+            $sanitized['pattern_check_enabled'] = (bool) $existing['enable_cf7_fieldtype_check'];
         }
 
         return $sanitized;

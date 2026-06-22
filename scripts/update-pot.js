@@ -1,34 +1,38 @@
 /**
- * Update POT file for WordPress translations.
- *
- * @package WeSpamfighter
+ * Build or update the POT file via WP-CLI.
  */
 
-const wpPot = require('wp-pot');
+const fs = require('fs');
 const path = require('path');
+const { loadConfig, rootDir } = require('./load-config');
+const { runWp } = require('./wp-cli');
 
-wpPot({
-    package: 'WE Spamfighterin',
-    domain: 'we-spamfighter',
-    destFile: path.join(__dirname, '../languages/we-spamfighter.pot'),
-    relativeTo: path.join(__dirname, '../'),
-    src: [
-        '**/*.php',
-        '!node_modules/**',
-        '!vendor/**',
-        '!assets/**',
-        '!scripts/**'
-    ],
-    bugReport: 'https://github.com/gbyat/we-spamfighter/issues',
-    team: 'webentwicklerin, Gabriele Laesser',
-    lastTranslator: 'webentwicklerin, Gabriele Laesser <info@webentwicklerin.at>',
-    headers: {
-        'Report-Msgid-Bugs-To': 'https://github.com/gbyat/we-spamfighter/issues',
-        'Language-Team': '',
-        'Last-Translator': '',
-        'Content-Type': 'text/plain; charset=UTF-8'
-    }
-});
+const config = loadConfig();
+const languagesDir = path.join(rootDir, 'languages');
+const slug = String(config.slug);
+const textDomain = String(config.textDomain || slug);
+const potFile = path.join(languagesDir, `${slug}.pot`);
 
-console.log('✓ POT file updated: languages/we-spamfighter.pot');
+if (!fs.existsSync(languagesDir)) {
+	fs.mkdirSync(languagesDir, { recursive: true });
+}
 
+try {
+	runWp([
+		'i18n',
+		'make-pot',
+		'.',
+		potFile,
+		`--domain=${textDomain}`,
+		`--exclude=${config.potExclude || 'node_modules,vendor,scripts,assets/vendor'}`,
+		'--skip-block-json',
+		`--headers=Report-Msgid-Bugs-To:https://github.com/${config.githubRepo}/issues`,
+		'--headers=Language-Team:webentwicklerin <hello@webentwicklerin.at>',
+		'--headers=Last-Translator:Gabriele Laesser <hello@webentwicklerin.at>',
+	]);
+	console.log(`POT file updated: ${potFile}`);
+} catch (error) {
+	console.error('POT build failed.');
+	console.error(error instanceof Error ? error.message : String(error));
+	process.exit(1);
+}
