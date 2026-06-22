@@ -9,6 +9,8 @@ const steps = [
 	'update-pot.js',
 	'seed-locale.js',
 	'update-po.js',
+	'sync-catalog-keys.js',
+	'apply-locale-catalog.js',
 	'make-mo.js',
 	'make-php.js',
 ];
