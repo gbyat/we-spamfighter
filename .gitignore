@@ -26,6 +26,7 @@ error_log
 
 # IDE
 .vscode/
+.cursor/
 .idea/
 *.sublime-project
 *.sublime-workspace
@@ -47,6 +48,11 @@ Thumbs.db
 .Trashes
 ehthumbs.db
 Desktop.ini
+
+# Local workflow / planning (not shipped with the plugin)
+TASK-LOG.md
+FUTURE-TODO.md
+
 RELEASE-FILES.md
 RELEASE.md
 release-temp/

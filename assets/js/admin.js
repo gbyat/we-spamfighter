@@ -92,6 +92,25 @@
             togglePingbackOption();
         });
 
+        // Show/hide AI fields based on connection mode.
+        function toggleAiBackendFields() {
+            var backendSelect = $('select[name="we_spamfighter_settings[ai_backend]"]');
+            if (!backendSelect.length) {
+                return;
+            }
+
+            var backend = backendSelect.val();
+            var useConnectors = backend === 'wp_connectors';
+
+            $('tr:has(select[name="we_spamfighter_settings[ai_provider]"])').toggle(useConnectors);
+            $('tr:has(input[name="we_spamfighter_settings[ai_model_preference]"])').toggle(useConnectors);
+            $('tr:has(input[name="we_spamfighter_settings[openai_api_key]"])').toggle(!useConnectors);
+            $('tr:has(select[name="we_spamfighter_settings[openai_model]"])').toggle(!useConnectors);
+        }
+
+        toggleAiBackendFields();
+        $('select[name="we_spamfighter_settings[ai_backend]"]').on('change', toggleAiBackendFields);
+
         // Tab navigation - show/hide tab content.
         $('.we-settings-nav-tabs .nav-tab').on('click', function (e) {
             e.preventDefault();

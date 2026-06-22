@@ -1,4 +1,4 @@
-# WE Spamfighter
+# WE Spamfighterin
 
 **Contributors:** webentwicklerin  
 **Tags:** spam, contact-form-7, comments, ai, openai, spam-protection, security, form-protection  
@@ -115,7 +115,7 @@ Protects Contact Form 7 forms and WordPress comments from spam submissions with 
 
 1. Upload the `we-spamfighter` folder to `/wp-content/plugins/`
 2. Go to **Plugins** in WordPress admin
-3. Find **WE Spamfighter** and click **Activate**
+3. Find **WE Spamfighterin** and click **Activate**
 
 ### Via Composer
 
@@ -129,7 +129,7 @@ composer require gbyat/we-spamfighter
 
 **Option 1: Via WordPress Settings (Recommended for testing)**
 
-1. Go to **WE Spamfighter → Settings**
+1. Go to **WE Spamfighterin → Settings**
 2. Enter your OpenAI API key in the **OpenAI API Key** field
 3. Click **Save Changes**
 
@@ -144,7 +144,7 @@ This method is more secure as the API key is not stored in the database.
 
 ### 2. Plugin Settings
 
-Navigate to **WE Spamfighter → Settings** (organized in tabs) to configure:
+Navigate to **WE Spamfighterin → Settings** (organized in tabs) to configure:
 
 #### General Tab
 
@@ -187,7 +187,7 @@ Navigate to **WE Spamfighter → Settings** (organized in tabs) to configure:
 
 #### Privacy Tab (GDPR/DSGVO)
 
-*These options only take effect when OpenAI is enabled and an API key is configured.*
+_These options only take effect when OpenAI is enabled and an API key is configured._
 
 - **Privacy passage on privacy policy page**: How to include the privacy passage
   - **Filter**: Append automatically to the configured privacy policy page (default)
@@ -201,7 +201,7 @@ The plugin provides suggested privacy policy text under **Settings → Privacy**
 
 - **Log Retention**: Days to keep logs (default: 30)
 - **Keep Data on Uninstall**: Option to preserve data when uninstalling
-- **Enable Activity Log**: Optional activity logging to track important plugin events (e.g., weekly summaries sent, table maintenance). When enabled, adds an "Activity Log" menu item under WE Spamfighter for viewing events and provides a clear button in the Maintenance tab.
+- **Enable Activity Log**: Optional activity logging to track important plugin events (e.g., weekly summaries sent, table maintenance). When enabled, adds an "Activity Log" menu item under WE Spamfighterin for viewing events and provides a clear button in the Maintenance tab.
 - **Enable GitHub Updates**: Optional automatic updates from GitHub releases. **⚠️ Activate at your own risk** - Updates will be installed automatically without additional confirmation. Disabled by default for security.
 
 ### 3. Contact Form 7 Integration
@@ -234,7 +234,7 @@ WordPress comment spam protection works when:
 
 ### Viewing Submissions
 
-1. Go to **WE Spamfighter → Dashboard**
+1. Go to **WE Spamfighterin → Dashboard**
 2. View all Contact Form 7 submissions in the main table (comments are managed by WordPress)
    - **Note**: CF7 doesn't store submissions by default - this plugin logs them for you
 3. Use tabs to filter submissions by spam status (Normal Mails / Spam)
@@ -257,10 +257,10 @@ WordPress comment spam protection works when:
 
 ### Viewing Activity Log
 
-1. Go to **WE Spamfighter → Settings → Maintenance** tab
+1. Go to **WE Spamfighterin → Settings → Maintenance** tab
 2. Enable **Enable Activity Log** option and save changes
-3. A new **Activity Log** menu item will appear under **WE Spamfighter** in the admin menu
-4. Click on **WE Spamfighter → Activity Log** to view recent plugin events (weekly summaries sent, table maintenance, etc.)
+3. A new **Activity Log** menu item will appear under **WE Spamfighterin** in the admin menu
+4. Click on **WE Spamfighterin → Activity Log** to view recent plugin events (weekly summaries sent, table maintenance, etc.)
 5. Use **Clear Activity Log** button to manually clear all activity log entries
 
 **Note**: Activity log is optional and disabled by default. The log automatically cleans old entries based on the "Log Retention" setting and keeps a maximum of 100 entries. You can also clear the log directly from the **Maintenance** tab in Settings (button appears when entries exist). If no events have occurred yet, a helpful message will be displayed.

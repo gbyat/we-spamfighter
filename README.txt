@@ -1,4 +1,4 @@
-=== WE Spamfighter ===
+=== WE Spamfighterin ===
 Contributors: webentwicklerin
 Tags: spam, contact-form-7, comments, ai, openai, spam-protection, security, form-protection
 Requires at least: 6.0
@@ -81,7 +81,7 @@ Protects Contact Form 7 forms and WordPress comments from spam submissions with 
 
 1. Upload the we-spamfighter folder to /wp-content/plugins/
 2. Go to Plugins in WordPress admin
-3. Find WE Spamfighter and click Activate
+3. Find WE Spamfighterin and click Activate
 
 == Frequently Asked Questions ==
 
@@ -135,7 +135,7 @@ When OpenAI is enabled, personal form data is transmitted to OpenAI (USA). For G
 
 = What is the Activity Log? =
 
-The Activity Log is an optional feature that tracks important plugin events (e.g., weekly summaries sent, table maintenance performed, email notifications). It is disabled by default and can be enabled in Settings -> Maintenance tab. When enabled, a new "Activity Log" menu item appears under WE Spamfighter in the admin menu. You can view all recent events there and manually clear the log using the "Clear Activity Log" button. You can also clear the log directly from the Maintenance tab in Settings (button appears when entries exist). The log automatically cleans old entries based on the log retention setting and keeps a maximum of 100 entries. Email notifications (daily/weekly summaries) are automatically logged with success/failure status for debugging.
+The Activity Log is an optional feature that tracks important plugin events (e.g., weekly summaries sent, table maintenance performed, email notifications). It is disabled by default and can be enabled in Settings -> Maintenance tab. When enabled, a new "Activity Log" menu item appears under WE Spamfighterin in the admin menu. You can view all recent events there and manually clear the log using the "Clear Activity Log" button. You can also clear the log directly from the Maintenance tab in Settings (button appears when entries exist). The log automatically cleans old entries based on the log retention setting and keeps a maximum of 100 entries. Email notifications (daily/weekly summaries) are automatically logged with success/failure status for debugging.
 
 == Screenshots ==
 

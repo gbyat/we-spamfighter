@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Plugin Name: WE Spamfighter
+ * Plugin Name: WE Spamfighterin
  * Plugin URI: https://github.com/gbyat/we-spamfighter
  * Description: Advanced spam protection for Contact Form 7 and Comments using AI-powered and heuristic detection. Works with or without OpenAI - includes local spam detection for cost-effective filtering.
  * Version: 1.5.1
@@ -317,6 +317,10 @@ class Plugin
         // Always load if CF7 is installed, so script hook is registered.
         // Spam checking is still conditional on cf7_enabled setting.
         if (class_exists('WPCF7_ContactForm')) {
+            // CF7 pipeline depends on this class; load explicitly so submission checks never
+            // die with "class not found" if autoload resolution differs on the host.
+            require_once __DIR__ . '/includes/detection/class-cf7-field-type-heuristic.php';
+
             // Manually require the file first, then check if class exists.
             $cf7_class_file = __DIR__ . '/includes/integration/class-contact-form-7.php';
             if (file_exists($cf7_class_file)) {
@@ -356,6 +360,9 @@ class Plugin
             'cf7_enabled'                  => false,
             'comments_enabled'             => false,
             'openai_enabled'               => false,
+            'ai_backend'                   => function_exists('wp_ai_client_prompt') ? 'wp_connectors' : 'direct',
+            'ai_provider'                  => '',
+            'ai_model_preference'          => '',
             'openai_api_key'               => '',
             'openai_model'                 => 'gpt-4o-mini',
             'ai_threshold'                 => 0.7,
@@ -376,6 +383,8 @@ class Plugin
             'enable_numbers_letters_only_check' => true,
             'enable_ip_in_content_check'  => true,
             'enable_repeated_multilingual_check' => true,
+            'enable_cf7_fieldtype_check'  => true,
+            'cf7_text_line_max_length'    => 400,
             'log_retention_days'           => 30,
             'keep_data_on_uninstall'       => false,
             'github_updates_enabled'       => false,

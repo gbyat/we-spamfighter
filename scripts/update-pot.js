@@ -8,7 +8,7 @@ const wpPot = require('wp-pot');
 const path = require('path');
 
 wpPot({
-    package: 'WE Spamfighter',
+    package: 'WE Spamfighterin',
     domain: 'we-spamfighter',
     destFile: path.join(__dirname, '../languages/we-spamfighter.pot'),
     relativeTo: path.join(__dirname, '../'),

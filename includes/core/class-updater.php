@@ -217,7 +217,7 @@ class Updater
         }
 
         // Security: Validate that it's actually our plugin.
-        if (! preg_match('/Plugin Name:\s*WE Spamfighter/mi', $plugin_content)) {
+        if (! preg_match('/Plugin Name:\s*WE Spamfighterin/mi', $plugin_content)) {
             return false;
         }
 
@@ -515,7 +515,7 @@ class Updater
             <li>' . esc_html__('Go to WordPress Admin → Plugins → Add New → Upload Plugin', 'we-spamfighter') . '</li>
             <li>' . esc_html__('Upload the ZIP file and click Install Now', 'we-spamfighter') . '</li>
             <li>' . esc_html__('Activate the plugin', 'we-spamfighter') . '</li>
-            <li>' . esc_html__('Configure settings under WE Spamfighter → Settings', 'we-spamfighter') . '</li>
+            <li>' . esc_html__('Configure settings under WE Spamfighterin → Settings', 'we-spamfighter') . '</li>
         </ol>';
     }
 

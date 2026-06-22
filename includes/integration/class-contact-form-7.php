@@ -10,8 +10,10 @@ namespace WeSpamfighter\Integration;
 
 use WeSpamfighter\Core\Database;
 use WeSpamfighter\Detection\OpenAI;
+use WeSpamfighter\Detection\AiSpamDetector;
 use WeSpamfighter\Detection\LanguageDetector;
 use WeSpamfighter\Detection\HeuristicDetector;
+use WeSpamfighter\Detection\Cf7FieldTypeHeuristic;
 
 /**
  * Contact Form 7 integration class.
@@ -162,13 +164,17 @@ class ContactForm7
             return;
         }
 
+        // If anything throws before save_submission(), CF7 still sends mail unless we persist in catch.
+        $submission_persisted = false;
+
         try {
             // Reload settings in case they changed.
             $this->settings = get_option('we_spamfighter_settings', array());
 
             if (! $this->is_enabled()) {
                 // Still save submission even if checks are disabled.
-                $this->save_submission($contact_form, $submission, false, 0, '');
+                $submission_id = $this->save_submission($contact_form, $submission, false, 0, '');
+                $submission_persisted = (bool) $submission_id;
                 return; // Don't modify $abort
             }
 
@@ -186,13 +192,15 @@ class ContactForm7
             $openai_result = null;
 
             // STEP 1: Check with heuristic detector FIRST (local, fast, free).
-            if (! empty($this->settings['heuristic_enabled']) && ! empty($entry_data)) {
+            // When CF7 protection is on, always run at least a minimal local pass (see get_heuristic_settings_for_cf7()).
+            if (! empty($entry_data)) {
                 // Prepare context for heuristic detection (referrer, user agent).
                 $context = array(
                     'referrer' => isset($_SERVER['HTTP_REFERER']) ? sanitize_text_field(wp_unslash($_SERVER['HTTP_REFERER'])) : '',
                     'user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? sanitize_text_field(wp_unslash($_SERVER['HTTP_USER_AGENT'])) : '',
                 );
-                $heuristic_result = HeuristicDetector::analyze($entry_data, $this->settings, $context);
+                $heuristic_settings = $this->get_heuristic_settings_for_cf7();
+                $heuristic_result = HeuristicDetector::analyze($entry_data, $heuristic_settings, $context);
                 $heuristic_score = isset($heuristic_result['score']) ? (float) $heuristic_result['score'] : 0.0;
 
                 if ($heuristic_score > 0) {
@@ -209,11 +217,30 @@ class ContactForm7
                 }
             }
 
+            // STEP 1b: CF7 field-type heuristics ([text] vs [url], etc.) — supplements CF7 validation.
+            if (! empty($this->settings['cf7_enabled'])) {
+                $ft_check = Cf7FieldTypeHeuristic::analyze($posted_data, $contact_form, $this->settings);
+                if (! empty($ft_check['details']) || $ft_check['score'] > 0 || ! empty($ft_check['reasons'])) {
+                    $detection_details['cf7_field_type_check'] = $ft_check;
+                }
+                if ($ft_check['score'] > 0) {
+                    $score = min(1.0, $score + $ft_check['score']);
+                    if ($score >= $threshold) {
+                        $is_spam = true;
+                    }
+                    if (empty($detection_method)) {
+                        $detection_method = 'cf7_fieldtype';
+                    } elseif (false === strpos($detection_method, 'cf7_fieldtype')) {
+                        $detection_method .= '+cf7_fieldtype';
+                    }
+                }
+            }
+
             // STEP 2: Check language mismatch if enabled (local, fast, free).
             $has_language_mismatch = false;
             if (! empty($this->settings['mark_different_language_spam']) && ! empty($entry_data)) {
                 // Use simple language detection (no OpenAI needed).
-                $detected_lang = OpenAI::normalize_language_code(LanguageDetector::detect_language($entry_data));
+                $detected_lang = OpenAI::normalize_language_code(LanguageDetector::detect_language_for_locale_mismatch($entry_data, $form_id));
 
                 // Get expected language from WordPress locale.
                 $locale = get_locale();
@@ -306,6 +333,7 @@ class ContactForm7
 
             // Save submission to database (always save, even if not spam).
             $submission_id = $this->save_submission($contact_form, $submission, $is_spam, $score, $detection_method, $detection_details);
+            $submission_persisted = (bool) $submission_id;
 
             // Store spam status for this submission.
             if ($submission_id) {
@@ -334,10 +362,30 @@ class ContactForm7
             if ($is_spam) {
                 $abort = true; // Modify by reference to prevent email
             }
-        } catch (\Exception $e) {
-            // Don't abort on error, let the form submit normally.
-        } catch (\Error $e) {
-            // Catch fatal errors too - don't abort on error, let the form submit normally.
+        } catch (\Throwable $e) {
+            // A bug or PHP error in detection must not drop the submission silently.
+            $this->settings = get_option('we_spamfighter_settings', array());
+            if (! empty($this->settings['cf7_enabled']) && ! $submission_persisted) {
+                $this->save_submission(
+                    $contact_form,
+                    $submission,
+                    false,
+                    0.0,
+                    'integration_error',
+                    array(
+                        'error'   => $e->getMessage(),
+                        'file'    => $e->getFile(),
+                        'line'    => $e->getLine(),
+                        'trace'   => wp_debug_backtrace_summary(null, 8, false),
+                    )
+                );
+            }
+            if (defined('WP_DEBUG') && constant('WP_DEBUG')) {
+                // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- intentional diagnostics when debugging.
+                error_log(
+                    'WE Spamfighterin CF7: ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine()
+                );
+            }
         }
     }
 
@@ -579,7 +627,7 @@ class ContactForm7
     }
 
     /**
-     * Check with OpenAI.
+     * Check with AI (WordPress Connectors or direct OpenAI API).
      *
      * @param array $entry Entry data.
      * @param int   $form_id Form ID.
@@ -587,22 +635,12 @@ class ContactForm7
      */
     private function check_with_openai($entry, $form_id)
     {
-        $api_key = $this->settings['openai_api_key'] ?? '';
-        $model = $this->settings['openai_model'] ?? 'gpt-4o-mini';
+        unset($form_id);
 
-        if (empty($api_key)) {
-            return array(
-                'score'   => 0,
-                'is_spam' => false,
-                'reason'  => 'API key not configured',
-            );
-        }
-
-        $detector = new OpenAI($api_key, $model);
         $locale = get_locale();
-        $lang = substr($locale, 0, 2);
+        $lang   = substr($locale, 0, 2);
 
-        return $detector->analyze($entry, $lang);
+        return AiSpamDetector::analyze($entry, $this->settings, $lang);
     }
 
     /**
@@ -681,6 +719,40 @@ class ContactForm7
     }
 
     /**
+     * Effective heuristic settings for a CF7 submission when CF7 protection is enabled.
+     *
+     * If the global "Heuristic Detection" toggle is off, sanitization may disable all sub-checks.
+     * In that case we still enable a minimal local screen (link, phrase, email, character) so a
+     * real analysis always runs while CF7 protection is on.
+     *
+     * @return array
+     */
+    private function get_heuristic_settings_for_cf7()
+    {
+        $settings = $this->settings;
+
+        if (empty($settings['heuristic_enabled'])) {
+            $settings = array_merge(
+                $settings,
+                array(
+                    'enable_link_check'      => true,
+                    'enable_phrase_check'    => true,
+                    'enable_email_check'     => true,
+                    'enable_character_check' => true,
+                )
+            );
+        }
+
+        /**
+         * Filters heuristic settings used for Contact Form 7 submissions (CF7 protection on).
+         *
+         * @param array $settings Effective settings passed to HeuristicDetector::analyze().
+         * @param array $original Original plugin settings from the option.
+         */
+        return apply_filters('we_spamfighter_cf7_heuristic_settings', $settings, $this->settings);
+    }
+
+    /**
      * Check if CF7 protection is enabled.
      *
      * @return bool
@@ -697,6 +769,6 @@ class ContactForm7
      */
     private function is_openai_enabled()
     {
-        return ! empty($this->settings['openai_enabled']) && ! empty($this->settings['openai_api_key']);
+        return AiSpamDetector::is_enabled($this->settings);
     }
 }

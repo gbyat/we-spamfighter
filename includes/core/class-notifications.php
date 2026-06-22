@@ -197,7 +197,7 @@ class Notifications
         // Note: WP_DEBUG_LOG is a WordPress constant that may be set in wp-config.php.
         if (!$result) {
             // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
-            @error_log('WE Spamfighter: Daily summary email failed. Email: ' . $email . ', Spam count: ' . count($spam_submissions));
+            @error_log('WE Spamfighterin: Daily summary email failed. Email: ' . $email . ', Spam count: ' . count($spam_submissions));
         }
 
         return $result;
@@ -308,7 +308,7 @@ class Notifications
         // Note: WP_DEBUG_LOG is a WordPress constant that may be set in wp-config.php.
         if (!$result) {
             // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
-            @error_log('WE Spamfighter: Weekly summary email failed. Email: ' . $email . ', Spam count: ' . count($spam_submissions));
+            @error_log('WE Spamfighterin: Weekly summary email failed. Email: ' . $email . ', Spam count: ' . count($spam_submissions));
         }
 
         return $result;

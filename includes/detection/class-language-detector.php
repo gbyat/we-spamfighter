@@ -163,6 +163,194 @@ class LanguageDetector
     }
 
     /**
+     * Minimum character length before locale mismatch uses a language guess.
+     */
+    const LOCALE_MISMATCH_MIN_CHARS = 50;
+
+    /**
+     * Detect language for "mark different language as spam" only.
+     *
+     * Uses comment body or form free text, excluding name/contact fields, so that
+     * foreign-looking names alone do not trigger a mismatch on single-language sites.
+     *
+     * @param array|string $content Same shape as passed to detect_language().
+     * @param int|null     $form_id Optional CF7 form post ID (for filters / future use).
+     * @return string Language code or empty if skipped / unknown.
+     */
+    public static function detect_language_for_locale_mismatch($content, $form_id = null)
+    {
+        $text = self::get_text_for_locale_mismatch($content, $form_id);
+        $text = trim($text);
+        $min  = (int) apply_filters('we_spamfighter_locale_mismatch_min_chars', self::LOCALE_MISMATCH_MIN_CHARS, $form_id);
+        if ($min < 20) {
+            $min = 20;
+        }
+        if (mb_strlen($text) < $min) {
+            return '';
+        }
+
+        return self::detect_language($text);
+    }
+
+    /**
+     * Build text sample for locale mismatch (no identity-only fields).
+     *
+     * @param array|string $content Raw entry data.
+     * @param int|null     $form_id Optional CF7 form post ID.
+     * @return string
+     */
+    private static function get_text_for_locale_mismatch($content, $form_id = null)
+    {
+        if (is_string($content)) {
+            return $content;
+        }
+
+        if (! is_array($content)) {
+            return '';
+        }
+
+        // Comment integration: use body only (author names must not drive language).
+        if (! empty($content['comment']) && is_string($content['comment'])) {
+            return $content['comment'];
+        }
+
+        $prose_only = (bool) apply_filters('we_spamfighter_locale_mismatch_prose_only', true, $content, $form_id);
+
+        $excluded = apply_filters(
+            'we_spamfighter_locale_mismatch_excluded_keys',
+            array(
+                'anrede',
+                'titel',
+                'salutation',
+                'vorname',
+                'zuname',
+                'firstname',
+                'lastname',
+                'middlename',
+                'name',
+                'your-name',
+                'your_name',
+                'nickname',
+                'nachname',
+                'surname',
+                'givenname',
+                'familyname',
+                'email',
+                'e-mail',
+                'emailadresse',
+                'mail',
+                'your-email',
+                'your_email',
+                'telefon',
+                'tel',
+                'phone',
+                'telephone',
+                'mobile',
+                'mobil',
+                'fax',
+                'handy',
+                'website',
+                'url',
+                'homepage',
+                'your-url',
+                'your_url',
+                'geburtsdatum',
+                'geburtstag',
+                'birthday',
+                'birthdate',
+                'birth',
+            )
+        );
+
+        $excluded = array_map('strtolower', (array) $excluded);
+
+        $parts = array();
+        foreach ($content as $key => $value) {
+            if (! is_string($key) || '' === $key || is_numeric($key)) {
+                continue;
+            }
+            if (0 === strpos($key, '_')) {
+                continue;
+            }
+
+            $key_lower = strtolower($key);
+            if (0 === strpos($key_lower, 'file-')) {
+                continue;
+            }
+            if (in_array($key_lower, $excluded, true)) {
+                continue;
+            }
+
+            if ($prose_only && ! self::is_locale_mismatch_prose_field_key($key_lower)) {
+                continue;
+            }
+
+            if (is_array($value)) {
+                $flat  = self::flatten_to_strings($value);
+                $value = implode(', ', array_filter($flat));
+            } else {
+                $value = sanitize_text_field((string) $value);
+            }
+
+            if ('' !== $value) {
+                $parts[] = $value;
+            }
+        }
+
+        return implode("\n", $parts);
+    }
+
+    /**
+     * Whether a form field key should contribute text for locale mismatch (CF7-style arrays).
+     *
+     * @param string $key_lower Lowercase field name.
+     * @return bool
+     */
+    private static function is_locale_mismatch_prose_field_key($key_lower)
+    {
+        if (false !== strpos($key_lower, 'textarea')) {
+            return true;
+        }
+
+        $names = apply_filters(
+            'we_spamfighter_locale_mismatch_prose_field_names',
+            array(
+                'your-message',
+                'your_message',
+                'message',
+                'nachricht',
+                'mitteilung',
+                'meldung',
+                'beschreibung',
+                'anmerkung',
+                'inquiry',
+                'details',
+                'kommentar',
+                'body',
+                'notes',
+                'note',
+                'frage',
+                'question',
+                'feedback',
+                'remarks',
+                'remark',
+                'additional',
+                'additional_information',
+                'additional-information',
+                'zusaetzliche',
+                'zusätzliche',
+                'sonstige',
+                'sonstiges',
+                'bemerkung',
+            )
+        );
+
+        $names = array_map('strtolower', (array) $names);
+
+        return in_array($key_lower, $names, true);
+    }
+
+    /**
      * Prepare content from data (similar to OpenAI class).
      *
      * @param array|string $content Content data.

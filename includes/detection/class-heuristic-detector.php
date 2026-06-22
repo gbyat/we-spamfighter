@@ -621,6 +621,17 @@ class HeuristicDetector
             'special offer',
             'limited offer',
             'hurry up',
+            // AI / lead-gen cold pitch (English) — generic contact forms.
+            'skyrocket your website',
+            'skyrocket your leads',
+            'skyrocket your traffic',
+            'discover how our ai',
+            'discover how ai can',
+            'in this quick video',
+            'watch this short video',
+            'explode your sales',
+            '10x your leads',
+            '10x your traffic',
         );
 
         $phrase_count = 0;

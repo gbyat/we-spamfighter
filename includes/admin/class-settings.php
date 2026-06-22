@@ -8,6 +8,8 @@
 
 namespace WeSpamfighter\Admin;
 
+use WeSpamfighter\Detection\AiSpamDetector;
+
 /**
  * Settings class.
  */
@@ -212,7 +214,7 @@ class Settings
             'we_spamfighter_general',
             array(
                 'field_id'    => 'mark_different_language_spam',
-                'description' => __('Automatically mark submissions as spam if they are in a different language than your website (useful for single-language websites)', 'we-spamfighter'),
+                'description' => __('Automatically mark submissions as spam if free-text content appears to be in a different language than your website. Name, email, phone, salutation, birth date, and similar fields are ignored so foreign names alone do not trigger this.', 'we-spamfighter'),
             )
         );
 
@@ -244,23 +246,59 @@ class Settings
             )
         );
 
-        // OpenAI section.
+        // AI detection section.
         add_settings_section(
             'we_spamfighter_openai',
-            __('OpenAI Integration', 'we-spamfighter'),
+            __('AI Detection', 'we-spamfighter'),
             array($this, 'render_openai_section'),
             'we-spamfighter'
         );
 
         add_settings_field(
             'openai_enabled',
-            __('Enable OpenAI Detection', 'we-spamfighter'),
+            __('Enable AI Detection', 'we-spamfighter'),
             array($this, 'render_checkbox_field'),
             'we-spamfighter',
             'we_spamfighter_openai',
             array(
                 'field_id'    => 'openai_enabled',
-                'description' => __('Use OpenAI to detect spam', 'we-spamfighter'),
+                'description' => __('Use AI to detect spam (via WordPress Connectors or direct OpenAI API)', 'we-spamfighter'),
+            )
+        );
+
+        add_settings_field(
+            'ai_backend',
+            __('AI Connection', 'we-spamfighter'),
+            array($this, 'render_ai_backend_field'),
+            'we-spamfighter',
+            'we_spamfighter_openai',
+            array(
+                'field_id'    => 'ai_backend',
+                'description' => __('Use credentials from Settings → Connectors (WordPress 7.0+) or the plugin’s own OpenAI API key.', 'we-spamfighter'),
+            )
+        );
+
+        add_settings_field(
+            'ai_provider',
+            __('AI Provider (Connector)', 'we-spamfighter'),
+            array($this, 'render_ai_provider_field'),
+            'we-spamfighter',
+            'we_spamfighter_openai',
+            array(
+                'field_id'    => 'ai_provider',
+                'description' => __('Choose which configured WordPress AI connector to use (e.g. Mistral, OpenAI, Anthropic).', 'we-spamfighter'),
+            )
+        );
+
+        add_settings_field(
+            'ai_model_preference',
+            __('Preferred Model(s)', 'we-spamfighter'),
+            array($this, 'render_text_field'),
+            'we-spamfighter',
+            'we_spamfighter_openai',
+            array(
+                'field_id'    => 'ai_model_preference',
+                'description' => __('Optional. Comma-separated model IDs for the selected provider (first available match is used). Leave empty to use the provider default.', 'we-spamfighter'),
             )
         );
 
@@ -275,7 +313,7 @@ class Settings
                 'type'        => 'password',
                 'description' => sprintf(
                     /* translators: %s: OpenAI API URL */
-                    __('Get your API key from <a href="%s" target="_blank">OpenAI Platform</a>', 'we-spamfighter'),
+                    __('Only for “Direct OpenAI API”. Get your API key from <a href="%s" target="_blank">OpenAI Platform</a>. You can also define WE_SPAMFIGHTER_OPENAI_KEY in wp-config.php.', 'we-spamfighter'),
                     'https://platform.openai.com/api-keys'
                 ),
             )
@@ -297,7 +335,7 @@ class Settings
                     'gpt-4-turbo'   => 'GPT-4 Turbo',
                     'gpt-3.5-turbo' => 'GPT-3.5 Turbo',
                 ),
-                'description' => __('Which AI model to use for spam detection', 'we-spamfighter'),
+                'description' => __('Only for “Direct OpenAI API”. Which model to use for spam detection.', 'we-spamfighter'),
             )
         );
 
@@ -432,6 +470,33 @@ class Settings
             array(
                 'field_id'    => 'enable_content_length_check',
                 'description' => __('Enable content length analysis (very short or extremely long content detection)', 'we-spamfighter'),
+            )
+        );
+
+        add_settings_field(
+            'enable_cf7_fieldtype_check',
+            __('Enable CF7 field-type heuristics', 'we-spamfighter'),
+            array($this, 'render_checkbox_field'),
+            'we-spamfighter',
+            'we_spamfighter_heuristic',
+            array(
+                'field_id'    => 'enable_cf7_fieldtype_check',
+                'description' => __('For Contact Form 7: score suspicious content in [text] fields (URLs, emails, very long lines) and odd [url] query patterns. Does not replace CF7 validation.', 'we-spamfighter'),
+            )
+        );
+
+        add_settings_field(
+            'cf7_text_line_max_length',
+            __('CF7 single-line text max length', 'we-spamfighter'),
+            array($this, 'render_number_field'),
+            'we-spamfighter',
+            'we_spamfighter_heuristic',
+            array(
+                'field_id'    => 'cf7_text_line_max_length',
+                'min'         => 80,
+                'max'         => 2000,
+                'step'        => 10,
+                'description' => __('Characters: above this length in a CF7 [text] field adds a spam score. Default: 400.', 'we-spamfighter'),
             )
         );
 
@@ -654,7 +719,107 @@ class Settings
      */
     public function render_openai_section()
     {
-        echo esc_html__('Configure OpenAI integration for spam detection.', 'we-spamfighter');
+        if (AiSpamDetector::is_wp_client_available()) {
+            echo esc_html__('Configure AI spam detection. You can use WordPress Connectors (recommended on WordPress 7.0+) or a direct OpenAI API key in this plugin.', 'we-spamfighter');
+            return;
+        }
+
+        echo esc_html__('Configure AI spam detection using a direct OpenAI API key. WordPress Connectors require WordPress 7.0 or newer.', 'we-spamfighter');
+    }
+
+    /**
+     * Render AI backend select field.
+     *
+     * @param array $args Field arguments.
+     */
+    public function render_ai_backend_field($args)
+    {
+        $settings = get_option($this->option_name, array());
+        $value    = isset($settings['ai_backend']) ? (string) $settings['ai_backend'] : 'direct';
+
+        $options = array(
+            'direct' => __('Direct OpenAI API (plugin API key)', 'we-spamfighter'),
+        );
+
+        if (AiSpamDetector::is_wp_client_available()) {
+            $options['wp_connectors'] = __('WordPress Connectors (Settings → Connectors)', 'we-spamfighter');
+        }
+
+        if (! isset($options[$value])) {
+            $value = 'direct';
+        }
+
+        printf(
+            '<select name="%s[%s]" id="%s">',
+            esc_attr($this->option_name),
+            esc_attr($args['field_id']),
+            esc_attr($args['field_id'])
+        );
+
+        foreach ($options as $option_value => $option_label) {
+            printf(
+                '<option value="%s" %s>%s</option>',
+                esc_attr($option_value),
+                selected($value, $option_value, false),
+                esc_html($option_label)
+            );
+        }
+
+        echo '</select>';
+
+        if (isset($args['description'])) {
+            printf('<p class="description">%s</p>', esc_html($args['description']));
+        }
+    }
+
+    /**
+     * Render AI provider (connector) select field.
+     *
+     * @param array $args Field arguments.
+     */
+    public function render_ai_provider_field($args)
+    {
+        $settings  = get_option($this->option_name, array());
+        $value     = isset($settings['ai_provider']) ? (string) $settings['ai_provider'] : '';
+        $providers = AiSpamDetector::get_available_ai_providers();
+
+        printf(
+            '<select name="%s[%s]" id="%s">',
+            esc_attr($this->option_name),
+            esc_attr($args['field_id']),
+            esc_attr($args['field_id'])
+        );
+
+        echo '<option value="">' . esc_html__('— Select provider —', 'we-spamfighter') . '</option>';
+
+        foreach ($providers as $provider_id => $provider_name) {
+            $status = AiSpamDetector::is_provider_usable($provider_id)
+                ? ''
+                : ' ' . __('(not configured)', 'we-spamfighter');
+
+            printf(
+                '<option value="%s" %s>%s%s</option>',
+                esc_attr($provider_id),
+                selected($value, $provider_id, false),
+                esc_html($provider_name),
+                esc_html($status)
+            );
+        }
+
+        echo '</select>';
+
+        if (empty($providers)) {
+            echo '<p class="description">' . esc_html__('No AI connectors found. Install an AI provider plugin and configure it under Settings → Connectors.', 'we-spamfighter') . '</p>';
+        } elseif (isset($args['description'])) {
+            printf('<p class="description">%s</p>', esc_html($args['description']));
+        }
+
+        $connectors_url = admin_url('options-general.php?page=connectors');
+        printf(
+            '<p class="description"><a href="%s">%s</a></p>',
+            esc_url($connectors_url),
+            esc_html__('Manage connectors in WordPress', 'we-spamfighter')
+        );
     }
 
     /**
@@ -943,7 +1108,7 @@ class Settings
                 'sections' => array('we_spamfighter_heuristic'),
             ),
             'openai' => array(
-                'title' => __('OpenAI', 'we-spamfighter'),
+                'title' => __('AI Detection', 'we-spamfighter'),
                 'sections' => array('we_spamfighter_openai'),
             ),
             'notifications' => array(
@@ -968,7 +1133,7 @@ class Settings
 
     ?>
         <div class="wrap we-spamfighter-settings-wrap">
-            <h1><?php esc_html_e('WE Spamfighter Settings', 'we-spamfighter'); ?></h1>
+            <h1><?php esc_html_e('WE Spamfighterin Settings', 'we-spamfighter'); ?></h1>
 
             <?php settings_errors(); ?>
 
@@ -1040,9 +1205,9 @@ class Settings
 
             <?php if ($active_tab === 'openai') : ?>
                 <div class="we-test-api-section">
-                    <h2><?php esc_html_e('Test OpenAI Connection', 'we-spamfighter'); ?></h2>
+                    <h2><?php esc_html_e('Test AI Connection', 'we-spamfighter'); ?></h2>
                     <p>
-                        <?php esc_html_e('Test your OpenAI API connection and configuration.', 'we-spamfighter'); ?>
+                        <?php esc_html_e('Test your configured AI connection (WordPress Connectors or direct OpenAI API).', 'we-spamfighter'); ?>
                     </p>
                     <button type="button" id="we-test-api-btn" class="button button-secondary">
                         <?php esc_html_e('Test Connection', 'we-spamfighter'); ?>
@@ -1247,38 +1412,51 @@ class Settings
         }
 
         $settings = get_option($this->option_name, array());
-        $api_key  = $settings['openai_api_key'] ?? '';
-        $model    = $settings['openai_model'] ?? 'gpt-4o-mini';
 
-        if (empty($api_key)) {
-            wp_send_json_error(array('message' => 'Please configure your OpenAI API key first.'));
-        }
-
-        if (! class_exists('\WeSpamfighter\Detection\OpenAI')) {
-            wp_send_json_error(array('message' => 'Error: OpenAI class not found.'));
-            return;
+        if (! AiSpamDetector::is_enabled($settings)) {
+            if (AiSpamDetector::uses_wp_connectors($settings)) {
+                wp_send_json_error(array('message' => __('Please enable AI detection and select a configured WordPress connector.', 'we-spamfighter')));
+            }
+            wp_send_json_error(array('message' => __('Please enable AI detection and configure your OpenAI API key first.', 'we-spamfighter')));
         }
 
         try {
-            $detector = new \WeSpamfighter\Detection\OpenAI($api_key, $model);
-            $result = $detector->analyze(
+            $result = AiSpamDetector::analyze(
                 array(
                     'message' => 'This is a test message to verify the API connection.',
                 ),
+                $settings,
                 'en'
             );
 
-            if (isset($result['error']) && $result['error']) {
+            if (! empty($result['error'])) {
                 wp_send_json_error(array(
-                    'message' => sprintf('OpenAI API test failed: %s', $result['reason']),
-                ));
-            } else {
-                wp_send_json_success(array(
-                    'message' => sprintf('OpenAI API connection successful! Test spam score: %.2f', $result['score']),
-                    'score'   => $result['score'],
-                    'details' => $result,
+                    'message' => sprintf(
+                        /* translators: %s: error reason */
+                        __('AI connection test failed: %s', 'we-spamfighter'),
+                        $result['reason'] ?? __('Unknown error', 'we-spamfighter')
+                    ),
                 ));
             }
+
+            $backend_label = AiSpamDetector::uses_wp_connectors($settings)
+                ? sprintf(
+                    /* translators: %s: connector ID */
+                    __('WordPress Connectors (%s)', 'we-spamfighter'),
+                    $settings['ai_provider'] ?? ''
+                )
+                : __('Direct OpenAI API', 'we-spamfighter');
+
+            wp_send_json_success(array(
+                'message' => sprintf(
+                    /* translators: 1: backend label, 2: spam score */
+                    __('%1$s connection successful! Test spam score: %2$.2f', 'we-spamfighter'),
+                    $backend_label,
+                    (float) ($result['score'] ?? 0)
+                ),
+                'score'   => $result['score'] ?? 0,
+                'details' => $result,
+            ));
         } catch (\Exception $e) {
             wp_send_json_error(array(
                 'message' => 'Exception: ' . $e->getMessage(),
@@ -1321,6 +1499,7 @@ class Settings
             'enable_numbers_letters_only_check',
             'enable_ip_in_content_check',
             'enable_repeated_multilingual_check',
+            'enable_cf7_fieldtype_check',
             'keep_data_on_uninstall',
             'github_updates_enabled',
             'activity_log_enabled',
@@ -1349,6 +1528,13 @@ class Settings
         $heuristic_final_state = isset($input['heuristic_enabled']) ? (bool) $input['heuristic_enabled'] : false;
 
         foreach ($boolean_fields as $field) {
+            if ('enable_cf7_fieldtype_check' === $field) {
+                $sanitized[ $field ] = isset($input[ $field ])
+                    ? (bool) $input[ $field ]
+                    : ( isset($existing[ $field ]) ? (bool) $existing[ $field ] : true );
+                continue;
+            }
+
             if ($field === 'heuristic_enabled') {
                 $sanitized[$field] = $heuristic_final_state;
                 continue;
@@ -1403,6 +1589,38 @@ class Settings
             $sanitized['openai_api_key'] = isset($existing['openai_api_key']) ? $existing['openai_api_key'] : '';
         }
 
+        $allowed_backends = array('direct');
+        if (AiSpamDetector::is_wp_client_available()) {
+            $allowed_backends[] = 'wp_connectors';
+        }
+
+        if (isset($input['ai_backend'])) {
+            $backend = sanitize_text_field($input['ai_backend']);
+            $sanitized['ai_backend'] = in_array($backend, $allowed_backends, true) ? $backend : 'direct';
+        } else {
+            $sanitized['ai_backend'] = isset($existing['ai_backend'])
+                ? (string) $existing['ai_backend']
+                : (AiSpamDetector::is_wp_client_available() ? 'wp_connectors' : 'direct');
+        }
+
+        if (! in_array($sanitized['ai_backend'], $allowed_backends, true)) {
+            $sanitized['ai_backend'] = 'direct';
+        }
+
+        if (isset($input['ai_provider'])) {
+            $provider  = sanitize_key($input['ai_provider']);
+            $providers = AiSpamDetector::get_available_ai_providers();
+            $sanitized['ai_provider'] = ($provider !== '' && isset($providers[$provider])) ? $provider : '';
+        } else {
+            $sanitized['ai_provider'] = isset($existing['ai_provider']) ? sanitize_key((string) $existing['ai_provider']) : '';
+        }
+
+        if (isset($input['ai_model_preference'])) {
+            $sanitized['ai_model_preference'] = sanitize_text_field($input['ai_model_preference']);
+        } else {
+            $sanitized['ai_model_preference'] = isset($existing['ai_model_preference']) ? (string) $existing['ai_model_preference'] : '';
+        }
+
         // Whitelist for OpenAI model - preserve existing if not provided.
         if (isset($input['openai_model'])) {
             $allowed_models = array('gpt-4o-mini', 'gpt-5-mini', 'gpt-4o', 'gpt-5', 'gpt-4-turbo', 'gpt-3.5-turbo');
@@ -1429,6 +1647,12 @@ class Settings
             $sanitized['heuristic_threshold'] = min(max(floatval($input['heuristic_threshold']), 0), 1);
         } else {
             $sanitized['heuristic_threshold'] = isset($existing['heuristic_threshold']) ? floatval($existing['heuristic_threshold']) : 0.6;
+        }
+
+        if (isset($input['cf7_text_line_max_length'])) {
+            $sanitized['cf7_text_line_max_length'] = min(2000, max(80, intval($input['cf7_text_line_max_length'])));
+        } else {
+            $sanitized['cf7_text_line_max_length'] = isset($existing['cf7_text_line_max_length']) ? intval($existing['cf7_text_line_max_length']) : 400;
         }
 
         if (isset($input['log_retention_days'])) {

@@ -1,5 +1,5 @@
 /**
- * Frontend JavaScript for WE Spamfighter.
+ * Frontend JavaScript for WE Spamfighterin.
  *
  * @package WeSpamfighter
  */
@@ -109,7 +109,9 @@
     }
 
     /**
-     * Function to check if a response message is present and disable form.
+     * Disable form only after final terminal states.
+     * We intentionally do NOT disable on generic response messages,
+     * because validation messages would lock fields inconsistently.
      */
     function checkAndDisableForm(container) {
         if (!container) {
@@ -121,30 +123,13 @@
             return;
         }
 
-        // Check form status - disable if form is sent, aborted, or has a response.
+        // Disable only on terminal states.
         var formStatus = formElement.getAttribute('data-status');
         var hasFormStatus = formStatus === 'sent' || formStatus === 'aborted' ||
             formElement.classList.contains('sent') ||
             formElement.classList.contains('aborted');
 
-        // Check if response message exists and has content.
-        var responseOutput = container.querySelector('.wpcf7-response-output');
-        var screenReaderResponse = container.querySelector('.screen-reader-response p');
-
-        var hasResponse = false;
-
-        // Check response-output: must have content (aria-hidden doesn't matter if there's content).
-        if (responseOutput && responseOutput.textContent.trim() !== '') {
-            hasResponse = true;
-        }
-
-        // Check screen-reader-response: must have content.
-        if (screenReaderResponse && screenReaderResponse.textContent.trim() !== '') {
-            hasResponse = true;
-        }
-
-        // Disable if form has sent/aborted status OR has a response message.
-        if (hasFormStatus || hasResponse) {
+        if (hasFormStatus) {
             disableFormAfterSubmit(container);
         }
     }
@@ -164,15 +149,6 @@
     function init() {
         // Listen to CF7 events.
         document.addEventListener('wpcf7mailsent', function (event) {
-            var wpcf7Container = getCf7Container(event.target);
-            if (wpcf7Container) {
-                setTimeout(function () {
-                    disableFormAfterSubmit(wpcf7Container);
-                }, 100);
-            }
-        }, false);
-
-        document.addEventListener('wpcf7mailfailed', function (event) {
             var wpcf7Container = getCf7Container(event.target);
             if (wpcf7Container) {
                 setTimeout(function () {

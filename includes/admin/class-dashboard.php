@@ -56,8 +56,8 @@ class Dashboard
     public function add_menu()
     {
         add_menu_page(
-            __('WE Spamfighter', 'we-spamfighter'),
-            __('Spamfighter', 'we-spamfighter'),
+            __('WE Spamfighterin', 'we-spamfighter'),
+            __('Spamfighterin', 'we-spamfighter'),
             'manage_options',
             'we-spamfighter',
             array($this, 'render_dashboard'),
@@ -192,7 +192,7 @@ class Dashboard
 
 ?>
         <div class="wrap we-spamfighter-dashboard">
-            <h1><?php esc_html_e('WE Spamfighter Dashboard', 'we-spamfighter'); ?></h1>
+            <h1><?php esc_html_e('WE Spamfighterin Dashboard', 'we-spamfighter'); ?></h1>
 
             <div class="we-spamfighter-stats">
                 <div class="we-stat-box">

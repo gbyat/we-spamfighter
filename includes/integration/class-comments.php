@@ -10,6 +10,7 @@ namespace WeSpamfighter\Integration;
 
 use WeSpamfighter\Core\Database;
 use WeSpamfighter\Detection\OpenAI;
+use WeSpamfighter\Detection\AiSpamDetector;
 use WeSpamfighter\Detection\LanguageDetector;
 use WeSpamfighter\Detection\HeuristicDetector;
 
@@ -145,7 +146,7 @@ class Comments
 
         if (! empty($this->settings['mark_different_language_spam']) && ! empty($entry_data)) {
             // Use simple language detection (no OpenAI needed).
-            $detected_lang = OpenAI::normalize_language_code(LanguageDetector::detect_language($entry_data));
+            $detected_lang = OpenAI::normalize_language_code(LanguageDetector::detect_language_for_locale_mismatch($entry_data));
 
             // Get expected language from WordPress locale.
             $locale = get_locale();
@@ -278,22 +279,12 @@ class Comments
      */
     private function check_with_openai($entry, $post_id)
     {
-        $api_key = $this->settings['openai_api_key'] ?? '';
-        $model = $this->settings['openai_model'] ?? 'gpt-4o-mini';
+        unset($post_id);
 
-        if (empty($api_key)) {
-            return array(
-                'score'   => 0,
-                'is_spam' => false,
-                'reason'  => 'API key not configured',
-            );
-        }
-
-        $detector = new OpenAI($api_key, $model);
         $locale = get_locale();
-        $lang = substr($locale, 0, 2);
+        $lang   = substr($locale, 0, 2);
 
-        return $detector->analyze($entry, $lang);
+        return AiSpamDetector::analyze($entry, $this->settings, $lang);
     }
 
     /**
@@ -342,7 +333,7 @@ class Comments
     {
         ob_start();
 ?>
-        <p><?php printf(esc_html__('A spam comment has been detected by %s and moved to the spam folder.', 'we-spamfighter'), 'WE Spamfighter'); ?></p>
+        <p><?php printf(esc_html__('A spam comment has been detected by %s and moved to the spam folder.', 'we-spamfighter'), 'WE Spamfighterin'); ?></p>
         <p><strong><?php esc_html_e('Author:', 'we-spamfighter'); ?></strong> <?php echo esc_html($commentdata['comment_author'] ?? '-'); ?></p>
         <p><strong><?php esc_html_e('Email:', 'we-spamfighter'); ?></strong> <?php echo esc_html($commentdata['comment_author_email'] ?? '-'); ?></p>
         <p><strong><?php esc_html_e('Post ID:', 'we-spamfighter'); ?></strong> <?php echo esc_html($commentdata['comment_post_ID'] ?? '-'); ?></p>
@@ -373,6 +364,6 @@ class Comments
      */
     private function is_openai_enabled()
     {
-        return ! empty($this->settings['openai_enabled']) && ! empty($this->settings['openai_api_key']);
+        return AiSpamDetector::is_enabled($this->settings);
     }
 }

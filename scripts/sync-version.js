@@ -74,7 +74,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [${version}] - ${new Date().toISOString().split('T')[0]}
 
 ### Added
-- Initial release of WE Spamfighter
+- Initial release of WE Spamfighterin
 
 `;
     fs.writeFileSync(changelogPath, initialContent);

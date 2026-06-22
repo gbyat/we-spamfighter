@@ -1,9 +1,9 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: WE Spamfighter\n"
+"Project-Id-Version: WE Spamfighterin\n"
 "Report-Msgid-Bugs-To: https://github.com/gbyat/we-spamfighter/issues\n"
-"POT-Creation-Date: 2026-02-10 12:07+0000\n"
-"PO-Revision-Date: 2026-02-10 13:13+0100\n"
+"POT-Creation-Date: 2026-05-04 09:16+0000\n"
+"PO-Revision-Date: 2026-05-04 11:17+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: de_DE\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.8\n"
+"X-Generator: Poedit 3.9\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-Flags-xgettext: --add-comments=translators:\n"
 "X-Poedit-WPHeader: we-spamfighter.php\n"
@@ -22,12 +22,12 @@ msgstr ""
 "X-Poedit-SearchPathExcluded-0: *.min.js\n"
 
 #: includes/admin/class-dashboard.php:59
-msgid "WE Spamfighter"
-msgstr "WE Spamfighter"
+msgid "WE Spamfighterin"
+msgstr "WE Spamfighterin"
 
 #: includes/admin/class-dashboard.php:60
-msgid "Spamfighter"
-msgstr "Spamfighter"
+msgid "Spamfighterin"
+msgstr "Spamfighterin"
 
 #: includes/admin/class-dashboard.php:130
 msgid "Moving..."
@@ -124,8 +124,8 @@ msgid "Apply"
 msgstr "Anwenden"
 
 #: includes/admin/class-dashboard.php:195
-msgid "WE Spamfighter Dashboard"
-msgstr "WE Spamfighter-Dashboard"
+msgid "WE Spamfighterin Dashboard"
+msgstr "WE Spamfighterin-Dashboard"
 
 #: includes/admin/class-dashboard.php:200
 msgid "CF7 Submissions"
@@ -195,7 +195,7 @@ msgstr "weiter"
 #: includes/admin/class-dashboard.php:492,
 #: includes/admin/class-dashboard.php:519,
 #: includes/admin/class-dashboard.php:555,
-#: includes/admin/class-settings.php:1213
+#: includes/admin/class-settings.php:1240
 msgid "Unauthorized"
 msgstr "Nicht autorisiert"
 
@@ -250,10 +250,10 @@ msgid "Settings"
 msgstr "Einstellungen"
 
 #: includes/admin/class-settings.php:77, includes/admin/class-settings.php:78,
-#: includes/admin/class-settings.php:781,
-#: includes/admin/class-settings.php:1070,
-#: includes/admin/class-settings.php:1114,
-#: includes/admin/class-settings.php:1137
+#: includes/admin/class-settings.php:808,
+#: includes/admin/class-settings.php:1097,
+#: includes/admin/class-settings.php:1141,
+#: includes/admin/class-settings.php:1164
 msgid "Activity Log"
 msgstr "Aktivitätsprotokoll"
 
@@ -293,11 +293,16 @@ msgstr "Andere Sprache als Spam markieren"
 
 #: includes/admin/class-settings.php:215
 msgid ""
-"Automatically mark submissions as spam if they are in a different language "
-"than your website (useful for single-language websites)"
+"Automatically mark submissions as spam if free-text content appears to be in "
+"a different language than your website. Name, email, phone, salutation, "
+"birth date, and similar fields are ignored so foreign names alone do not "
+"trigger this."
 msgstr ""
-"Markieren Sie Beiträge automatisch als Spam, wenn sie in einer anderen "
-"Sprache als Ihre Website verfasst sind (nützlich für einsprachige Websites)."
+"Markieren Sie Eingaben automatisch als Spam, wenn der Freitextinhalt "
+"offenbar in einer anderen Sprache verfasst ist als Ihre Website. Felder wie "
+"Name, E-Mail-Adresse, Telefonnummer, Anrede, Geburtsdatum und ähnliche "
+"werden ignoriert, sodass ausländische Namen allein diese Funktion nicht "
+"auslösen."
 
 #: includes/admin/class-settings.php:221
 msgid "Language Mismatch Score Boost"
@@ -370,7 +375,7 @@ msgstr ""
 "bedeuten, dass mehr Beiträge als Spam markiert werden (strenger). "
 "Standardwert: 0,7"
 
-#: includes/admin/class-settings.php:322, includes/admin/class-settings.php:942
+#: includes/admin/class-settings.php:322, includes/admin/class-settings.php:969
 msgid "Heuristic Detection"
 msgstr "Heuristische Erkennung"
 
@@ -460,10 +465,36 @@ msgstr ""
 "Prüfung der Inhaltslänge aktivieren (sehr kurzer oder extrem langer Inhalt)"
 
 #: includes/admin/class-settings.php:440
+msgid "Enable CF7 field-type heuristics"
+msgstr "CF7-Feldtyp-Heuristiken aktivieren"
+
+#: includes/admin/class-settings.php:446
+msgid ""
+"For Contact Form 7: score suspicious content in [text] fields (URLs, emails, "
+"very long lines) and odd [url] query patterns. Does not replace CF7 "
+"validation."
+msgstr ""
+"Für Contact Form 7: Bewertung verdächtiger Inhalte in [text]-Feldern (URLs, "
+"E-Mail-Adressen, sehr lange Zeilen) und ungewöhnlicher [url]-Abfragemuster. "
+"Ersetzt nicht die CF7-Validierung."
+
+#: includes/admin/class-settings.php:452
+msgid "CF7 single-line text max length"
+msgstr "CF7 – Maximale Länge für einzeiligen Text"
+
+#: includes/admin/class-settings.php:461
+msgid ""
+"Characters: above this length in a CF7 [text] field adds a spam score. "
+"Default: 400."
+msgstr ""
+"Zeichen: Wenn die Zeichenanzahl in einem CF7-[Text]-Feld diesen Wert "
+"überschreitet, wird ein Spam-Wert hinzugefügt. Standardwert: 400."
+
+#: includes/admin/class-settings.php:467
 msgid "Enable Mixed Script Check"
 msgstr "Gemischte Zeichensatzprüfung aktivieren"
 
-#: includes/admin/class-settings.php:446
+#: includes/admin/class-settings.php:473
 msgid ""
 "Enable mixed script detection (different character sets like Cyrillic + "
 "Latin)"
@@ -471,11 +502,11 @@ msgstr ""
 "Aktivieren Sie die Erkennung gemischter Zeichensätze (unterschiedliche "
 "Zeichensätze wie Kyrillisch + Lateinisch)."
 
-#: includes/admin/class-settings.php:452
+#: includes/admin/class-settings.php:479
 msgid "Enable Unicode Anomalies Check"
 msgstr "Zeichensatz-Anomalieprüfung aktivieren"
 
-#: includes/admin/class-settings.php:458
+#: includes/admin/class-settings.php:485
 msgid ""
 "Enable Unicode anomalies detection (zero-width characters, control "
 "characters, homoglyphs)"
@@ -483,29 +514,29 @@ msgstr ""
 "Unicode-Anomalienerkennung aktivieren (Zeichen ohne Breite, Steuerzeichen, "
 "Homoglyphen)"
 
-#: includes/admin/class-settings.php:464
+#: includes/admin/class-settings.php:491
 msgid "Enable Numbers/Letters Only Check"
 msgstr "Nur Nummern-/Buchstabenprüfung aktivieren"
 
-#: includes/admin/class-settings.php:470
+#: includes/admin/class-settings.php:497
 msgid "Enable detection of content containing only numbers or only letters"
 msgstr ""
 "Erkennung von Inhalten, die nur Zahlen oder nur Buchstaben enthalten, "
 "aktivieren"
 
-#: includes/admin/class-settings.php:476
+#: includes/admin/class-settings.php:503
 msgid "Enable IP Address in Content Check"
 msgstr "Prüfung auf IP-Adressen im Inhalt aktivieren"
 
-#: includes/admin/class-settings.php:482
+#: includes/admin/class-settings.php:509
 msgid "Enable detection of IP addresses in content (not in URLs)"
 msgstr "Erkennung von IP-Adressen in Inhalten (nicht in URLs) aktivieren"
 
-#: includes/admin/class-settings.php:488
+#: includes/admin/class-settings.php:515
 msgid "Enable Repeated Multilingual Content Check"
 msgstr "Prüfung auf IP-Adressen im Inhalt aktivieren"
 
-#: includes/admin/class-settings.php:494
+#: includes/admin/class-settings.php:521
 msgid ""
 "Enable detection of repeated multilingual content (same message in multiple "
 "languages separated by markers like ***)"
@@ -513,15 +544,15 @@ msgstr ""
 "Erkennung von wiederholten mehrsprachigen Inhalten aktivieren (gleiche "
 "Nachricht in mehreren Sprachen, getrennt durch Markierungen wie ***)"
 
-#: includes/admin/class-settings.php:501
+#: includes/admin/class-settings.php:528
 msgid "Email Notifications"
 msgstr "E-Mail Benachrichtigungen"
 
-#: includes/admin/class-settings.php:508
+#: includes/admin/class-settings.php:535
 msgid "Notification Email"
 msgstr "Benachrichtigungsemail"
 
-#: includes/admin/class-settings.php:515
+#: includes/admin/class-settings.php:542
 msgid ""
 "Email address to receive spam notifications. If empty, admin email will be "
 "used."
@@ -529,47 +560,47 @@ msgstr ""
 "E-Mail-Adresse für den Empfang von Spam-Benachrichtigungen. Wenn dieses Feld "
 "leer ist, wird die E-Mail-Adresse des Administrators verwendet."
 
-#: includes/admin/class-settings.php:521
+#: includes/admin/class-settings.php:548
 msgid "Notification Type"
 msgstr "Benachrichtigungsart"
 
-#: includes/admin/class-settings.php:528
+#: includes/admin/class-settings.php:555
 msgid "No notifications"
 msgstr "Keine Benachrichtigungen"
 
-#: includes/admin/class-settings.php:529
+#: includes/admin/class-settings.php:556
 msgid "Immediate (on each spam detection)"
 msgstr "Sofort (bei jeder Spam-Erkennung)"
 
-#: includes/admin/class-settings.php:530
+#: includes/admin/class-settings.php:557
 msgid "Daily summary"
 msgstr "Tägliche Zusammenfassung"
 
-#: includes/admin/class-settings.php:531
+#: includes/admin/class-settings.php:558
 msgid "Weekly summary"
 msgstr "Wöchentliche Zusammenfassung"
 
-#: includes/admin/class-settings.php:533
+#: includes/admin/class-settings.php:560
 msgid "How often to receive spam notifications."
 msgstr "Wie oft Spam-Benachrichtigungen empfangen werden sollen."
 
-#: includes/admin/class-settings.php:540, includes/admin/class-settings.php:954
+#: includes/admin/class-settings.php:567, includes/admin/class-settings.php:981
 msgid "Maintenance"
 msgstr "Wartung"
 
-#: includes/admin/class-settings.php:547
+#: includes/admin/class-settings.php:574
 msgid "Log Retention"
 msgstr "Dauer der Protokollspeicherung"
 
-#: includes/admin/class-settings.php:556
+#: includes/admin/class-settings.php:583
 msgid "Days to keep logs (default: 30)"
 msgstr "Tage, an denen Protokolle aufbewahrt werden (Standard: 30)"
 
-#: includes/admin/class-settings.php:562
+#: includes/admin/class-settings.php:589
 msgid "Keep Data on Uninstall"
 msgstr "Daten bei Deinstallation behalten"
 
-#: includes/admin/class-settings.php:568
+#: includes/admin/class-settings.php:595
 msgid ""
 "If enabled, all plugin data (options, submissions, statistics) will be kept "
 "when the plugin is deleted. If disabled, all data will be permanently "
@@ -579,11 +610,11 @@ msgstr ""
 "Übermittlungen, Statistiken) beim Löschen des Plugins erhalten. Wenn diese "
 "Option deaktiviert ist, werden alle Daten dauerhaft gelöscht."
 
-#: includes/admin/class-settings.php:574
+#: includes/admin/class-settings.php:601
 msgid "Enable GitHub Updates"
 msgstr "Updates via Github aktivieren"
 
-#: includes/admin/class-settings.php:580
+#: includes/admin/class-settings.php:607
 msgid ""
 "Enable automatic updates from GitHub releases. <strong>Activate at your own "
 "risk.</strong> Updates will be installed automatically without additional "
@@ -593,11 +624,11 @@ msgstr ""
 "Aktivierung erfolgt auf eigene Gefahr.</strong> Updates werden automatisch "
 "und ohne zusätzliche Bestätigung installiert."
 
-#: includes/admin/class-settings.php:586
+#: includes/admin/class-settings.php:613
 msgid "Enable Activity Log"
 msgstr "Aktivitätsprotokoll aktivieren"
 
-#: includes/admin/class-settings.php:592
+#: includes/admin/class-settings.php:619
 msgid ""
 "Enable activity logging to track important plugin events (e.g., weekly "
 "summaries sent, table maintenance)."
@@ -606,46 +637,46 @@ msgstr ""
 "zu verfolgen (z. B. versendete wöchentliche Zusammenfassungen, "
 "Tabellenpflege)."
 
-#: includes/admin/class-settings.php:599
+#: includes/admin/class-settings.php:626
 msgid "Privacy / GDPR"
 msgstr "Privatsphäre / DSGVO"
 
-#: includes/admin/class-settings.php:606
+#: includes/admin/class-settings.php:633
 msgid "Privacy passage on privacy policy page"
 msgstr "Datenschutzpassage auf der Seite mit den Datenschutzbestimmungen"
 
-#: includes/admin/class-settings.php:613
+#: includes/admin/class-settings.php:640
 msgid "Filter: Append automatically to privacy page"
 msgstr "Filter: Automatisch an Datenschutzseite anhängen"
 
-#: includes/admin/class-settings.php:614
+#: includes/admin/class-settings.php:641
 msgid "Manual: Use shortcode [we_spamfighter_privacy] or block"
 msgstr ""
 "Manuel: Verwenden Sie den Shortcode [we_spamfighter_privacy] oder Block."
 
-#: includes/admin/class-settings.php:615
+#: includes/admin/class-settings.php:642
 msgid "None: Do not add (at your own risk)"
 msgstr "Keine: Nicht hinzufügen (auf eigene Gefahr)"
 
-#: includes/admin/class-settings.php:617
+#: includes/admin/class-settings.php:644
 msgid "How to include the privacy passage. Only active when OpenAI is enabled."
 msgstr ""
 "So fügen Sie den Datenschutzhinweis ein. Nur aktiv, wenn OpenAI aktiviert "
 "ist."
 
-#: includes/admin/class-settings.php:624
+#: includes/admin/class-settings.php:651
 msgid "Form notice"
 msgstr "Formular-Hinweis"
 
-#: includes/admin/class-settings.php:630
+#: includes/admin/class-settings.php:657
 msgid "Show notice at comment and CF7 forms when OpenAI is active."
 msgstr "Zeige Hinweis bei Kommentar und CF7-Formularen, wenn OpenAI aktiv ist."
 
-#: includes/admin/class-settings.php:641
+#: includes/admin/class-settings.php:668
 msgid "Configure general spam protection settings."
 msgstr "Konfiguriere allgemeine Spam-Schutzeinstellungen."
 
-#: includes/admin/class-settings.php:649
+#: includes/admin/class-settings.php:676
 msgid ""
 "Privacy-related options for OpenAI usage. These settings only take effect "
 "when OpenAI is enabled and an API key is configured."
@@ -654,56 +685,56 @@ msgstr ""
 "werden nur wirksam, wenn OpenAI aktiviert und ein API-Schlüssel konfiguriert "
 "ist."
 
-#: includes/admin/class-settings.php:657
+#: includes/admin/class-settings.php:684
 msgid "Configure OpenAI integration for spam detection."
 msgstr "OpenAI-Integration für die Spam-Erkennung."
 
-#: includes/admin/class-settings.php:665
+#: includes/admin/class-settings.php:692
 msgid "Configure local heuristic spam detection (works without OpenAI)."
 msgstr ""
 "Lokale heuristische Spam-Erkennung konfigurieren (funktioniert ohne OpenAI)."
 
-#: includes/admin/class-settings.php:669
+#: includes/admin/class-settings.php:696
 msgid "Enable All Checks"
 msgstr "Alle Prüfungen aktivieren"
 
-#: includes/admin/class-settings.php:672
+#: includes/admin/class-settings.php:699
 msgid "Disable All Checks"
 msgstr "Alle Prüfungen deaktivieren"
 
-#: includes/admin/class-settings.php:711
+#: includes/admin/class-settings.php:738
 msgid "Configure email notifications for spam detections."
 msgstr "E-Mail-Benachrichtigungen für Spam-Erkennungen."
 
-#: includes/admin/class-settings.php:719
+#: includes/admin/class-settings.php:746
 msgid "Configure maintenance and cleanup settings."
 msgstr "Einstellungen für Wartung und Bereinigung."
 
-#: includes/admin/class-settings.php:729
+#: includes/admin/class-settings.php:756
 msgid "Email Notification Status:"
 msgstr "E-Mail Benachrichtigungsstatus:"
 
-#: includes/admin/class-settings.php:742
+#: includes/admin/class-settings.php:769
 msgid "Daily summary: NOT SCHEDULED - Please save settings to schedule."
 msgstr ""
 "Tägliche Zusammenfassung: NICHT GEPLANT – Bitte speichern Sie die "
 "Einstellungen, um einen Zeitplan zu erstellen."
 
-#: includes/admin/class-settings.php:738
+#: includes/admin/class-settings.php:765
 msgid "Daily summary: Next scheduled for %s"
 msgstr "Tägliche E-Mail-Zusammenfassung geplant für %s"
 
-#: includes/admin/class-settings.php:757
+#: includes/admin/class-settings.php:784
 msgid "Weekly summary: NOT SCHEDULED - Please save settings to schedule."
 msgstr ""
 "Wöchentliche Zusammenfassung: NICHT GEPLANT – Bitte Einstellungen speichern, "
 "um zu planen."
 
-#: includes/admin/class-settings.php:753
+#: includes/admin/class-settings.php:780
 msgid "Weekly summary: Next scheduled for %s"
 msgstr "Wöchentliche E-Mail-Zusammenfassung: die nächste ist geplant für %s"
 
-#: includes/admin/class-settings.php:765
+#: includes/admin/class-settings.php:792
 msgid ""
 "WARNING: WordPress cron is disabled. Email notifications will not work "
 "unless you use a real cron job."
@@ -712,61 +743,61 @@ msgstr ""
 "funktionieren nur, wenn Sie einen echten Cron-Job verwenden."
 
 #. translators: %s: Email address
-#: includes/admin/class-settings.php:772
+#: includes/admin/class-settings.php:799
 msgid "Notification email: %s"
 msgstr "Benachrichtigungsemail: %s"
 
 #. translators: %s: Link to Activity Log
-#: includes/admin/class-settings.php:780
+#: includes/admin/class-settings.php:807
 msgid "Check the %s for email delivery logs and debug information."
 msgstr ""
 "Überprüfen Sie die %s für E-Mail-Zustellungsprotokolle und Debug-"
 "Informationen."
 
-#: includes/admin/class-settings.php:938
+#: includes/admin/class-settings.php:965
 msgid "General"
 msgstr "Allgemein"
 
-#: includes/admin/class-settings.php:946
+#: includes/admin/class-settings.php:973
 msgid "OpenAI"
 msgstr "OpenAI"
 
-#: includes/admin/class-settings.php:950
+#: includes/admin/class-settings.php:977
 msgid "Notifications"
 msgstr "Benachrichtigungen"
 
-#: includes/admin/class-settings.php:958
+#: includes/admin/class-settings.php:985
 msgid "Privacy"
 msgstr "Datenschutz"
 
-#: includes/admin/class-settings.php:971
-msgid "WE Spamfighter Settings"
-msgstr "WE Spamfighter-Einstellungen"
+#: includes/admin/class-settings.php:998
+msgid "WE Spamfighterin Settings"
+msgstr "WE Spamfighterin-Einstellungen"
 
-#: includes/admin/class-settings.php:1043
+#: includes/admin/class-settings.php:1070
 msgid "Test OpenAI Connection"
 msgstr "OpenAI-Verbindung testen"
 
-#: includes/admin/class-settings.php:1045
+#: includes/admin/class-settings.php:1072
 msgid "Test your OpenAI API connection and configuration."
 msgstr "Testen Sie Ihre OpenAI-API-Verbindung und -Konfiguration."
 
-#: includes/admin/class-settings.php:1048
+#: includes/admin/class-settings.php:1075
 msgid "Test Connection"
 msgstr "Verbindung testen"
 
-#: includes/admin/class-settings.php:1073,
-#: includes/admin/class-settings.php:1141
+#: includes/admin/class-settings.php:1100,
+#: includes/admin/class-settings.php:1168
 msgid "Activity log cleared successfully."
 msgstr "Aktivitätsprotokoll erfolgreich gelöscht."
 
 #. translators: %d: Number of log entries
-#: includes/admin/class-settings.php:1080
+#: includes/admin/class-settings.php:1107
 msgid "Currently %d entries in the activity log."
 msgstr "Derzeit %d Einträge im Aktivitätsprotokoll."
 
-#: includes/admin/class-settings.php:1088,
-#: includes/admin/class-settings.php:1156
+#: includes/admin/class-settings.php:1115,
+#: includes/admin/class-settings.php:1183
 msgid ""
 "Are you sure you want to clear the activity log? This action cannot be "
 "undone."
@@ -774,81 +805,81 @@ msgstr ""
 "Sicher, dass du die Nachricht löschen möchtest? - Die Aktion kann nicht "
 "rückgängig gemacht werden."
 
-#: includes/admin/class-settings.php:1089,
-#: includes/admin/class-settings.php:1157
+#: includes/admin/class-settings.php:1116,
+#: includes/admin/class-settings.php:1184
 msgid "Clear Activity Log"
 msgstr "Aktivitätsprotokoll löschen"
 
-#: includes/admin/class-settings.php:1117
+#: includes/admin/class-settings.php:1144
 msgid ""
 "Activity Log is not enabled. Please enable it in Settings → Maintenance tab."
 msgstr ""
 "Das Aktivitätsprotokoll ist nicht aktiviert. Bitte aktivieren Sie es unter "
 "„Einstellungen“ → Registerkarte „Wartung“."
 
-#: includes/admin/class-settings.php:1149
+#: includes/admin/class-settings.php:1176
 msgid "Recent plugin activities and events."
 msgstr "Aktuelle Plugin-Aktivitäten und Ereignisse."
 
-#: includes/admin/class-settings.php:1184
+#: includes/admin/class-settings.php:1211
 msgid "No activity log entries yet."
 msgstr "Noch keine Aktivitätsprotokolleinträge."
 
-#: includes/admin/class-settings.php:1187
+#: includes/admin/class-settings.php:1214
 msgid ""
 "Activity log entries will appear here once plugin events occur, such as:"
 msgstr ""
 "Aktivitätsprotokolleinträge werden hier angezeigt, sobald Plugin-Ereignisse "
 "auftreten, wie z. B.:"
 
-#: includes/admin/class-settings.php:1190
+#: includes/admin/class-settings.php:1217
 msgid "Weekly spam summary emails sent"
 msgstr "Wöchentliche E-Mail-Zusammenfassung gesendet"
 
-#: includes/admin/class-settings.php:1191
+#: includes/admin/class-settings.php:1218
 msgid "Daily spam summary emails sent"
 msgstr "Tägliche E-Mail-Zusammenfassung gesendet"
 
-#: includes/admin/class-settings.php:1192, we-spamfighter.php:491
+#: includes/admin/class-settings.php:1219, we-spamfighter.php:493
 msgid "Table maintenance completed"
 msgstr "Tabellenpflege abgeschlossen"
 
-#: includes/admin/class-settings.php:1193, we-spamfighter.php:463
+#: includes/admin/class-settings.php:1220, we-spamfighter.php:465
 msgid "Old logs cleaned"
 msgstr "Alte Logs gereinigt"
 
-#: includes/admin/class-settings.php:1196
+#: includes/admin/class-settings.php:1223
 msgid "The log will start recording events after the next scheduled task runs."
 msgstr ""
 "Das Protokoll beginnt mit der Aufzeichnung von Ereignissen, nachdem die "
 "nächste geplante Aufgabe ausgeführt wurde."
 
-#: includes/admin/class-settings.php:1166
+#: includes/admin/class-settings.php:1193
 msgid "Date/Time"
 msgstr "Datum/Uhrzeit"
 
-#: includes/admin/class-settings.php:1167
+#: includes/admin/class-settings.php:1194
 msgid "Event"
 msgstr "Ereignis"
 
-#: includes/admin/class-settings.php:1168
+#: includes/admin/class-settings.php:1195
 msgid "Message"
 msgstr "Nachricht"
 
-#: includes/admin/class-settings.php:1217
+#: includes/admin/class-settings.php:1244
 msgid "Activity Log class not found"
 msgstr "Aktivitätsprotokollklasse nicht gefunden"
 
-#: includes/admin/class-settings.php:1234
+#: includes/admin/class-settings.php:1261
 msgid "Failed to clear activity log"
 msgstr "Löschen des Aktivitätsprotokolls fehlgeschlagen"
 
-#: includes/admin/class-settings.php:1228
+#: includes/admin/class-settings.php:1255
 msgid "Activity log cleared successfully. %d entries deleted."
 msgstr "Aktivitätsprotokoll erfolgreich gelöscht. %d Einträge gelöscht."
 
-#: includes/admin/class-settings.php:1453,
-#: includes/integration/class-contact-form-7.php:524, we-spamfighter.php:385
+#: includes/admin/class-settings.php:1494,
+#: includes/integration/class-contact-form-7.php:544, we-spamfighter.php:387
 msgid "Thank you for your message."
 msgstr "Vielen Dank für Ihre Nachricht."
 
@@ -1012,7 +1043,7 @@ msgstr "Alle im Dashboard anzeigen:"
 #. translators: %s: URL to OpenAI privacy policy
 #: includes/core/class-privacy.php:80
 msgid ""
-"We use the plugin WE Spamfighter to detect spam in contact forms and "
+"We use the plugin WE Spamfighterin to detect spam in contact forms and "
 "comments. When the AI check (OpenAI) is enabled, your entered data (name, "
 "email address, subject and message content) is transmitted to OpenAI (USA) "
 "for spam checking. The processing is based on our legitimate interest in "
@@ -1022,7 +1053,7 @@ msgid ""
 "model training or advertising purposes. For details on processing and "
 "storage at OpenAI, see: %s"
 msgstr ""
-"Wir verwenden das Plugin WE Spamfighter, um Spam in Kontaktformularen und "
+"Wir verwenden das Plugin WE Spamfighterin, um Spam in Kontaktformularen und "
 "Kommentaren zu erkennen. Wenn die KI-Prüfung (OpenAI) aktiviert ist, werden "
 "Ihre eingegebenen Daten (Name, E-Mail-Adresse, Betreff und "
 "Nachrichteninhalt) zur Spam-Prüfung an OpenAI (USA) übermittelt. Die "
@@ -1076,8 +1107,38 @@ msgid "Activate the plugin"
 msgstr "Aktivieren Sie das Plugin."
 
 #: includes/core/class-updater.php:518
-msgid "Configure settings under WE Spamfighter → Settings"
-msgstr "WE Spamfighter-Einstellungen unter WE-Spamfighter → Einstellungen"
+msgid "Configure settings under WE Spamfighterin → Settings"
+msgstr "WE Spamfighterin-Einstellungen unter WE-Spamfighter → Einstellungen"
+
+#. translators: 1: field name, 2: character limit
+#: includes/detection/class-cf7-field-type-heuristic.php:189
+msgid ""
+"Text field \"%1$s\" exceeds typical single-line length (%2$d characters)"
+msgstr ""
+"Das Textfeld „%1$s“ überschreitet die übliche Zeilenlänge (%2$d Zeichen)"
+
+#. translators: %s: field name
+#: includes/detection/class-cf7-field-type-heuristic.php:199
+msgid "URL-like content in text field \"%s\" (unusual for a single line)"
+msgstr ""
+"URL-ähnlicher Inhalt im Textfeld „%s“ (ungewöhnlich für eine einzelne Zeile)"
+
+#. translators: %s: field name
+#: includes/detection/class-cf7-field-type-heuristic.php:208
+msgid "Email-like pattern in text field \"%s\" (use an email field instead)"
+msgstr ""
+"E-Mail-ähnliches Format im Textfeld „%s“ (verwenden Sie stattdessen ein E-"
+"Mail-Feld)"
+
+#. translators: %s: field name
+#: includes/detection/class-cf7-field-type-heuristic.php:255
+msgid "Long query string in URL field \"%s\""
+msgstr "Langer Abfrage-String im URL-Feld „%s“"
+
+#. translators: 1: field name, 2: matched pattern
+#: includes/detection/class-cf7-field-type-heuristic.php:276
+msgid "Suspicious URL parameter pattern in field \"%1$s\" (%2$s)"
+msgstr "Verdächtiges URL-Parameter-Muster im Feld „%1$s“ (%2$s)"
 
 #: includes/detection/class-heuristic-detector.php:250
 msgid "Multiple suspicious patterns detected (%d checks)"
@@ -1420,7 +1481,7 @@ msgstr "Kommentarinhalt:"
 msgid "View Spam Comments"
 msgstr "Spam-Kommentare anzeigen"
 
-#: includes/integration/class-contact-form-7.php:256
+#: includes/integration/class-contact-form-7.php:276
 msgid "Link detected in foreign language content (strong spam indicator)"
 msgstr "Link in fremdsprachigem Inhalt entdeckt (starker Spam-Indikator)"
 

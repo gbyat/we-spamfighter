@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Uninstall script for WE Spamfighter.
+ * Uninstall script for WE Spamfighterin.
  *
  * This file is executed when the plugin is deleted from WordPress.
  * It removes all plugin data (options, database tables, cache, etc.)

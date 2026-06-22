@@ -10,7 +10,7 @@ if (!['patch', 'minor', 'major'].includes(releaseType)) {
     process.exit(1);
 }
 
-console.log(`🚀 Creating ${releaseType} release for WE Spamfighter...`);
+console.log(`🚀 Creating ${releaseType} release for WE Spamfighterin...`);
 
 try {
     // Read current version

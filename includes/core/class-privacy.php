@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Privacy / GDPR handling for WE Spamfighter.
+ * Privacy / GDPR handling for WE Spamfighterin.
  *
  * When OpenAI is active, personal data is sent to OpenAI (USA).
  * This class provides privacy policy content and form notices.
@@ -10,6 +10,8 @@
  */
 
 namespace WeSpamfighter\Core;
+
+use WeSpamfighter\Detection\AiSpamDetector;
 
 /**
  * Privacy class.
@@ -58,7 +60,7 @@ class Privacy
     private function is_openai_active()
     {
         $settings = get_option('we_spamfighter_settings', array());
-        return !empty($settings['openai_enabled']) && !empty($settings['openai_api_key']);
+        return AiSpamDetector::is_enabled($settings);
     }
 
     /**
@@ -77,7 +79,7 @@ class Privacy
 
         $text = sprintf(
             /* translators: %s: URL to OpenAI privacy policy */
-            __('We use the plugin WE Spamfighter to detect spam in contact forms and comments. When the AI check (OpenAI) is enabled, your entered data (name, email address, subject and message content) is transmitted to OpenAI (USA) for spam checking. The processing is based on our legitimate interest in effective spam protection (Art. 6(1)(f) GDPR). The transmission to OpenAI is based on Standard Contractual Clauses (Art. 46(2)(c) GDPR). The data is transmitted exclusively for spam checking and is not used by OpenAI for model training or advertising purposes. For details on processing and storage at OpenAI, see: %s', 'we-spamfighter'),
+            __('We use the plugin WE Spamfighterin to detect spam in contact forms and comments. When the AI check (OpenAI) is enabled, your entered data (name, email address, subject and message content) is transmitted to OpenAI (USA) for spam checking. The processing is based on our legitimate interest in effective spam protection (Art. 6(1)(f) GDPR). The transmission to OpenAI is based on Standard Contractual Clauses (Art. 46(2)(c) GDPR). The data is transmitted exclusively for spam checking and is not used by OpenAI for model training or advertising purposes. For details on processing and storage at OpenAI, see: %s', 'we-spamfighter'),
             $openai_url
         );
 
@@ -125,7 +127,7 @@ class Privacy
         $content = '<h2>' . esc_html__('Spam protection', 'we-spamfighter') . '</h2>';
         $content .= $this->get_privacy_passage_text();
 
-        wp_add_privacy_policy_content('WE Spamfighter', $content);
+        wp_add_privacy_policy_content('WE Spamfighterin', $content);
     }
 
     /**
