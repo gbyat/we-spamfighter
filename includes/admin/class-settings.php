@@ -793,28 +793,27 @@ class Settings
         echo '<option value="">' . esc_html__('— Select provider —', 'we-spamfighter') . '</option>';
 
         foreach ($providers as $provider_id => $provider_name) {
-            $status = AiSpamDetector::is_provider_usable($provider_id)
-                ? ''
-                : ' ' . __('(not configured)', 'we-spamfighter');
-
             printf(
-                '<option value="%s" %s>%s%s</option>',
+                '<option value="%s" %s>%s</option>',
                 esc_attr($provider_id),
                 selected($value, $provider_id, false),
-                esc_html($provider_name),
-                esc_html($status)
+                esc_html($provider_name)
             );
         }
 
         echo '</select>';
 
+        if ($value !== '' && ! isset($providers[$value])) {
+            echo '<p class="description">' . esc_html__('The previously selected provider is no longer connected. Choose a connected provider or configure one under Settings → Connectors.', 'we-spamfighter') . '</p>';
+        }
+
         if (empty($providers)) {
-            echo '<p class="description">' . esc_html__('No AI connectors found. Install an AI provider plugin and configure it under Settings → Connectors.', 'we-spamfighter') . '</p>';
+            echo '<p class="description">' . esc_html__('No connected AI connectors found. Configure an AI provider under Settings → Connectors.', 'we-spamfighter') . '</p>';
         } elseif (isset($args['description'])) {
             printf('<p class="description">%s</p>', esc_html($args['description']));
         }
 
-        $connectors_url = admin_url('options-general.php?page=connectors');
+        $connectors_url = admin_url('options-connectors.php');
         printf(
             '<p class="description"><a href="%s">%s</a></p>',
             esc_url($connectors_url),
@@ -1613,6 +1612,10 @@ class Settings
             $sanitized['ai_provider'] = ($provider !== '' && isset($providers[$provider])) ? $provider : '';
         } else {
             $sanitized['ai_provider'] = isset($existing['ai_provider']) ? sanitize_key((string) $existing['ai_provider']) : '';
+            $providers = AiSpamDetector::get_available_ai_providers();
+            if ($sanitized['ai_provider'] !== '' && ! isset($providers[$sanitized['ai_provider']])) {
+                $sanitized['ai_provider'] = '';
+            }
         }
 
         if (isset($input['ai_model_preference'])) {

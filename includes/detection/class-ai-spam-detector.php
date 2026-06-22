@@ -27,7 +27,7 @@ class AiSpamDetector
     }
 
     /**
-     * Registered AI provider connectors from WordPress (Settings → Connectors).
+     * Registered AI provider connectors that are connected and usable for text generation.
      *
      * @return array<string, string> Connector ID => display name.
      */
@@ -51,12 +51,77 @@ class AiSpamDetector
             if (($connector['type'] ?? '') !== 'ai_provider') {
                 continue;
             }
+            if (! self::is_provider_usable($id)) {
+                continue;
+            }
             $providers[$id] = (string) ($connector['name'] ?? $id);
         }
 
         asort($providers);
 
-        return $providers;
+        /**
+         * Filters AI providers shown in settings (connected connectors only by default).
+         *
+         * @param array<string, string> $providers Connector ID => display name.
+         */
+        return apply_filters('we_spamfighter_connected_ai_providers', $providers);
+    }
+
+    /**
+     * Whether a connector has credentials / is configured in WordPress.
+     *
+     * @param string $provider Connector / provider ID.
+     * @return bool
+     */
+    public static function is_provider_connected($provider)
+    {
+        $provider = sanitize_key((string) $provider);
+        if ($provider === '') {
+            return false;
+        }
+
+        if (! function_exists('wp_is_connector_registered') || ! wp_is_connector_registered($provider)) {
+            return false;
+        }
+
+        if (class_exists('\WordPress\AiClient\AiClient')) {
+            try {
+                $registry = \WordPress\AiClient\AiClient::defaultRegistry();
+                if (
+                    is_object($registry)
+                    && method_exists($registry, 'hasProvider')
+                    && method_exists($registry, 'isProviderConfigured')
+                ) {
+                    return $registry->hasProvider($provider) && (bool) $registry->isProviderConfigured($provider);
+                }
+            } catch (\Throwable $e) {
+                Logger::get_instance()->warning(
+                    'Could not read AI provider connection state',
+                    array(
+                        'provider' => $provider,
+                        'error'    => $e->getMessage(),
+                    )
+                );
+            }
+        }
+
+        if (function_exists('wp_get_connector')) {
+            $connector = wp_get_connector($provider);
+            if (is_array($connector)) {
+                $auth_method = (string) ($connector['authentication']['method'] ?? '');
+                if ('none' === $auth_method) {
+                    return true;
+                }
+                if ('api_key' === $auth_method) {
+                    $setting_name = (string) ($connector['authentication']['setting_name'] ?? '');
+                    if ($setting_name !== '' && get_option($setting_name, '') !== '') {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -120,7 +185,7 @@ class AiSpamDetector
             return false;
         }
 
-        if (! function_exists('wp_is_connector_registered') || ! wp_is_connector_registered($provider)) {
+        if (! self::is_provider_connected($provider)) {
             return false;
         }
 
