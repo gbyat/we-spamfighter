@@ -84,6 +84,25 @@ function lookupTranslation(catalog, msgid) {
 }
 
 /**
+ * @param {string} msgid
+ * @return {boolean}
+ */
+function isPotHeaderMsgid(msgid) {
+	return msgid.includes('Project-Id-Version:');
+}
+
+/**
+ * @param {string} msgid
+ * @return {string|undefined}
+ */
+function identityTranslation(msgid) {
+	if (/^https?:\/\//i.test(msgid)) {
+		return msgid;
+	}
+	return undefined;
+}
+
+/**
  * @param {string} locale
  * @param {string[]} potMsgids
  * @return {{ matched: number, missing: number, stale: number }}
@@ -102,17 +121,29 @@ function syncLocaleCatalog(locale, potMsgids) {
 	let missing = 0;
 
 	potMsgids.forEach((msgid) => {
+		if (isPotHeaderMsgid(msgid)) {
+			return;
+		}
+
 		const translation = lookupTranslation(catalog, msgid);
 		if ('string' === typeof translation && '' !== translation) {
 			synced[msgid] = translation;
 			matched += 1;
-		} else {
-			synced[msgid] = '';
-			missing += 1;
+			return;
 		}
+
+		const identity = identityTranslation(msgid);
+		if ('string' === typeof identity) {
+			synced[msgid] = identity;
+			matched += 1;
+			return;
+		}
+
+		synced[msgid] = '';
+		missing += 1;
 	});
 
-	const stale = Object.keys(catalog).filter((key) => !potMsgids.includes(key)).length;
+	const stale = Object.keys(catalog).filter((key) => !potMsgids.includes(key) || isPotHeaderMsgid(key)).length;
 
 	if (!isDryRun) {
 		writeLf(catalogPath, `${JSON.stringify(synced, null, 2)}\n`);

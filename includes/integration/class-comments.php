@@ -360,7 +360,10 @@ class Comments
     {
         ob_start();
 ?>
-        <p><?php printf(esc_html__('A spam comment has been detected by %s and moved to the spam folder.', 'we-spamfighter'), 'WE Spamfighterin'); ?></p>
+        <p><?php
+			/* translators: %s: Plugin name */
+			printf(esc_html__('A spam comment has been detected by %s and moved to the spam folder.', 'we-spamfighter'), 'WE Spamfighterin');
+		?></p>
         <p><strong><?php esc_html_e('Author:', 'we-spamfighter'); ?></strong> <?php echo esc_html($commentdata['comment_author'] ?? '-'); ?></p>
         <p><strong><?php esc_html_e('Email:', 'we-spamfighter'); ?></strong> <?php echo esc_html($commentdata['comment_author_email'] ?? '-'); ?></p>
         <p><strong><?php esc_html_e('Post ID:', 'we-spamfighter'); ?></strong> <?php echo esc_html($commentdata['comment_post_ID'] ?? '-'); ?></p>

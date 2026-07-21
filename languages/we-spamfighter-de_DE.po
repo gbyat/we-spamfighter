@@ -828,7 +828,7 @@ msgid "Form/Post ID:"
 msgstr "Formular-/Beitrags-ID:"
 
 #: includes/core/class-notifications.php:338
-#: includes/integration/class-comments.php:367
+#: includes/integration/class-comments.php:370
 msgid "Spam Score:"
 msgstr "Spam-Bewertung"
 
@@ -841,7 +841,7 @@ msgid "Submission Data:"
 msgstr "Einreichungsdaten:"
 
 #: includes/core/class-notifications.php:356
-#: includes/integration/class-comments.php:370
+#: includes/integration/class-comments.php:373
 msgid "Detection Details:"
 msgstr "Details zur Spam-Erkennung:"
 
@@ -962,321 +962,336 @@ msgstr "Langer Abfrage-String im URL-Feld „%s“"
 msgid "Suspicious URL parameter pattern in field \"%1$s\" (%2$s)"
 msgstr "Verdächtiges URL-Parameter-Muster im Feld „%1$s“ (%2$s)"
 
-#: includes/detection/class-heuristic-detector.php:250
+#. translators: %d: Number of checks that found issues
+#: includes/detection/class-heuristic-detector.php:251
 #, php-format
 msgid "Multiple suspicious patterns detected (%d checks)"
 msgstr "Mehrere verdächtige Muster entdeckt (%d checks)"
 
-#: includes/detection/class-heuristic-detector.php:293
+#. translators: %d: Number of links
+#: includes/detection/class-heuristic-detector.php:296
 #, php-format
 msgid "Multiple links (%d)"
 msgstr "Mehrere Links (%d)"
 
-#: includes/detection/class-heuristic-detector.php:290
+#. translators: %d: Number of links
+#: includes/detection/class-heuristic-detector.php:292
 #, php-format
 msgid "Too many links (%d)"
 msgstr "Zu viele Links (%d)"
 
-#: includes/detection/class-heuristic-detector.php:305
+#: includes/detection/class-heuristic-detector.php:308
 msgid "High link-to-text ratio"
 msgstr "Hohe Link-zu-Text-Verhältnis"
 
-#: includes/detection/class-heuristic-detector.php:302
+#: includes/detection/class-heuristic-detector.php:305
 msgid "Very high link-to-text ratio"
 msgstr "Sehr hohes Verhältnis von Links zu Text"
 
-#: includes/detection/class-heuristic-detector.php:319
+#. translators: %s: Suspicious URL pattern
+#: includes/detection/class-heuristic-detector.php:323
 #, php-format
 msgid "Suspicious URL pattern: %s"
 msgstr "Verdächtiges URL-Muster: %s"
 
-#: includes/detection/class-heuristic-detector.php:384
+#. translators: %s: URL shortener domain
+#: includes/detection/class-heuristic-detector.php:389
 #, php-format
 msgid "URL shortener detected: %s"
 msgstr "URL-Kürzer erkannt: %s"
 
-#: includes/detection/class-heuristic-detector.php:398
+#. translators: %s: Suspicious top-level domain
+#: includes/detection/class-heuristic-detector.php:404
 #, php-format
 msgid "Suspicious TLD: %s"
 msgstr "Verdächtige TLD: %s"
 
-#: includes/detection/class-heuristic-detector.php:409
+#: includes/detection/class-heuristic-detector.php:415
 msgid "Suspicious domain pattern detected"
 msgstr "Verdächtiges Domain-Muster erkannt"
 
-#: includes/detection/class-heuristic-detector.php:416
+#: includes/detection/class-heuristic-detector.php:422
 msgid "IP address used as URL"
 msgstr "Als URL verwendete IP-Adresse"
 
-#: includes/detection/class-heuristic-detector.php:440
+#: includes/detection/class-heuristic-detector.php:446
 msgid "Repeated characters detected"
 msgstr "Wiederholte Zeichen erkannt"
 
-#: includes/detection/class-heuristic-detector.php:453
+#: includes/detection/class-heuristic-detector.php:459
 msgid "High percentage of uppercase text"
 msgstr "Hoher Anteil an Großbuchstaben"
 
-#: includes/detection/class-heuristic-detector.php:450
+#: includes/detection/class-heuristic-detector.php:456
 msgid "Text is mostly in uppercase"
 msgstr "Der Text ist größtenteils in Großbuchstaben geschrieben."
 
-#: includes/detection/class-heuristic-detector.php:460
+#: includes/detection/class-heuristic-detector.php:466
 msgid "Suspicious mixed case pattern"
 msgstr "Verdächtiges gemischtes Fallmuster"
 
-#: includes/detection/class-heuristic-detector.php:469
+#: includes/detection/class-heuristic-detector.php:475
 msgid "Too many special characters"
 msgstr "Zu viele Sonderzeichen"
 
-#: includes/detection/class-heuristic-detector.php:479
+#: includes/detection/class-heuristic-detector.php:485
 msgid "Very long sentence without punctuation"
 msgstr "Sehr langer Satz ohne Zeichensetzung"
 
-#: includes/detection/class-heuristic-detector.php:488
+#. translators: %d: Number of emojis or icons
+#: includes/detection/class-heuristic-detector.php:495
 #, php-format
 msgid "Emojis/icons detected (%d) - common in spam"
 msgstr "Emojis/Symbole erkannt (%d) – häufig in Spam-Mails"
 
-#: includes/detection/class-heuristic-detector.php:520
+#. translators: %d: Author name length in characters
+#: includes/detection/class-heuristic-detector.php:529
 #, php-format
 msgid "Very long author/name (%d characters)"
 msgstr "Sehr langer Name (%d Zeichen)"
 
-#: includes/detection/class-heuristic-detector.php:517
+#. translators: %d: Author name length in characters
+#: includes/detection/class-heuristic-detector.php:525
 #, php-format
 msgid "Extremely long author/name (%d characters) - common spam pattern"
 msgstr "Extrem langer Name (%d Zeichen)"
 
-#: includes/detection/class-heuristic-detector.php:526
+#: includes/detection/class-heuristic-detector.php:535
 msgid "URL/link in author name - definitive spam indicator"
 msgstr "URL/Link im Namen des Autors – eindeutiger Hinweis auf Spam"
 
-#: includes/detection/class-heuristic-detector.php:533
+#. translators: %d: Number of emojis or icons in author name
+#: includes/detection/class-heuristic-detector.php:543
 #, php-format
 msgid "Emojis/icons in author name (%d) - common in spam"
 msgstr "Emojis/Symbole im Namen des Autors (%d) – häufig in Spam-Mails"
 
-#: includes/detection/class-heuristic-detector.php:641
+#. translators: %s: Detected spam phrase
+#: includes/detection/class-heuristic-detector.php:652
 #, php-format
 msgid "Spam phrase detected: \"%s\""
 msgstr "Spam-Phrase erkannt: „%s“"
 
-#: includes/detection/class-heuristic-detector.php:664
-#, php-format
-msgid "Keyword stuffing: \"%s\" repeated %d times"
-msgstr "Keyword-Spamming: „%s“ %d Mal wiederholt"
-
-#: includes/detection/class-heuristic-detector.php:693
+#. translators: %d: Number of email addresses
+#: includes/detection/class-heuristic-detector.php:706
 #, php-format
 msgid "Multiple email addresses (%d)"
 msgstr "Mehrere E-Mail-Adressen (%d)"
 
-#: includes/detection/class-heuristic-detector.php:730
+#. translators: %s: Suspicious email provider domain
+#: includes/detection/class-heuristic-detector.php:745
 #, php-format
 msgid "Suspicious email provider: %s"
 msgstr "Verdächtiger E-Mail-Anbieter: %s"
 
-#: includes/detection/class-heuristic-detector.php:724
+#. translators: %s: Free email provider domain
+#: includes/detection/class-heuristic-detector.php:738
 #, php-format
 msgid "Free email provider: %s"
 msgstr "Freier E-Mail-Anbieter: %s"
 
-#: includes/detection/class-heuristic-detector.php:742
+#: includes/detection/class-heuristic-detector.php:757
 msgid "Very suspicious email pattern (numbers only)"
 msgstr "Sehr verdächtige E-Mail-Muster (nur Nummern)"
 
-#: includes/detection/class-heuristic-detector.php:748
+#: includes/detection/class-heuristic-detector.php:763
 msgid "Suspicious random email pattern"
 msgstr "Verdächtiges zufälliges E-Mail-Muster"
 
-#: includes/detection/class-heuristic-detector.php:755
+#: includes/detection/class-heuristic-detector.php:770
 msgid "Suspicious email pattern (name with trailing numbers)"
 msgstr "Verdächtige E-Mail-Muster mit Nummern"
 
-#: includes/detection/class-heuristic-detector.php:762
+#. translators: %d: Number of digits in the email local part
+#: includes/detection/class-heuristic-detector.php:778
 #, php-format
 msgid "Suspicious email pattern (%d digits in local part)"
 msgstr "Verdächtiges E-Mail-Muster erkannt"
 
-#: includes/detection/class-heuristic-detector.php:797
+#. translators: %s: Suspicious email domain TLD
+#: includes/detection/class-heuristic-detector.php:814
 #, php-format
 msgid "Suspicious email domain TLD: %s"
 msgstr "Verdächtige E-Mail-Domain: %s"
 
-#: includes/detection/class-heuristic-detector.php:806
+#: includes/detection/class-heuristic-detector.php:823
 msgid "Suspicious email domain with numbers"
 msgstr "Verdächtige E-Mail-Domain mit Nummern"
 
-#: includes/detection/class-heuristic-detector.php:898
+#: includes/detection/class-heuristic-detector.php:915
 msgid "Missing referrer (direct access or bot)"
 msgstr "Fehlender Referrer (direkter Zugriff oder Bot)"
 
-#: includes/detection/class-heuristic-detector.php:935
+#: includes/detection/class-heuristic-detector.php:952
 msgid "Suspicious referrer URL pattern"
 msgstr "Verdächtiges Referrer-Domainmuster"
 
-#: includes/detection/class-heuristic-detector.php:956
+#. translators: %s: URL shortener domain in referrer
+#: includes/detection/class-heuristic-detector.php:974
 #, php-format
 msgid "Referrer from URL shortener: %s"
 msgstr "Referrer URL aus URL-Kürzer: %s"
 
-#: includes/detection/class-heuristic-detector.php:966
+#. translators: %s: Suspicious TLD in referrer
+#: includes/detection/class-heuristic-detector.php:985
 #, php-format
 msgid "Referrer from suspicious TLD: %s"
 msgstr "Referrer von verdächtiger TLD: %s"
 
-#: includes/detection/class-heuristic-detector.php:974
+#: includes/detection/class-heuristic-detector.php:993
 msgid "Referrer is an IP address"
 msgstr "Der Referrer ist eine IP-Adresse."
 
-#: includes/detection/class-heuristic-detector.php:997
+#: includes/detection/class-heuristic-detector.php:1016
 msgid "Missing user agent (bot or script)"
 msgstr "Fehlender User-Agent (Bot oder Skript)"
 
-#: includes/detection/class-heuristic-detector.php:1026
+#. translators: %s: Known bot name
+#: includes/detection/class-heuristic-detector.php:1046
 #, php-format
 msgid "Known bot detected: %s"
 msgstr "Bot erkannt: %s"
 
-#: includes/detection/class-heuristic-detector.php:1058
+#. translators: %s: Suspicious bot pattern
+#: includes/detection/class-heuristic-detector.php:1079
 #, php-format
 msgid "Suspicious bot pattern: %s"
 msgstr "Verdächtiges Bot-Muster: %s"
 
-#: includes/detection/class-heuristic-detector.php:1067
+#: includes/detection/class-heuristic-detector.php:1088
 msgid "Very short user agent string"
 msgstr "Sehr kurze User-Agent-Zeichenfolge"
 
-#: includes/detection/class-heuristic-detector.php:1084
+#. translators: %s: Suspicious pattern found in user agent
+#: includes/detection/class-heuristic-detector.php:1106
 #, php-format
 msgid "Suspicious pattern in user agent: %s"
 msgstr "Verdächtiges User-Agent-Muster erkannt"
 
-#: includes/detection/class-heuristic-detector.php:1102
+#: includes/detection/class-heuristic-detector.php:1124
 msgid "Missing browser identification in user agent"
 msgstr "Fehlende Browseridentifikation im User-Agent"
 
-#: includes/detection/class-heuristic-detector.php:1108
+#: includes/detection/class-heuristic-detector.php:1130
 msgid "Suspicious version pattern in user agent"
 msgstr "Verdächtiges Versionsmuster im User-Agent String erkannt"
 
-#: includes/detection/class-heuristic-detector.php:1132
+#. translators: %d: Content length in characters
+#: includes/detection/class-heuristic-detector.php:1155
 #, php-format
 msgid "Very short content (%d characters)"
 msgstr "Sehr kurzer Inhalt (%d Zeichen)"
 
-#: includes/detection/class-heuristic-detector.php:1138
+#. translators: %d: Content length in characters
+#: includes/detection/class-heuristic-detector.php:1162
 #, php-format
 msgid "Extremely long content (%d characters)"
 msgstr "Extrem langer Inhalt (%d Zeichen)"
 
-#: includes/detection/class-heuristic-detector.php:1145
+#: includes/detection/class-heuristic-detector.php:1169
 msgid "Suspicious content length (common bot pattern)"
 msgstr "Verdächtig Inhaltslänge (allgemeines Bot-Muster)"
 
-#: includes/detection/class-heuristic-detector.php:1192
+#: includes/detection/class-heuristic-detector.php:1216
 msgid "Empty message body with name/email/subject filled - common spam pattern"
 msgstr "Leerer Nachrichtentext mit ausgefüllten Feldern für Name/E-Mail/Betreff – häufiges Spam-Muster"
 
-#: includes/detection/class-heuristic-detector.php:1295
+#. translators: %s: List of detected scripts
+#: includes/detection/class-heuristic-detector.php:1321
 #, php-format
 msgid "Mixed scripts detected (%s)"
 msgstr "Mehrere Zeichensätze entdeckt (%d)"
 
-#: includes/detection/class-heuristic-detector.php:1292
+#. translators: %s: List of detected scripts
+#: includes/detection/class-heuristic-detector.php:1317
 #, php-format
 msgid "Multiple scripts detected (%s) - strong spam indicator"
 msgstr "Mehrere Zeichensätze  erkannt (%s) – starker Spam-Indikator"
 
-#: includes/detection/class-heuristic-detector.php:1307
+#: includes/detection/class-heuristic-detector.php:1333
 msgid "Cyrillic mixed with Latin characters (common spam pattern)"
 msgstr "Kyrillische Zeichen gemischt mit lateinischen Zeichen (häufiges Spam-Muster)"
 
-#: includes/detection/class-heuristic-detector.php:1353
+#: includes/detection/class-heuristic-detector.php:1379
 msgid "Zero-width characters detected (obfuscation attempt)"
 msgstr "Zeichen ohne Breite erkannt (Verschleierungsversuch)"
 
-#: includes/detection/class-heuristic-detector.php:1373
+#. translators: %d: Number of control characters
+#: includes/detection/class-heuristic-detector.php:1400
 #, php-format
 msgid "Control characters detected (%d)"
 msgstr "Steuerzeichen erkannt (%d)"
 
-#: includes/detection/class-heuristic-detector.php:1386
+#: includes/detection/class-heuristic-detector.php:1413
 msgid "Suspicious character lookalikes detected (homoglyph attack)"
 msgstr "Verdächtige Zeichenähnlichkeiten erkannt (Homoglyphenangriff)"
 
-#: includes/detection/class-heuristic-detector.php:1421
+#. translators: %d: Number of digits
+#: includes/detection/class-heuristic-detector.php:1449
 #, php-format
 msgid "Content contains only numbers (%d digits)"
 msgstr "Der Inhalt enthält nur Zahlen (%d Ziffern)."
 
-#: includes/detection/class-heuristic-detector.php:1429
+#: includes/detection/class-heuristic-detector.php:1457
 msgid "Content contains only letters (no numbers or punctuation)"
 msgstr "Der Inhalt enthält nur Buchstaben (keine Zahlen oder Satzzeichen)."
 
-#: includes/detection/class-heuristic-detector.php:1438
+#: includes/detection/class-heuristic-detector.php:1466
 msgid "Content is only repeating characters"
 msgstr "Text besteht nur aus sich wiederholenden Zeichen"
 
-#: includes/detection/class-heuristic-detector.php:1445
+#. translators: %d: Content length in characters
+#: includes/detection/class-heuristic-detector.php:1474
 #, php-format
 msgid "Very short alphanumeric-only content (%d chars) - common bot pattern"
 msgstr "Sehr kurzer und nur alphanumerischer Inhalt (%d Zeichen)"
 
-#: includes/detection/class-heuristic-detector.php:1488
+#: includes/detection/class-heuristic-detector.php:1518
 msgid "IP address found in content (not in URL)"
 msgstr "IP-Adresse im Inhalt gefunden (nicht in der URL)"
 
-#: includes/detection/class-heuristic-detector.php:1485
+#. translators: %d: Number of IP addresses
+#: includes/detection/class-heuristic-detector.php:1515
 #, php-format
 msgid "Multiple IP addresses in content (%d)"
 msgstr "Mehrere E-Mail-Adressen im Inhalt (%d)"
 
-#: includes/detection/class-heuristic-detector.php:1502
+#: includes/detection/class-heuristic-detector.php:1532
 msgid "Private IP address in content"
 msgstr "Private IP-Adresse im Inhalt"
 
-#: includes/detection/class-heuristic-detector.php:1547
+#. translators: %s: Separator pattern
+#: includes/detection/class-heuristic-detector.php:1579
 #, php-format
 msgid "Separator pattern detected (\"%s\") - possible multilingual spam"
 msgstr "Separator-Muster erkannt („%s“) – möglicherweise mehrsprachiger Spam"
 
-#: includes/detection/class-heuristic-detector.php:1544
-#, php-format
-msgid "Repeated separators detected (%d instances of \"%s\") - common in multilingual spam"
-msgstr "Wiederholte Trennzeichen erkannt (%d Instanzen von „%s“) – häufig bei mehrsprachigen Spam-Mails"
-
-#: includes/detection/class-heuristic-detector.php:1563
+#. translators: %d: Number of times the same URL was repeated
+#: includes/detection/class-heuristic-detector.php:1597
 #, php-format
 msgid "Same URL repeated %d times - strong multilingual spam indicator"
 msgstr "Gleiche URL %d Mal wiederholt – starker Indikator für mehrsprachigen Spam"
 
-#: includes/detection/class-heuristic-detector.php:1560
-#, php-format
-msgid "Repeated URLs detected (%d total, %d unique) - common in multilingual spam"
-msgstr "Wiederholte URLs erkannt (insgesamt %d, davon %d eindeutig) – häufig bei mehrsprachigem Spam"
-
-#: includes/detection/class-heuristic-detector.php:1592
+#. translators: %d: Number of sections
+#: includes/detection/class-heuristic-detector.php:1627
 #, php-format
 msgid "Multiple sections with similar structure (%d sections) - multilingual spam pattern"
 msgstr "Mehrere Abschnitte mit ähnlicher Struktur (%d Abschnitte) – mehrsprachiges Spam-Muster"
 
-#: includes/detection/class-heuristic-detector.php:1622
+#. translators: %d: Number of sections
+#: includes/detection/class-heuristic-detector.php:1658
 #, php-format
 msgid "Sections have similar sentence structure (%d sections) - suggests multilingual repetition"
 msgstr "Abschnitte haben eine ähnliche Satzstruktur (%d Abschnitte) – deutet auf mehrsprachige Wiederholungen hin"
 
-#: includes/detection/class-heuristic-detector.php:1648
-#, php-format
-msgid "Similar URLs across multiple sections (%d sections with URLs, %d unique URLs) - multilingual repetition"
-msgstr "Ähnliche URLs in mehreren Abschnitten (%d Abschnitte mit URLs, %d eindeutige URLs) – mehrsprachige Wiederholungen"
-
-#: includes/detection/class-heuristic-detector.php:1685
+#. translators: %d: Number of common keywords
+#: includes/detection/class-heuristic-detector.php:1723
 #, php-format
 msgid "Common keywords/brand names across sections (%d keywords) - suggests multilingual repetition"
 msgstr "Gemeinsame Schlüsselwörter/Markennamen in allen Abschnitten (%d Schlüsselwörter) – deutet auf mehrsprachige Wiederholungen hin"
 
-#: includes/detection/class-heuristic-detector.php:1715
+#. translators: %d: Number of language greetings detected
+#: includes/detection/class-heuristic-detector.php:1754
 #, php-format
 msgid "Multiple language greetings detected (%d) combined with repeated structure - multilingual spam"
 msgstr "Mehrsprachige Begrüßungen erkannt (%d) in Kombination mit wiederholter Struktur – mehrsprachiger Spam"
@@ -1287,28 +1302,29 @@ msgstr "Mehrsprachige Begrüßungen erkannt (%d) in Kombination mit wiederholter
 msgid "[%s] Spam Comment Detected"
 msgstr "[%s] Spam-Kommentar erkannt"
 
-#: includes/integration/class-comments.php:363
+#. translators: %s: Plugin name
+#: includes/integration/class-comments.php:365
 #, php-format
 msgid "A spam comment has been detected by %s and moved to the spam folder."
 msgstr "Ein Spam-Kommentar wurde von %s erkannt und in den Spam-Ordner verschoben."
 
-#: includes/integration/class-comments.php:364
+#: includes/integration/class-comments.php:367
 msgid "Author:"
 msgstr "Autor:"
 
-#: includes/integration/class-comments.php:365
+#: includes/integration/class-comments.php:368
 msgid "Email:"
 msgstr "E-Mail:"
 
-#: includes/integration/class-comments.php:366
+#: includes/integration/class-comments.php:369
 msgid "Post ID:"
 msgstr "Beitrags-ID:"
 
-#: includes/integration/class-comments.php:368
+#: includes/integration/class-comments.php:371
 msgid "Comment Content:"
 msgstr "Kommentarinhalt:"
 
-#: includes/integration/class-comments.php:372
+#: includes/integration/class-comments.php:375
 msgid "View Spam Comments"
 msgstr "Spam-Kommentare anzeigen"
 
@@ -1377,7 +1393,7 @@ msgstr "Optional. Kommagetrennte Modell-IDs für den gewählten Anbieter (das er
 #: includes/admin/class-settings.php:316
 #, php-format
 msgid "Only for “Direct OpenAI API”. Get your API key from <a href=\"%s\" target=\"_blank\">OpenAI Platform</a>. You can also define WE_SPAMFIGHTER_OPENAI_KEY in wp-config.php."
-msgstr "Nur für „Direct OpenAI API“. API-Schlüssel auf der <a href=\"%s\" target=\"_blank\">OpenAI Platform</a> erstellen. Alternativ WE_SPAMFIGHTER_OPENAI_KEY in wp-config.php definieren."%s\" target=\"_blank\">OpenAI Platform</a> erstellen. Alternativ WE_SPAMFIGHTER_OPENAI_KEY in wp-config.php definieren.\"%s\" target=\"_blank\">OpenAI Platform</a> erstellen. Alternativ WE_SPAMFIGHTER_OPENAI_KEY in wp-config.php definieren."
+msgstr "Nur für „Direct OpenAI API“. API-Schlüssel auf der <a href=\"%s\" target=\"_blank\">OpenAI Platform</a> erstellen. Alternativ WE_SPAMFIGHTER_OPENAI_KEY in wp-config.php definieren."%s\" target=\"_blank\">OpenAI Platform</a> erstellen. Alternativ WE_SPAMFIGHTER_OPENAI_KEY in wp-config.php definieren.\"%s\" target=\"_blank\">OpenAI Platform</a> erstellen. Alternativ WE_SPAMFIGHTER_OPENAI_KEY in wp-config.php definieren.\"%s\" target=\"_blank\">OpenAI Platform</a> erstellen. Alternativ WE_SPAMFIGHTER_OPENAI_KEY in wp-config.php definieren."
 
 #: includes/admin/class-settings.php:338
 msgid "Only for “Direct OpenAI API”. Which model to use for spam detection."
@@ -1488,3 +1504,27 @@ msgstr "Direct OpenAI API"
 #, php-format
 msgid "%1$s connection successful! Test spam score: %2$.2f"
 msgstr "%1$s-Verbindung erfolgreich! Test-Spam-Score: %2$.2f"
+
+#. translators: 1: Keyword, 2: Repeat count
+#: includes/detection/class-heuristic-detector.php:676
+#, php-format
+msgid "Keyword stuffing: \"%1$s\" repeated %2$d times"
+msgstr "Keyword-Spamming: „%1$s“ %2$d Mal wiederholt"
+
+#. translators: 1: Number of separator instances, 2: Separator string
+#: includes/detection/class-heuristic-detector.php:1575
+#, php-format
+msgid "Repeated separators detected (%1$d instances of \"%2$s\") - common in multilingual spam"
+msgstr "Wiederholte Trennzeichen erkannt (%1$d Instanzen von „%2$s“) – häufig bei mehrsprachigen Spam-Mails"
+
+#. translators: 1: Total URL count, 2: Unique URL count
+#: includes/detection/class-heuristic-detector.php:1593
+#, php-format
+msgid "Repeated URLs detected (%1$d total, %2$d unique) - common in multilingual spam"
+msgstr "Wiederholte URLs erkannt (insgesamt %1$d, davon %2$d eindeutig) – häufig bei mehrsprachigem Spam"
+
+#. translators: 1: Number of sections with URLs, 2: Unique URL count
+#: includes/detection/class-heuristic-detector.php:1685
+#, php-format
+msgid "Similar URLs across multiple sections (%1$d sections with URLs, %2$d unique URLs) - multilingual repetition"
+msgstr "Ähnliche URLs in mehreren Abschnitten (%1$d Abschnitte mit URLs, %2$d eindeutige URLs) – mehrsprachige Wiederholungen"

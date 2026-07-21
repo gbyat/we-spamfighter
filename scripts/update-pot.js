@@ -17,6 +17,12 @@ if (!fs.existsSync(languagesDir)) {
 	fs.mkdirSync(languagesDir, { recursive: true });
 }
 
+const headers = {
+	'Report-Msgid-Bugs-To': `https://github.com/${config.githubRepo}/issues`,
+	'Language-Team': 'webentwicklerin <hello@webentwicklerin.at>',
+	'Last-Translator': 'Gabriele Laesser <hello@webentwicklerin.at>',
+};
+
 try {
 	runWp([
 		'i18n',
@@ -26,9 +32,7 @@ try {
 		`--domain=${textDomain}`,
 		`--exclude=${config.potExclude || 'node_modules,vendor,scripts,assets/vendor'}`,
 		'--skip-block-json',
-		`--headers=Report-Msgid-Bugs-To:https://github.com/${config.githubRepo}/issues`,
-		'--headers=Language-Team:webentwicklerin <hello@webentwicklerin.at>',
-		'--headers=Last-Translator:Gabriele Laesser <hello@webentwicklerin.at>',
+		`--headers=${JSON.stringify(headers)}`,
 	]);
 	console.log(`POT file updated: ${potFile}`);
 } catch (error) {

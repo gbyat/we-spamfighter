@@ -247,6 +247,7 @@ class HeuristicDetector
             $total_score += 0.2;
             $details['combination_bonus'] = array(
                 'score' => 0.2,
+                /* translators: %d: Number of checks that found issues */
                 'reason' => sprintf(__('Multiple suspicious patterns detected (%d checks)', 'we-spamfighter'), $checks_with_issues),
             );
         }
@@ -287,9 +288,11 @@ class HeuristicDetector
         // Too many links.
         if ($url_count > 5) {
             $score += 0.4;
+            /* translators: %d: Number of links */
             $reasons[] = sprintf(__('Too many links (%d)', 'we-spamfighter'), $url_count);
         } elseif ($url_count > 3) {
             $score += 0.2;
+            /* translators: %d: Number of links */
             $reasons[] = sprintf(__('Multiple links (%d)', 'we-spamfighter'), $url_count);
         }
 
@@ -316,6 +319,7 @@ class HeuristicDetector
             foreach ($suspicious_url_patterns as $pattern) {
                 if (strpos($url_lower, $pattern) !== false) {
                     $score += 0.4;
+                    /* translators: %s: Suspicious URL pattern */
                     $reasons[] = sprintf(__('Suspicious URL pattern: %s', 'we-spamfighter'), $pattern);
                     break;
                 }
@@ -381,6 +385,7 @@ class HeuristicDetector
             foreach ($suspicious_domains as $sus_domain) {
                 if (strpos($domain_lower, $sus_domain) !== false) {
                     $score += 0.3;
+                    /* translators: %s: URL shortener domain */
                     $reasons[] = sprintf(__('URL shortener detected: %s', 'we-spamfighter'), $sus_domain);
                     break;
                 }
@@ -395,6 +400,7 @@ class HeuristicDetector
                     } else {
                         $score += 0.2;
                     }
+                    /* translators: %s: Suspicious top-level domain */
                     $reasons[] = sprintf(__('Suspicious TLD: %s', 'we-spamfighter'), $sus_tld);
                     break;
                 }
@@ -485,6 +491,7 @@ class HeuristicDetector
         $emoji_count = preg_match_all('/[\x{1F300}-\x{1F9FF}]|[\x{2600}-\x{26FF}]|[\x{2700}-\x{27BF}]/u', $text);
         if ($emoji_count >= 1) {
             $score += ($emoji_count >= 5 ? 0.4 : 0.2);
+            /* translators: %d: Number of emojis or icons */
             $reasons[] = sprintf(__('Emojis/icons detected (%d) - common in spam', 'we-spamfighter'), $emoji_count);
         }
 
@@ -514,9 +521,11 @@ class HeuristicDetector
         // Extremely long author/name (spam often uses long promotional text as "name").
         if (mb_strlen($author) > 60) {
             $score += 0.4;
+            /* translators: %d: Author name length in characters */
             $reasons[] = sprintf(__('Extremely long author/name (%d characters) - common spam pattern', 'we-spamfighter'), mb_strlen($author));
         } elseif (mb_strlen($author) > 40) {
             $score += 0.25;
+            /* translators: %d: Author name length in characters */
             $reasons[] = sprintf(__('Very long author/name (%d characters)', 'we-spamfighter'), mb_strlen($author));
         }
 
@@ -530,6 +539,7 @@ class HeuristicDetector
         $emoji_count = preg_match_all('/[\x{1F300}-\x{1F9FF}]|[\x{2600}-\x{26FF}]|[\x{2700}-\x{27BF}]/u', $author);
         if ($emoji_count >= 1) {
             $score += 0.3;
+            /* translators: %d: Number of emojis or icons in author name */
             $reasons[] = sprintf(__('Emojis/icons in author name (%d) - common in spam', 'we-spamfighter'), $emoji_count);
         }
 
@@ -638,6 +648,7 @@ class HeuristicDetector
         foreach ($spam_phrases as $phrase) {
             if (stripos($text_lower, $phrase) !== false) {
                 $phrase_count++;
+                /* translators: %s: Detected spam phrase */
                 $reasons[] = sprintf(__('Spam phrase detected: "%s"', 'we-spamfighter'), $phrase);
             }
         }
@@ -661,7 +672,8 @@ class HeuristicDetector
         foreach ($word_counts as $word => $count) {
             if ($count > 5 && mb_strlen($word) > 4) {
                 $score += 0.3;
-                $reasons[] = sprintf(__('Keyword stuffing: "%s" repeated %d times', 'we-spamfighter'), $word, $count);
+                /* translators: 1: Keyword, 2: Repeat count */
+                $reasons[] = sprintf(__('Keyword stuffing: "%1$s" repeated %2$d times', 'we-spamfighter'), $word, $count);
                 break; // Only count once.
             }
         }
@@ -690,6 +702,7 @@ class HeuristicDetector
         // Multiple email addresses in content (suspicious for comments).
         if ($email_count > 1) {
             $score += 0.3;
+            /* translators: %d: Number of email addresses */
             $reasons[] = sprintf(__('Multiple email addresses (%d)', 'we-spamfighter'), $email_count);
         }
 
@@ -721,12 +734,14 @@ class HeuristicDetector
                 if (substr($provider, -1) === '.') {
                     if (strpos($domain_lower, $provider) === 0) {
                         $score += 0.3; // Lower score for free providers (they can be legitimate)
+                        /* translators: %s: Free email provider domain */
                         $reasons[] = sprintf(__('Free email provider: %s', 'we-spamfighter'), rtrim($provider, '.'));
                         break;
                     }
                 } else {
                     if (strpos($domain_lower, $provider) !== false) {
                         $score += 0.4;
+                        /* translators: %s: Suspicious email provider domain */
                         $reasons[] = sprintf(__('Suspicious email provider: %s', 'we-spamfighter'), $provider);
                         break;
                     }
@@ -759,6 +774,7 @@ class HeuristicDetector
             $digit_count = preg_match_all('/\d/', $local_part);
             if ($digit_count > 4 && mb_strlen($local_part) > 8) {
                 $score += 0.2;
+                /* translators: %d: Number of digits in the email local part */
                 $reasons[] = sprintf(__('Suspicious email pattern (%d digits in local part)', 'we-spamfighter'), $digit_count);
             }
 
@@ -794,6 +810,7 @@ class HeuristicDetector
                     } else {
                         $score += 0.3;
                     }
+                    /* translators: %s: Suspicious email domain TLD */
                     $reasons[] = sprintf(__('Suspicious email domain TLD: %s', 'we-spamfighter'), $sus_tld);
                     break;
                 }
@@ -953,6 +970,7 @@ class HeuristicDetector
         foreach ($suspicious_domains as $sus_domain) {
             if (strpos($referrer_lower, $sus_domain) !== false) {
                 $score += 0.4;
+                /* translators: %s: URL shortener domain in referrer */
                 $reasons[] = sprintf(__('Referrer from URL shortener: %s', 'we-spamfighter'), $sus_domain);
                 break;
             }
@@ -963,6 +981,7 @@ class HeuristicDetector
         foreach ($suspicious_tlds as $sus_tld) {
             if (substr($referrer_domain, -strlen($sus_tld)) === $sus_tld) {
                 $score += 0.3;
+                /* translators: %s: Suspicious TLD in referrer */
                 $reasons[] = sprintf(__('Referrer from suspicious TLD: %s', 'we-spamfighter'), $sus_tld);
                 break;
             }
@@ -1023,6 +1042,7 @@ class HeuristicDetector
                 $is_known_bot = true;
                 // Known bots are less suspicious, but still worth a small score.
                 $score += 0.1;
+                /* translators: %s: Known bot name */
                 $reasons[] = sprintf(__('Known bot detected: %s', 'we-spamfighter'), $bot);
                 break;
             }
@@ -1055,6 +1075,7 @@ class HeuristicDetector
             foreach ($suspicious_bot_patterns as $pattern) {
                 if (strpos($user_agent_lower, $pattern) !== false) {
                     $score += 0.3;
+                    /* translators: %s: Suspicious bot pattern */
                     $reasons[] = sprintf(__('Suspicious bot pattern: %s', 'we-spamfighter'), $pattern);
                     break; // Only count once.
                 }
@@ -1081,6 +1102,7 @@ class HeuristicDetector
         foreach ($suspicious_patterns as $pattern) {
             if (strpos($user_agent_lower, $pattern) !== false) {
                 $score += 0.3;
+                /* translators: %s: Suspicious pattern found in user agent */
                 $reasons[] = sprintf(__('Suspicious pattern in user agent: %s', 'we-spamfighter'), $pattern);
                 break;
             }
@@ -1129,12 +1151,14 @@ class HeuristicDetector
         // Very short content (likely bot or test submission).
         if ($length > 0 && $length < 10) {
             $score += 0.3;
+            /* translators: %d: Content length in characters */
             $reasons[] = sprintf(__('Very short content (%d characters)', 'we-spamfighter'), $length);
         }
 
         // Extremely long content (possibly spam dump or script injection attempt).
         if ($length > 5000) {
             $score += 0.3;
+            /* translators: %d: Content length in characters */
             $reasons[] = sprintf(__('Extremely long content (%d characters)', 'we-spamfighter'), $length);
         }
 
@@ -1289,9 +1313,11 @@ class HeuristicDetector
 
             if ($script_count >= 3) {
                 $score += 0.4;
+                /* translators: %s: List of detected scripts */
                 $reasons[] = sprintf(__('Multiple scripts detected (%s) - strong spam indicator', 'we-spamfighter'), implode(', ', $script_names));
             } else {
                 $score += 0.2;
+                /* translators: %s: List of detected scripts */
                 $reasons[] = sprintf(__('Mixed scripts detected (%s)', 'we-spamfighter'), implode(', ', $script_names));
             }
         }
@@ -1370,6 +1396,7 @@ class HeuristicDetector
 
         if ($control_char_count > 0) {
             $score += 0.3;
+            /* translators: %d: Number of control characters */
             $reasons[] = sprintf(__('Control characters detected (%d)', 'we-spamfighter'), $control_char_count);
         }
 
@@ -1418,6 +1445,7 @@ class HeuristicDetector
         // Check if only numbers.
         if (preg_match('/^[0-9]+$/', $clean_text) && mb_strlen($clean_text) > 5) {
             $score += 0.3;
+            /* translators: %d: Number of digits */
             $reasons[] = sprintf(__('Content contains only numbers (%d digits)', 'we-spamfighter'), mb_strlen($clean_text));
         }
 
@@ -1442,6 +1470,7 @@ class HeuristicDetector
         // Very short alphanumeric-only content (e.g. "dfnrrm", "4tm1lq") - common bot placeholder.
         if (preg_match('/^[a-zA-Z0-9]+$/u', $clean_text) && mb_strlen($clean_text) >= 4 && mb_strlen($clean_text) <= 12) {
             $score += 0.35;
+            /* translators: %d: Content length in characters */
             $reasons[] = sprintf(__('Very short alphanumeric-only content (%d chars) - common bot pattern', 'we-spamfighter'), mb_strlen($clean_text));
         }
 
@@ -1482,6 +1511,7 @@ class HeuristicDetector
                 if ($valid_ips > 0) {
                     if ($valid_ips >= 2) {
                         $score += 0.4;
+                        /* translators: %d: Number of IP addresses */
                         $reasons[] = sprintf(__('Multiple IP addresses in content (%d)', 'we-spamfighter'), $valid_ips);
                     } else {
                         $score += 0.2;
@@ -1541,9 +1571,11 @@ class HeuristicDetector
         // If we find separator patterns, it's likely multilingual spam.
         if ($separator_count >= 2) {
             $score += 0.4;
-            $reasons[] = sprintf(__('Repeated separators detected (%d instances of "%s") - common in multilingual spam', 'we-spamfighter'), $separator_count, $separator_found);
+            /* translators: 1: Number of separator instances, 2: Separator string */
+            $reasons[] = sprintf(__('Repeated separators detected (%1$d instances of "%2$s") - common in multilingual spam', 'we-spamfighter'), $separator_count, $separator_found);
         } elseif ($separator_count >= 1) {
             $score += 0.2;
+            /* translators: %s: Separator pattern */
             $reasons[] = sprintf(__('Separator pattern detected ("%s") - possible multilingual spam', 'we-spamfighter'), $separator_found);
         }
 
@@ -1557,9 +1589,11 @@ class HeuristicDetector
             // If we have multiple URLs but few unique ones, it's repeated (multilingual spam pattern).
             if ($url_count >= 3 && $unique_count <= 2) {
                 $score += 0.3;
-                $reasons[] = sprintf(__('Repeated URLs detected (%d total, %d unique) - common in multilingual spam', 'we-spamfighter'), $url_count, $unique_count);
+                /* translators: 1: Total URL count, 2: Unique URL count */
+                $reasons[] = sprintf(__('Repeated URLs detected (%1$d total, %2$d unique) - common in multilingual spam', 'we-spamfighter'), $url_count, $unique_count);
             } elseif ($url_count >= 2 && $unique_count === 1) {
                 $score += 0.5;
+                /* translators: %d: Number of times the same URL was repeated */
                 $reasons[] = sprintf(__('Same URL repeated %d times - strong multilingual spam indicator', 'we-spamfighter'), $url_count);
             }
         }
@@ -1589,6 +1623,7 @@ class HeuristicDetector
                 // If sections have similar lengths (low variance), it's suspicious.
                 if ($std_dev < ($avg_length * 0.3) && $section_count >= 3) {
                     $score += 0.3;
+                    /* translators: %d: Number of sections */
                     $reasons[] = sprintf(__('Multiple sections with similar structure (%d sections) - multilingual spam pattern', 'we-spamfighter'), $section_count);
                 }
 
@@ -1619,6 +1654,7 @@ class HeuristicDetector
                     // If sentence counts are very similar (low variance), it suggests same structure.
                     if ($avg_sentences > 3 && $sentence_std_dev < ($avg_sentences * 0.4)) {
                         $score += 0.2;
+                        /* translators: %d: Number of sections */
                         $reasons[] = sprintf(__('Sections have similar sentence structure (%d sections) - suggests multilingual repetition', 'we-spamfighter'), $section_count);
                     }
                 }
@@ -1645,7 +1681,8 @@ class HeuristicDetector
                 // If most sections have URLs but there are few unique URLs, it's repeated content.
                 if ($sections_with_urls >= 2 && $section_count >= 3 && $unique_url_count <= 2) {
                     $score += 0.3;
-                    $reasons[] = sprintf(__('Similar URLs across multiple sections (%d sections with URLs, %d unique URLs) - multilingual repetition', 'we-spamfighter'), $sections_with_urls, $unique_url_count);
+                    /* translators: 1: Number of sections with URLs, 2: Unique URL count */
+                    $reasons[] = sprintf(__('Similar URLs across multiple sections (%1$d sections with URLs, %2$d unique URLs) - multilingual repetition', 'we-spamfighter'), $sections_with_urls, $unique_url_count);
                 }
 
                 // Extract potential brand/product names (capitalized words, might appear in multiple languages).
@@ -1682,6 +1719,7 @@ class HeuristicDetector
                     // If we find common keywords across multiple sections, it suggests repeated content.
                     if (count($common_keywords) >= 2) {
                         $score += 0.2;
+                        /* translators: %d: Number of common keywords */
                         $reasons[] = sprintf(__('Common keywords/brand names across sections (%d keywords) - suggests multilingual repetition', 'we-spamfighter'), count($common_keywords));
                     }
                 }
@@ -1712,6 +1750,7 @@ class HeuristicDetector
         // If we find multiple greetings in different languages, it's suspicious.
         if ($greeting_count >= 3 && ($separator_count >= 1 || $section_count >= 3)) {
             $score += 0.3;
+            /* translators: %d: Number of language greetings detected */
             $reasons[] = sprintf(__('Multiple language greetings detected (%d) combined with repeated structure - multilingual spam', 'we-spamfighter'), $greeting_count);
         }
 
