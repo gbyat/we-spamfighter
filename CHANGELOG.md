@@ -5,6 +5,39 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.2] - 2026-07-21
+
+- Implement active tab management and update settings referer in admin interface
+  - Added functions to retrieve the active tab from the URL and update the settings referer input, ensuring the active tab persists after saving settings.
+  - Enhanced tab navigation to maintain the correct URL state without reloading the page.
+  - Updated localization files to reflect recent changes and improvements in the plugin.
+- Add npm script for zipping files in package.json
+  - Introduced a new script "zip" to streamline the process of creating zip files.
+  - This addition enhances the build process by providing a direct command for zipping assets.
+- Add new translation scripts and update localization files
+  - Introduced new npm scripts for synchronizing and applying locale catalogs, enhancing translation management.
+  - Updated the German localization files (.po, .mo) to reflect recent changes and improvements in the plugin.
+  - Revised the package.json to include new scripts for translation tasks, streamlining the localization process.
+- Enhance build process and update dependencies
+  - Updated .gitignore to include build artifacts and wp-cli.phar.
+  - Added new npm scripts for building zip files and managing translations.
+  - Introduced archiver as a dependency for creating zip files.
+  - Updated package-lock.json and package.json to reflect new dependencies and versions.
+  - Improved CSS styles for admin and frontend interfaces, enhancing layout and usability.
+  - Refactored release workflow to streamline the build and publish process.
+- Refactor AI provider settings and enhance usability checks
+  - Removed the display of "(not configured)" status for AI providers in the settings dropdown.
+  - Added a message to inform users when a previously selected provider is no longer connected.
+  - Updated the description for cases with no connected AI providers to clarify configuration steps.
+  - Introduced a new method to check if an AI provider is connected, improving the validation of selected providers.
+- Update plugin name to "WE Spamfighterin" and enhance AI detection features
+  - Renamed the plugin throughout all files to "WE Spamfighterin" for consistency.
+  - Added AI detection capabilities using WordPress Connectors, allowing users to select providers and set model preferences.
+  - Updated settings and documentation to reflect the new AI integration options.
+  - Improved privacy handling and added new configuration options for AI detection in the settings.
+  - Introduced new heuristic checks for spam detection, including language mismatch detection and CF7 field-type heuristics.
+
+
 ## [1.5.1] - 2026-02-10
 
 - Enhance privacy features for OpenAI integration in v1.5.0
@@ -319,3 +352,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [1.4.3]: https://github.com/gbyat/we-spamfighter/releases/tag/v1.4.3
 [1.5.0]: https://github.com/gbyat/we-spamfighter/releases/tag/v1.5.0
 [1.5.1]: https://github.com/gbyat/we-spamfighter/releases/tag/v1.5.1
+[1.5.2]: https://github.com/gbyat/we-spamfighter/releases/tag/v1.5.2
