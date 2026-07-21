@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.3] - 2026-07-21
+
+- Update build and release processes with new scripts and enhancements
+  - Added a new npm script for building the plugin ZIP, streamlining the release process.
+  - Updated the release workflow to include a preflight check for dependencies before building.
+  - Enhanced the build-release-zip script to handle asset building and versioned ZIP creation.
+  - Improved .gitignore to exclude release artifacts and added a new directory for releases.
+  - Updated localization files for better consistency and accuracy.
+- Enhance localization and translation management
+  - Added translator comments for better context in the heuristic detector class.
+  - Updated German localization files to reflect recent changes and improvements.
+  - Improved translation synchronization scripts to handle header messages correctly.
+  - Revised JSON translation files for consistency in formatting and accuracy.
+
+
 ## [1.5.2] - 2026-07-21
 
 - Implement active tab management and update settings referer in admin interface
@@ -353,3 +368,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [1.5.0]: https://github.com/gbyat/we-spamfighter/releases/tag/v1.5.0
 [1.5.1]: https://github.com/gbyat/we-spamfighter/releases/tag/v1.5.1
 [1.5.2]: https://github.com/gbyat/we-spamfighter/releases/tag/v1.5.2
+[1.5.3]: https://github.com/gbyat/we-spamfighter/releases/tag/v1.5.3
