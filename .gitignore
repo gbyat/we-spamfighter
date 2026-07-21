@@ -16,6 +16,7 @@ composer.lock
 
 # Build / release artifacts (built locally or in CI)
 *.zip
+releases/
 release_notes.txt
 
 # Build files

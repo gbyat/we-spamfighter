@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 /**
  * Apply translated msgstr values from scripts/translations/<locale>.json to PO files.
+ *
+ * Handles escaped quotes inside msgid/msgstr (e.g. HTML href=\"%s\").
  */
 
 const fs = require('fs');
@@ -26,6 +28,17 @@ function poEscape(value) {
 }
 
 /**
+ * @param {string} value
+ * @return {string}
+ */
+function poUnescape(value) {
+	return value
+		.replace(/\\n/g, '\n')
+		.replace(/\\"/g, '"')
+		.replace(/\\\\/g, '\\');
+}
+
+/**
  * @param {string} poPath
  * @param {Record<string, string>} catalog
  * @return {number}
@@ -34,13 +47,11 @@ function applyCatalog(poPath, catalog) {
 	let content = readLf(poPath);
 	let applied = 0;
 
+	// Match single-line msgid + msgstr pairs; allow escaped quotes inside both.
 	content = content.replace(
-		/(^|\n)(msgid "((?:\\.|[^"\\])*)"\nmsgstr ")(.*?)(")/gm,
-		(match, prefix, head, msgidRaw, msgstrRaw, tail) => {
-			const msgid = msgidRaw
-				.replace(/\\n/g, '\n')
-				.replace(/\\"/g, '"')
-				.replace(/\\\\/g, '\\');
+		/(^|\n)(msgid "((?:\\.|[^"\\])*)"\nmsgstr ")((?:\\.|[^"\\])*)(")/gm,
+		(match, prefix, head, msgidRaw, _msgstrRaw, tail) => {
+			const msgid = poUnescape(msgidRaw);
 
 			if (!Object.prototype.hasOwnProperty.call(catalog, msgid)) {
 				return match;

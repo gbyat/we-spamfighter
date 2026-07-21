@@ -47,6 +47,12 @@ jobs:
             npm install
           fi
 
+      - name: Dependency preflight (strict)
+        run: |
+          if [ -f scripts/preflight-deploy.js ]; then
+            node scripts/preflight-deploy.js
+          fi
+
       - name: Validate tag/version consistency
         run: |
           VERSION="${GITHUB_REF#refs/tags/v}"
@@ -90,16 +96,13 @@ jobs:
         id: plugin
         run: echo "slug=$(node -p "require('./plugin.config.json').slug")" >> "$GITHUB_OUTPUT"
 
-      - name: Build minified assets
-        run: npm run build:assets
+      - name: Build and package plugin
+        run: npm run build
 
       - name: Prepare release notes
         run: |
           VERSION="${GITHUB_REF#refs/tags/v}"
           node scripts/extract-release-notes.js "${VERSION}" release_notes.txt
-
-      - name: Create plugin ZIP
-        run: node scripts/build-release-zip.js
 
       - name: Publish GitHub release
         uses: softprops/action-gh-release@v2
@@ -142,11 +145,8 @@ jobs:
         id: plugin
         run: echo "slug=$(node -p "require('./plugin.config.json').slug")" >> "$GITHUB_OUTPUT"
 
-      - name: Build minified assets
-        run: npm run build:assets
-
-      - name: Create plugin ZIP
-        run: node scripts/build-release-zip.js
+      - name: Build and package plugin
+        run: npm run build
 
       - name: Upload ZIP artifact
         uses: actions/upload-artifact@v4

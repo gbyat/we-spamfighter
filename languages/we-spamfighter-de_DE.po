@@ -1393,7 +1393,7 @@ msgstr "Optional. Kommagetrennte Modell-IDs für den gewählten Anbieter (das er
 #: includes/admin/class-settings.php:316
 #, php-format
 msgid "Only for “Direct OpenAI API”. Get your API key from <a href=\"%s\" target=\"_blank\">OpenAI Platform</a>. You can also define WE_SPAMFIGHTER_OPENAI_KEY in wp-config.php."
-msgstr "Nur für „Direct OpenAI API“. API-Schlüssel auf der <a href=\"%s\" target=\"_blank\">OpenAI Platform</a> erstellen. Alternativ WE_SPAMFIGHTER_OPENAI_KEY in wp-config.php definieren."%s\" target=\"_blank\">OpenAI Platform</a> erstellen. Alternativ WE_SPAMFIGHTER_OPENAI_KEY in wp-config.php definieren.\"%s\" target=\"_blank\">OpenAI Platform</a> erstellen. Alternativ WE_SPAMFIGHTER_OPENAI_KEY in wp-config.php definieren.\"%s\" target=\"_blank\">OpenAI Platform</a> erstellen. Alternativ WE_SPAMFIGHTER_OPENAI_KEY in wp-config.php definieren."
+msgstr "Nur für „Direct OpenAI API“. API-Schlüssel auf der <a href=\"%s\" target=\"_blank\">OpenAI Platform</a> erstellen. Alternativ WE_SPAMFIGHTER_OPENAI_KEY in wp-config.php definieren."
 
 #: includes/admin/class-settings.php:338
 msgid "Only for “Direct OpenAI API”. Which model to use for spam detection."

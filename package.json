@@ -12,9 +12,12 @@
     "url": "https://github.com/gbyat/we-spamfighter"
   },
   "scripts": {
+    "build": "node scripts/build-zip.js",
     "build:assets": "node scripts/build-assets.js",
     "build:zip": "node scripts/build-zip.js",
-    "zip": "node scripts/build-zip.js",
+    "zip": "node scripts/build-release-zip.js",
+    "preflight": "node scripts/preflight-deploy.js",
+    "preflight:warn": "node scripts/preflight-deploy.js --warn-only",
     "wp-cli:install": "node scripts/install-wp-cli.js",
     "pot": "node scripts/update-pot.js",
     "make-pot": "node scripts/update-pot.js",
@@ -33,6 +36,9 @@
     "release:patch": "node scripts/release.js patch",
     "release:minor": "node scripts/release.js minor",
     "release:major": "node scripts/release.js major",
+    "release:patch:local": "node scripts/release.js patch --local",
+    "release:minor:local": "node scripts/release.js minor --local",
+    "release:major:local": "node scripts/release.js major --local",
     "sync-version": "node scripts/sync-version.js",
     "sync:version": "node scripts/sync-version.js",
     "check": "node scripts/check.js",
