@@ -111,6 +111,27 @@
         toggleAiBackendFields();
         $('select[name="we_spamfighter_settings[ai_backend]"]').on('change', toggleAiBackendFields);
 
+        function getActiveTabFromUrl() {
+            var match = window.location.search.match(/[?&]tab=([^&]+)/);
+            return match ? match[1] : 'general';
+        }
+
+        function updateSettingsReferer(tabId) {
+            var refererInput = $('input[name="_wp_http_referer"]');
+            if (!refererInput.length) {
+                return;
+            }
+
+            var query = '?page=we-spamfighter-settings&tab=' + tabId;
+            var current = refererInput.val();
+
+            if (current.indexOf('http') === 0) {
+                refererInput.val(window.location.protocol + '//' + window.location.host + window.location.pathname + query);
+            } else {
+                refererInput.val(window.location.pathname + query);
+            }
+        }
+
         // Tab navigation - show/hide tab content.
         $('.we-settings-nav-tabs .nav-tab').on('click', function (e) {
             e.preventDefault();
@@ -124,12 +145,17 @@
             $('.we-settings-tab-content').removeClass('active');
             $('#tab-' + tabId).addClass('active');
 
+            // Keep WordPress redirect on the active tab after save.
+            updateSettingsReferer(tabId);
+
             // Update URL without reload.
             if (history.pushState) {
                 var newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?page=we-spamfighter-settings&tab=' + tabId;
                 window.history.pushState({ path: newUrl }, '', newUrl);
             }
         });
+
+        updateSettingsReferer(getActiveTabFromUrl());
     });
 })(jQuery);
 

@@ -77,6 +77,11 @@ class Comments
             return $approved;
         }
 
+        // Trusted authors (moderators / admin replies) are not spam-checked.
+        if ($this->should_skip_comment_check($commentdata)) {
+            return $approved;
+        }
+
         // Check if pingbacks/trackbacks should be automatically marked as spam.
         if (! empty($this->settings['auto_mark_pingbacks_spam'])) {
             $comment_type = isset($commentdata['comment_type']) ? $commentdata['comment_type'] : '';
@@ -405,6 +410,43 @@ class Comments
         );
 
         return apply_filters('we_spamfighter_comments_pattern_options', $options, $this->settings);
+    }
+
+    /**
+     * Whether spam checks should be skipped for this comment.
+     *
+     * Skips for users who can moderate comments (e.g. admin replies from the
+     * dashboard or front end). Filterable via we_spamfighter_skip_comment_check.
+     *
+     * @param array $commentdata Comment data.
+     * @return bool
+     */
+    private function should_skip_comment_check($commentdata)
+    {
+        $skip = false;
+
+        if (current_user_can('moderate_comments')) {
+            $skip = true;
+        } else {
+            $user_id = 0;
+            if (! empty($commentdata['user_ID'])) {
+                $user_id = (int) $commentdata['user_ID'];
+            } elseif (! empty($commentdata['user_id'])) {
+                $user_id = (int) $commentdata['user_id'];
+            }
+
+            if ($user_id > 0 && user_can($user_id, 'moderate_comments')) {
+                $skip = true;
+            }
+        }
+
+        /**
+         * Filter whether to skip spam checks for a comment.
+         *
+         * @param bool  $skip        Whether to skip checks.
+         * @param array $commentdata Comment data.
+         */
+        return (bool) apply_filters('we_spamfighter_skip_comment_check', $skip, $commentdata);
     }
 
     /**

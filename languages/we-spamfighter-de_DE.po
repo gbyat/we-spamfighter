@@ -231,8 +231,8 @@ msgstr "Das Verschieben der Nachricht ist fehlgeschlagen."
 #, php-format
 msgid "%d submission deleted."
 msgid_plural "%d submissions deleted."
-msgstr[0] "%s Nachricht gelöscht"
-msgstr[1] "%d Nachrichten gelöscht"
+msgstr[0] "1 Nachricht gelöscht."
+msgstr[1] "%d Nachrichten gelöscht."
 
 #: includes/admin/class-dashboard.php:568
 msgid "Submission not found"
@@ -715,7 +715,7 @@ msgstr "Löschen des Aktivitätsprotokolls fehlgeschlagen"
 msgid "Activity log cleared successfully. %d entries deleted."
 msgstr "Aktivitätsprotokoll erfolgreich gelöscht. %d Einträge gelöscht."
 
-#: includes/admin/class-settings.php:1710
+#: includes/admin/class-settings.php:1711
 #: includes/integration/class-contact-form-7.php:586
 #: we-spamfighter.php:395
 msgid "Thank you for your message."
@@ -828,7 +828,7 @@ msgid "Form/Post ID:"
 msgstr "Formular-/Beitrags-ID:"
 
 #: includes/core/class-notifications.php:338
-#: includes/integration/class-comments.php:362
+#: includes/integration/class-comments.php:367
 msgid "Spam Score:"
 msgstr "Spam-Bewertung"
 
@@ -841,7 +841,7 @@ msgid "Submission Data:"
 msgstr "Einreichungsdaten:"
 
 #: includes/core/class-notifications.php:356
-#: includes/integration/class-comments.php:365
+#: includes/integration/class-comments.php:370
 msgid "Detection Details:"
 msgstr "Details zur Spam-Erkennung:"
 
@@ -1282,33 +1282,33 @@ msgid "Multiple language greetings detected (%d) combined with repeated structur
 msgstr "Mehrsprachige Begrüßungen erkannt (%d) in Kombination mit wiederholter Struktur – mehrsprachiger Spam"
 
 #. translators: %s: Site name
-#: includes/integration/class-comments.php:336
+#: includes/integration/class-comments.php:341
 #, php-format
 msgid "[%s] Spam Comment Detected"
 msgstr "[%s] Spam-Kommentar erkannt"
 
-#: includes/integration/class-comments.php:358
+#: includes/integration/class-comments.php:363
 #, php-format
 msgid "A spam comment has been detected by %s and moved to the spam folder."
 msgstr "Ein Spam-Kommentar wurde von %s erkannt und in den Spam-Ordner verschoben."
 
-#: includes/integration/class-comments.php:359
+#: includes/integration/class-comments.php:364
 msgid "Author:"
 msgstr "Autor:"
 
-#: includes/integration/class-comments.php:360
+#: includes/integration/class-comments.php:365
 msgid "Email:"
 msgstr "E-Mail:"
 
-#: includes/integration/class-comments.php:361
+#: includes/integration/class-comments.php:366
 msgid "Post ID:"
 msgstr "Beitrags-ID:"
 
-#: includes/integration/class-comments.php:363
+#: includes/integration/class-comments.php:368
 msgid "Comment Content:"
 msgstr "Kommentarinhalt:"
 
-#: includes/integration/class-comments.php:367
+#: includes/integration/class-comments.php:372
 msgid "View Spam Comments"
 msgstr "Spam-Kommentare anzeigen"
 
@@ -1377,7 +1377,7 @@ msgstr "Optional. Kommagetrennte Modell-IDs für den gewählten Anbieter (das er
 #: includes/admin/class-settings.php:316
 #, php-format
 msgid "Only for “Direct OpenAI API”. Get your API key from <a href=\"%s\" target=\"_blank\">OpenAI Platform</a>. You can also define WE_SPAMFIGHTER_OPENAI_KEY in wp-config.php."
-msgstr "Nur für „Direct OpenAI API“. API-Schlüssel auf der <a href=\"%s\" target=\"_blank\">OpenAI Platform</a> erstellen. Alternativ WE_SPAMFIGHTER_OPENAI_KEY in wp-config.php definieren."
+msgstr "Nur für „Direct OpenAI API“. API-Schlüssel auf der <a href=\"%s\" target=\"_blank\">OpenAI Platform</a> erstellen. Alternativ WE_SPAMFIGHTER_OPENAI_KEY in wp-config.php definieren."%s\" target=\"_blank\">OpenAI Platform</a> erstellen. Alternativ WE_SPAMFIGHTER_OPENAI_KEY in wp-config.php definieren."
 
 #: includes/admin/class-settings.php:338
 msgid "Only for “Direct OpenAI API”. Which model to use for spam detection."

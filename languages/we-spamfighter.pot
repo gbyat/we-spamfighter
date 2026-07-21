@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-06-22T10:42:53+00:00\n"
+"POT-Creation-Date: 2026-07-21T10:24:50+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: we-spamfighter\n"
@@ -882,7 +882,7 @@ msgstr ""
 msgid "%1$s connection successful! Test spam score: %2$.2f"
 msgstr ""
 
-#: includes/admin/class-settings.php:1710
+#: includes/admin/class-settings.php:1711
 #: includes/integration/class-contact-form-7.php:586
 #: we-spamfighter.php:395
 msgid "Thank you for your message."
@@ -995,7 +995,7 @@ msgid "Form/Post ID:"
 msgstr ""
 
 #: includes/core/class-notifications.php:338
-#: includes/integration/class-comments.php:362
+#: includes/integration/class-comments.php:367
 msgid "Spam Score:"
 msgstr ""
 
@@ -1008,7 +1008,7 @@ msgid "Submission Data:"
 msgstr ""
 
 #: includes/core/class-notifications.php:356
-#: includes/integration/class-comments.php:365
+#: includes/integration/class-comments.php:370
 msgid "Detection Details:"
 msgstr ""
 
@@ -1449,33 +1449,33 @@ msgid "Multiple language greetings detected (%d) combined with repeated structur
 msgstr ""
 
 #. translators: %s: Site name
-#: includes/integration/class-comments.php:336
+#: includes/integration/class-comments.php:341
 #, php-format
 msgid "[%s] Spam Comment Detected"
 msgstr ""
 
-#: includes/integration/class-comments.php:358
+#: includes/integration/class-comments.php:363
 #, php-format
 msgid "A spam comment has been detected by %s and moved to the spam folder."
 msgstr ""
 
-#: includes/integration/class-comments.php:359
+#: includes/integration/class-comments.php:364
 msgid "Author:"
 msgstr ""
 
-#: includes/integration/class-comments.php:360
+#: includes/integration/class-comments.php:365
 msgid "Email:"
 msgstr ""
 
-#: includes/integration/class-comments.php:361
+#: includes/integration/class-comments.php:366
 msgid "Post ID:"
 msgstr ""
 
-#: includes/integration/class-comments.php:363
+#: includes/integration/class-comments.php:368
 msgid "Comment Content:"
 msgstr ""
 
-#: includes/integration/class-comments.php:367
+#: includes/integration/class-comments.php:372
 msgid "View Spam Comments"
 msgstr ""
 

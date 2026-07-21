@@ -1526,6 +1526,7 @@ class Settings
             'keep_data_on_uninstall',
             'github_updates_enabled',
             'activity_log_enabled',
+            'form_notice_enabled',
         );
 
         // Check if heuristic is being enabled (was disabled, now enabled).
@@ -1724,13 +1725,6 @@ class Settings
             $sanitized['privacy_page_mode'] = in_array($input['privacy_page_mode'], $allowed_modes, true) ? $input['privacy_page_mode'] : 'filter';
         } else {
             $sanitized['privacy_page_mode'] = isset($existing['privacy_page_mode']) ? $existing['privacy_page_mode'] : 'filter';
-        }
-
-        // Form notice enabled (default true for existing installs).
-        if (isset($input['form_notice_enabled'])) {
-            $sanitized['form_notice_enabled'] = !empty($input['form_notice_enabled']);
-        } else {
-            $sanitized['form_notice_enabled'] = isset($existing['form_notice_enabled']) ? (bool) $existing['form_notice_enabled'] : true;
         }
 
         // Legacy migration: old CF7-only toggle maps to pattern_check_enabled.
